@@ -1,6 +1,6 @@
 # spark-poc
 
-This project will test intersections and interactions between GenevaERS and Apache Spark. This repo includes the following:
+This project will test intersections and interactions between GenevaERS and Apache Spark. When complete, this repo will include the following:
 
 - An overview of the POC (here in this document)
 - Source data assets, including links to publicly available data files and scripts to convert them into appropriate formats
@@ -19,4 +19,3 @@ This outlines the Spark POC approach
 
 And this starts to describe what will be learned from this POC
 ![Slide5](https://user-images.githubusercontent.com/29467627/88852340-c1438400-d1b3-11ea-89a2-d8b86f772d2b.jpeg)
-
