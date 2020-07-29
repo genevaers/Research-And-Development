@@ -18,4 +18,4 @@ This outlines the Spark POC approach
 ![Slide4](https://user-images.githubusercontent.com/29467627/88852298-b4269500-d1b3-11ea-857a-8998ae55b04c.jpeg)
 
 And this starts to describe what will be learned from this POC
-![Slide5](https://user-images.githubusercontent.com/29467627/88852340-c1438400-d1b3-11ea-89a2-d8b86f772d2b.jpeg)
+![GenevaERS and Spark POC](https://user-images.githubusercontent.com/29467627/88857602-3915ac80-d1bc-11ea-8905-a8041c566a2e.jpg)
