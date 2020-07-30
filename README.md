@@ -19,3 +19,5 @@ This outlines the Spark POC approach
 
 And this starts to describe what will be learned from this POC
 ![GenevaERS and Spark POC](https://user-images.githubusercontent.com/29467627/88857602-3915ac80-d1bc-11ea-8905-a8041c566a2e.jpg)
+
+More information about the initiative can be found at the [GenevaERS.org website](https://genevaers.org/2020/07/29/organize-and-commit-to-the-spark-genevaers-poc/) activity entry.
