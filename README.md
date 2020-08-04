@@ -25,31 +25,32 @@ More information about the initiative can be found at the [GenevaERS.org website
 The plan for the POC is as follows:
 
 Week Ending-Tasks to be complete as of end of week
+
 8/4/20
-  Maven build of Spark jzos on z/OS
-	Initial design of outputs
-	Data design complete, ASCII, ftp, zip, etc.
+  [ ] Maven build of Spark jzos on z/OS
+  [ ] Initial design of outputs
+  [ ] Data design complete, ASCII, ftp, zip, etc.
 8/11/20
-  Have UR20 working under Spark
-	Final design of outputs to be produced
-	Sample data ready for use
+  [ ] Have UR20 working under Spark
+	[ ] Final design of outputs to be produced
+	[ ] Sample data ready for use
 8/18/20
-  Spark code complete
-	UR45 conversion complete
-	Full data conversion with partiitioning
-	GenevaERS views built and run
+  [ ] Spark code complete
+	[ ] UR45 conversion complete
+	[ ] Full data conversion with partiitioning
+	[ ] GenevaERS views built and run
 8/25/20
-  Initial runs on cloud, and z/OS
-	Repartitioning, performance tuning
-	Execution of following configs
-	- Spark on Cloud
-	- Spark/Jzos
-	-Spark UR20
-	-Spark UR45
-	-GenevaERS
+  [ ] Initial runs on cloud, and z/OS
+	[ ] Repartitioning, performance tuning
+	[ ] Execution of following configs
+	- [ ] Spark on Cloud
+	- [ ] Spark/Jzos
+	- [ ] Spark UR20
+	- [ ] Spark UR45
+	- [ ] GenevaERS
 9/1/20
-  Execution, tuning, testing, rerun
+  [ ] Execution, tuning, testing, rerun
 9/8/20
-  End of technical work, build presentation
+  [ ] End of technical work, build presentation
 9/15/20
-  OMP Presentation
+  [ ] OMP Presentation
