@@ -38,27 +38,27 @@ Week Ending-Tasks to be complete as of end of week
 
   [ ] Have UR20 working under Spark
 
-	[ ] Final design of outputs to be produced
+  [ ] Final design of outputs to be produced
 
-	[ ] Sample data ready for use
+  [ ] Sample data ready for use
 
 8/18/20
 
   [ ] Spark code complete
 
-	[ ] UR45 conversion complete
+  [ ] UR45 conversion complete
 
-	[ ] Full data conversion with partiitioning
+  [ ] Full data conversion with partiitioning
 
-	[ ] GenevaERS views built and run
+  [ ] GenevaERS views built and run
 
 8/25/20
 
   [ ] Initial runs on cloud, and z/OS
 
-	[ ] Repartitioning, performance tuning
+  [ ] Repartitioning, performance tuning
 
-	[ ] Execution of following configs
+  [ ] Execution of following configs
 	- [ ] Spark on Cloud
 	- [ ] Spark/Jzos
 	- [ ] Spark UR20
