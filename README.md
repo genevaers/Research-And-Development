@@ -59,11 +59,11 @@ Week Ending-Tasks to be complete as of end of week
   [ ] Repartitioning, performance tuning
 
   [ ] Execution of following configs
-	- [ ] Spark on Cloud
-	- [ ] Spark/Jzos
-	- [ ] Spark UR20
-	- [ ] Spark UR45
-	- [ ] GenevaERS
+	  - [ ] Spark on Cloud
+	  - [ ] Spark/Jzos
+	  - [ ] Spark UR20
+	  - [ ] Spark UR45
+	  - [ ] GenevaERS
 
 9/1/20
 
@@ -76,3 +76,8 @@ Week Ending-Tasks to be complete as of end of week
 9/15/20
 
   [ ] OMP Presentation
+
+
+Data files will be created by:
+  [ ] Scripts in repo with addin python program will create partitioned datasets with a serial number on the data for partitioning. 
+  [ ] These files will be ascii utf-8 and possibly tarfiles to be uploadable to mainframe for further testing. 
