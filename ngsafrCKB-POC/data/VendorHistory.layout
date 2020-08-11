@@ -1,0 +1,20 @@
+      ******************************************************************
+      *   VA - VENDOR/INSTRUMENT
+      ******************************************************************
+      *
+       01  VA-VEND-REC.
+           05  VVR-INST-ID                     PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VVR-EFF-DATE                    PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VVR-EFF-TIME                    PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VVR-EFF-END-DATE                PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VVR-EFF-END-TIME                PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VVR-HOLDER-NAME                 PIC  X(30).
+           05  FILLER                          PIC  X(01).
+           05  VVR-TYPE-ID                     PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VVR-AUDIT-TRAIL                 PIC  X(01).
