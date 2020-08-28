@@ -1,7 +1,21 @@
-# jzos-sparkTest
+# Scala to Assembler  Test
 
-This repository contains new POC code started July 2020 at the initiation of the GenevaERS proejct.  You can read more about the scope and objectives of this test [here](https://genevaers.org/2020/07/29/organize-and-commit-to-the-spark-genevaers-poc/)
+This subprogram is to test simple JNI processing from Scala, as the first step to try to call z/OS assembler from Scala using JNI
 
-This code is combining code from the ngsafr POC (which had scala calling jzos) and the Universal Ledger POC (which called Spark) to create a single module which calls jzos from Apache Spark.
+Trying to run JNI off the mainframe first, and then to transfer that to z/OS to establish environment work
 
-This code requires it be run on z/OS as jzos IO does not work locally.
+This is a simple approach to doing JNI tests off of z/OS just to get [start on JNI work](https://medium.com/@bschlining/a-simple-java-native-interface-jni-example-in-java-and-scala-68fdafe76f5f)
+
+
+## Reference
+http://www.longpelaexpertise.com/ezine/HLASMfromJava.php
+
+https://medium.com/@bschlining/a-simple-java-native-interface-jni-example-in-java-and-scala-68fdafe76f5f
+
+## Environment
+When we try to go to our z/OS environment, we will use the following libraries:
+
+Java:  /Java
+Scala:  /scala
+Spark: /Spark
+  Interactive shell is in /Spark/bin/spark-shell 

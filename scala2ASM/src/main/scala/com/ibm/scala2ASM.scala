@@ -1,5 +1,13 @@
 package com.ibm.scala2ASM
 
+/*
+ * Scala2ASM (Prototype)
+ * (c) Copyright IBM Corporation. 2020
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ */
+
+// here is the instructions for java to assmebler.  http://www.longpelaexpertise.com/ezine/HLASMfromJava.php
 // test using this approach https://medium.com/@bschlining/a-simple-java-native-interface-jni-example-in-java-and-scala-68fdafe76f5f
 // These commands didn't complete:
 
