@@ -1,0 +1,43 @@
+
+View Filtering
+===============
+
+The following are the steps that should be followed to prove View Filtering, both record level, and column level filtering.
+
+(1) Record Level Filter.
+This step is relatively easy.  The first view, aggregated amounts by Agency, should exclude all agencies titles
+that contain the word "Department".  out of the sample data, this will exclude the "Department of Education - Central Office Operations"
+
+(2) Column Filtering.
+This requires a change to the output map of data from view one.  The view should now produce multiple columns of output
+for each department, in this format.
+
+Department Name:  Column 1 = Amounts from 2003,  Column 2 = Amounts from 2004, Column 3 = Amounts from 2005...etc, up to 2016
+
+Thus if a Deparment has no data for a specific year, the amount should be zero.
+
+So, rather than this:
+106
+	2003	10
+	2004	20.34
+	2005	5.45
+
+I want this:
+Depart	2003	2004	2005
+106 	10	    20.34	5.45
+
+Depart	Set1	Set2	Set3    Set4
+106 	10	    20.34	5.45    35.79
+
+View Piping
+============
+
+View piping should entail feeding the output from this newly formatted view one to another view.  In other words
+Instead of our new view 4 reading either transactions or balances from the CKB, a new input "buffer" should be
+created which is the result of (output from) view 1.
+
+This new view, 4, should produce an output which is a simple accumulation of all columns (years) for each department.
+
+Department Name:  Column 1 = Accumulated Spend by department.
+
+106	35.79
