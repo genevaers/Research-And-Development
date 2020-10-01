@@ -1,0 +1,327 @@
+AGY_AGENCY_CODE,AGY_AGENCY_KEY,AGY_AGENCY_NAME
+100,1,Senate
+101,2,House of Delegates
+263,3,Virginia Rehabilitation Center for the Blind and Vision Impaired
+268,4,Virginia Institute of Marine Science
+750,5,Department of Correctional Education
+751,6,Department for the Deaf & Hard-of-Hearing
+102,7,Legislative Department Reversion Clearing Account
+103,8,Magistrate System
+104,9,Judicial Department Reversion Clearing Account
+270,10,Virginia Community College System - Utility
+274,11,Eastern Virginia Medical School
+275,12,New River Community College
+105,13,Virginia Commission on Intergovernmental Cooperation
+107,14,Division of Legislative Services
+108,15,Virginia Code Commission
+276,16,Southside Virginia Community College
+277,17,Paul D. Camp Community College
+278,18,Rappahannock Community College
+109,19,Division of Legislative Automated Systems
+110,20,Joint Legislative Audit & Review Commission
+279,21,Danville Community College
+280,22,Northern Virginia Community College
+282,23,Piedmont Virginia Community College
+283,24,J. Sargeant Reynolds Community College
+284,25,Eastern Shore Community College
+285,26,Patrick Henry Community College
+286,27,Virginia Western Community College
+287,28,Dabney S. Lancaster Community College
+288,29,Wytheville Community College
+290,30,John Tyler Community College
+291,31,Blue Ridge Community College
+292,32,Central Virginia Community College
+293,33,Thomas Nelson Community College
+294,34,Southwest Virginia Community College
+295,35,Tidewater Community College
+296,36,Virginia Highlands Community College
+297,37,Germanna Community College
+298,38,Lord Fairfax Community College
+299,39,Mountain Empire Community College
+301,40,Department of Agriculture and Consumer Services
+111,41,Supreme Court
+112,42,Judicial Inquiry and Review Commission
+113,43,Circuit Courts
+752,44,Deep Meadow Correctional Center
+753,45,Deerfield Correctional Center
+754,46,Augusta Correctional Center
+307,47,Virginia Agricultural Council
+310,48,Virginia Economic Development Partnership
+319,49,Chippokes Plantation Farm Foundation
+114,50,General District Courts
+115,51,Juvenile & Domestic Relations District Courts
+116,52,Combined District Courts
+117,53,Virginia State Bar
+118,54,Virginia Coal & Energy Commission
+119,55,Lieutenant Governor
+320,56,Virginia Tourism Authority
+325,57,Department of Business Assistance
+330,58,Virginia-Israel Advisory Board
+756,59,Corrections - Division of Institutions
+757,60,Western Region Correctional Field Units
+121,61,Office of the Governor
+122,62,Department of Planning and Budget
+123,63,Department of Military Affairs
+760,64,Central Region Correctional Field Units
+761,65,Baskerville Correctional Center
+765,66,Department of Social Services
+400,67,Jamestown 2007
+402,68,Marine Resources Commission
+403,69,Department of Game and Inland Fisheries
+125,70,Court of Appeals of Virginia
+127,71,Department of Emergency Management
+129,72,Department of Human Resource Management
+766,73,Virginia Parole Board
+767,74,Division of Community Corrections
+768,75,Keen Mountain Correctional Center
+405,76,Virginia Racing Commission
+407,77,Virginia Port Authority
+408,78,Chesapeake Bay Local Assistance Department
+769,79,Greensville Correctional Center
+770,80,Dillwyn Correctional Center
+132,81,State Board of Elections
+133,82,Auditor of Public Accounts
+136,83,Virginia Information Technologies Agency
+771,84,Indian Creek Correctional Center
+772,85,Haynesville Correctional Center
+773,86,Coffeewood Correctional Center
+409,87,Department of Mines Minerals and Energy
+411,88,Department of Forestry
+413,89,Commission on Virginia Alcohol Safety Action Program
+140,90,Department of Criminal Justice Services
+141,91,Attorney General and Department of Law
+142,92,Virginia Crime Commission
+774,93,Lunenburg Correctional Center
+777,94,Department of Juvenile Justice
+790,95,DMHMRSAS - Grants to Localities
+417,96,Gunston Hall
+423,97,Department of Historic Resources
+425,98,Jamestown-Yorktown Foundation
+143,99,Attorney General - Division of Debt Collection
+145,100,Commissioners for Promotion of Uniformity of Legislation
+792,101,Mental Health Treatment Centers
+793,102,Mental Retardation Training Centers
+794,103,Commonwealth Center for Behavioral Rehabilitation
+440,104,Department of Environmental Quality
+454,105,Office of Commonwealth Preparedness
+501,106,Department of Transportation
+146,107,The Science Museum of Virginia
+148,108,Virginia Commission for the Arts
+149,109,Commonwealth Employees Health Insurance Fund
+795,110,Department of Corrections Division of Institutions
+799,111,Department of Corrections Central Activities
+820,112,Capital Square Preservation Council
+505,113,Department of Rail and Public Transportation
+506,114,Motor Vehicle Dealer Board
+601,115,Department of Health
+834,116,Virginia Freedom of Information Advisory Council
+836,117,Citizen Advisory Commission - Executive Mansion
+839,118,Virginia Commission on Youth
+151,119,Department of Accounts
+152,120,Department of the Treasury
+840,121,Virginia Housing Study Commission
+841,122,Department of Aviation
+842,123,Chesapeake Bay Commission
+154,124,Department of Motor Vehicles
+155,125,Treasury Board
+156,126,Department of State Police
+602,127,Department of Medical Assistance Services
+606,128,Virginia Board for People with Disabilities
+701,129,Department of Corrections-Central Administration
+844,130,Joint Commission on Health Care
+845,131,Dr. Martin Luther King Memorial Commission
+847,132,Joint Commission on Technology and Science
+157,133,Compensation Board
+158,134,Virginia Retirement System
+160,135,Virginia Criminal Sentencing Commission
+702,136,Virginia Department for the Blind and Vision Impaired
+703,137,Central State Hospital
+704,138,Eastern State Hospital
+848,139,Public Defender Commission
+850,140,Personal Property Tax Relief Act
+851,141,Tobacco Indemnification & Revitalization Commission
+852,142,Virginia Tobacco Settlement Foundation
+853,143,Office for Substance Abuse Prevention
+161,144,Department of Taxation
+163,145,Department for the Aging
+165,146,Department of Housing and Community Development
+705,147,Southwestern Virginia Mental Health Institute
+706,148,Western State Hospital
+707,149,Central Virginia Training Center
+854,150,Virginia Baseball Stadium Authority
+855,151,Governors Commission on Government Finance Reform for the 21st Century
+900,152,Health and Human Resources Capital Clearing Account
+166,153,Secretary of the Commonwealth
+169,154,Commonwealth Competition Council
+170,155,Human Rights Council
+708,156,Commonwealth Center for Children and Adolescents
+709,157,Powhatan Correctional Center
+711,158,Virginia Correctional Enterprises
+901,159,Public Safety Capital Clearing Account
+912,160,Department of Veterans Services
+921,161,Interstate Organization Contributions
+934,162,Innovative Technology Authority
+935,163,Roanoke Higher Education Authority
+171,164,State Corporation Commission
+172,165,State Lottery Department
+173,166,Department of Charitable Gaming
+936,167,Southeastern University Research Association Inc.
+941,168,Virginia College Building Authority
+942,169,Virginia Museum of Natural History
+174,170,Virginia College Savings Plan
+175,171,Virginia Office for Protection and Advocacy
+180,172,Secretary of Administration
+948,173,Southwest Virginia Higher Education Center
+949,174,Central Appropriations - Capital Outlay
+950,175,Central Appropriations - Revenue Bonds 9(C)
+951,176,Central Appropriations - Debt Bonds 9(D)
+957,177,Commonwealth Attorneys' Services Council
+960,178,Department of Fire Programs
+181,179,Department of Labor and Industry
+182,180,Virginia Employment Commission
+961,181,Division of Capitol Police
+962,182,Department of Employment Dispute Resolution
+963,183,Virginia Liaison Office
+183,184,Secretary of Natural Resources
+184,185,Secretary of Technology
+185,186,Secretary of Education
+971,187,State Water Commission
+986,188,Nonstate Agencies
+990,189,Appropriation Vetoes-Operating
+186,190,Secretary of Transportation
+187,191,Secretary of Public Safety
+188,192,Secretary of Health & Human Resources
+991,193,Unconstitutional Appropriations
+992,194,Planned Reversions
+993,195,Treasury Construction Financing
+994,196,Department of Treasury-Trust Funds
+995,197,Central Appropriations-Administration
+996,198,Department of the Treasury-Statewide Activities
+997,199,Department of Accounts-Statewide Activities
+998,200,City and County Treasurers
+716,201,Virginia Correctional Center for Women
+717,202,Southampton Correctional Center
+718,203,Bland Correctional Center
+719,204,James River Correctional Center
+720,205,Dept. of Mental Health Mental Retardation and Substance Abuse Services - Central Office
+721,206,Powhatan Reception and Classification Center
+723,207,Southeastern Virginia Training Center
+724,208,Catawba Hospital
+725,209,Northern Virginia Training Center
+726,210,Southside Virginia Training Center
+728,211,Northern Virginia Mental Health Institute
+729,212,Piedmont Geriatric Hospital
+730,213,Brunswick Correctional Center
+731,214,Staunton Correctional Center
+733,215,Sussex I State Prison
+734,216,Sussex II State Prison
+735,217,Wallens Ridge State Prison
+737,218,St. Brides Correctional Center
+738,219,Southwestern Virginia Training Center
+739,220,Southern Virginia Mental Health Institute
+190,221,Secretary of Finance
+191,222,Virginia Workers' Compensation Commission
+192,223,Secretary of Commerce and Trade
+194,224,Department of General Services
+197,225,Department of Education - Direct Aid to Public Education
+199,226,Department of Conservation & Recreation
+200,227,Comprehensive Services for At-Risk Youth and Families
+201,228,Department of Education - Central Office Operations
+202,229,The Library of Virginia
+999,230,Department of Alcoholic Beverage Control
+740,233,Southampton Reception and Classification Center
+741,234,Red Onion State Prison
+742,235,Department Of Corrections - Employee Relations and Training
+203,236,Woodrow Wilson Rehabilitation Center
+204,237,The College of William and Mary in Virginia
+207,238,University of Virginia-Academic Division
+743,239,Fluvanna Women's Correctional Center
+744,240,Mecklenburg Correctional Center
+208,241,Virginia Polytechnic Institute And State University
+209,242,University of Virginia Medical Center
+211,243,Virginia Military Institute
+212,244,Virginia State University
+213,245,Norfolk State University
+214,246,Longwood University
+215,247,University of Mary Washington
+216,248,James Madison University
+217,249,Radford University
+218,250,Virginia School for Deaf and Blind at Staunton
+219,251,Virginia School for Deaf Blind and Multi-Disabled at Hampton
+220,252,Melchers-Monroe Memorials - Mary Washington College
+221,253,Old Dominion University
+222,254,Department of Professional and Occupational Regulation
+223,255,Department of Health Professions
+226,256,Board of Accountancy
+229,257,Virginia Polytechnic Institute And State University VA Cooperative Extension And Agricultural Experiment Station Division
+232,258,Department of Minority Business Enterprise
+233,259,Board of Bar Examiners
+234,260,Cooperative Extension and Agricultural Research Service
+745,261,Nottoway Correctional Center
+747,262,Marion Correctional Treatment Center
+748,263,Hiram W. Davis Medical Center
+749,264,Buckingham Correctional Center
+236,267,Virginia Commonwealth University - Academic Division
+238,268,Virginia Museum of Fine Arts
+239,269,Frontier Culture Museum of Virginia
+241,270,Richard Bland College
+242,271,Christopher Newport University
+245,272,State Council of Higher Education for Virginia
+246,273,University of Virginia - College at Wise
+247,274,George Mason University
+260,275,Virginia Community College System
+261,276,Virginia Community College System- System Office
+262,277,Department of Rehabilitative Services
+128,279,Virginia Veterans Care Center Board of Trustees
+135,280,Virginia Information Providers Network Authority
+137,281,Department of Technology Planning
+138,282,Department of Information Technology
+150,283,Department of the State Internal Auditor
+162,284,Department of Accounts Transfer Payments
+193,285,Secretary of Agriculture and Forestry
+305,286,Milk Commission
+759,287,Northern Region Correctional Field Units
+762,288,Department for the Rights of Virginians with Disabilities
+911,289,Virginia Public Broadcasting Board
+968,290,Commission on Local Government
+885,291,Institute for Advanced Learning and Research
+131,292,Department of Veterans Affairs
+X00,299,Private College or University
+722,300,Office of Inspector General Mental Health
+778,301,Department of Forensic Science
+837,302,Disability Commission
+937,303,Southern Virginia Higher Education Center
+938,304,New College Institute
+989,305,Higher Education Research Initiative
+507,320,Board of Towing and Recovery Operators
+775,321,Pocahontas State Correctional Center
+776,322,Green Rock Correctional Center
+858,323,Brown v Board of Education Scholarship Awards Comm
+859,324,Virginia Sesquicentennial American Civil War Commission
+860,325,Commission on Unemployment Compensation
+861,326,Enterprise Application Public - Private Partner Prj
+740,327,Southampton Work Center
+326,340,Workforce Development Agency
+912,360,Department of Veterans Services
+232,361,Department of Minority Business Enterprise
+862,362,Small Business Commission
+863,363,Commission On Electric Utility Restructuring
+864,364,Manufacturing Development Commission
+865,365,Joint Commission On Administrative Rules
+866,366,Commission On Prevention Of Human Trafficking
+922,370,Sitter-Barfoot Veterans Care Center
+128,371,Virginia Veterans Care Center
+510,372,Department of Motor Vehicles Transfer Payment
+867,373,VA Bicentennial of American War of 1812
+980,374,Higher Education Tuition Moderation Incentive
+311,375,Virginia National Defense Industrial Authority
+934,397,Innovation & Entreprenuership Investment Authority
+936,398,Jefferson Science Associates LLC
+720,406,Dept. of Behavioral Health & Developmental Services
+530,407,Department of Motor Vehicles Transfer Payment
+868,408,VIRGINIA COMMISSION ON ENERGY AND ENVIRONMENT
+785,409,Grayson County Correctional Center
+312,410,Economic Development Incentive Payments
+869,429,VA Comm Centennial of the Woodrow Wilson Presidency
+870,430,Commission on Civics Education
+871,449,Autism Advisory Council

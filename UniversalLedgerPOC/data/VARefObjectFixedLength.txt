@@ -1,0 +1,472 @@
+EXP1    11 PERSONAL SERVICES                                                                01189 UNALLOT PERS SVCS 2% RED                                                         X
+EXP10   11 PERSONAL SERVICES                                                                01140 WAGES                                                                            X
+EXP100  12 CONTRACTUAL SERVICES                                                             01226 EMPLOYEE TRAINING CONSULTING SERVICES                                            X
+EXP101  22 EQUIPMENT                                                                        02241 LABORATORY EQUIPMENT                                                             X
+EXP102  22 EQUIPMENT                                                                        02242 MEDICAL & DENTAL EQUIPMENT                                                       X
+EXP103  22 EQUIPMENT                                                                        02243 FIELD EQUIPMENT                                                                  X
+EXP104  14 TRANSFER PAYMENTS                                                                01418 INCENTIVES                                                                       X
+EXP105  14 TRANSFER PAYMENTS                                                                01421 GRADUATE SCHOLARSHIPS & FELLOWSHIPS                                              X
+EXP106  14 TRANSFER PAYMENTS                                                                01422 STUDENT LOANS                                                                    X
+EXP107  22 EQUIPMENT                                                                        02248 MEDICAL & LABORATORY EQUIPMENT IMPROVEMENTS                                      X
+EXP108  22 EQUIPMENT                                                                        02251 AGRICULTURAL VEHICULAR EQUIPMENT                                                 X
+EXP109  22 EQUIPMENT                                                                        02252 AIRCRAFT EQUIPMENT                                                               X
+EXP11   11 PERSONAL SERVICES                                                                01150 DISABILITY BENEFITS                                                              X
+EXP110  14 TRANSFER PAYMENTS                                                                01423 TUITION & TRAINING AIDS                                                          X
+EXP111  14 TRANSFER PAYMENTS                                                                01424 TUITION WAIVER                                                                   X
+EXP112  14 TRANSFER PAYMENTS                                                                01425 UNDERGRADUATE SCHOLARSHIPS                                                       X
+EXP113  22 EQUIPMENT                                                                        02253 CONSTRUCTION EQUIPMENT                                                           X
+EXP114  22 EQUIPMENT                                                                        02254 MOTOR VEHICLE EQUIPMENT                                                          X
+EXP115  22 EQUIPMENT                                                                        02255 POWER REPAIR & MAINTENANCE EQUIPMENT                                             X
+EXP116  22 EQUIPMENT                                                                        02256 WATERCRAFT EQUIPMENT                                                             X
+EXP117  22 EQUIPMENT                                                                        02258 MOTORIZED EQUIPMENT IMPROVEMENTS                                                 X
+EXP118  22 EQUIPMENT                                                                        02261 OFFICE APPURTENANCES                                                             X
+EXP119  14 TRANSFER PAYMENTS                                                                01431 CATEGORICAL AID TO LOCAL GOVTS & CONST OFFICERS                                  X
+EXP12   11 PERSONAL SERVICES                                                                01160 TERMINATION PERSONAL SERVICE COSTS                                               X
+EXP120  14 TRANSFER PAYMENTS                                                                01432 PAYMENTS IN LIEU OF TAXES                                                        X
+EXP121  21 PROPERTY IMPROVEMENTS                                                            02110 ACQUISITION OF PROPERTY AND IMPROVEMENTS                                         X
+EXP122  21 PROPERTY IMPROVEMENTS                                                            02120 NATURAL RESOURCES                                                                X
+EXP123  21 PROPERTY IMPROVEMENTS                                                            02130 SITE DEVELOPMENT                                                                 X
+EXP124  12 CONTRACTUAL SERVICES                                                             01227 EMPLOYEE TRAINING TRANS/LODGING/MEALS/INCIDENTALS                                X
+EXP125  12 CONTRACTUAL SERVICES                                                             01228 EMPLOYEE IT TRAINING COURSES/WORKSHOPS/CONFERENCES                               X
+EXP126  12 CONTRACTUAL SERVICES                                                             01231 CLINIC SERVICES                                                                  X
+EXP127  22 EQUIPMENT                                                                        02200 EQUIPMENT                                                                        X
+EXP128  22 EQUIPMENT                                                                        02210 COMPUTER HARDWARE AND SOFTWARE                                                   X
+EXP129  22 EQUIPMENT                                                                        02220 EDUCATIONAL AND CULTURAL EQUIPMENT                                               X
+EXP13   11 PERSONAL SERVICES                                                                01170 WTA-WORKFORCE TRANSITION ACT TERMINATION PERSONAL SERVICE COSTS                  X
+EXP130  12 CONTRACTUAL SERVICES                                                             01232 DENTAL SERVICES                                                                  X
+EXP131  12 CONTRACTUAL SERVICES                                                             01233 HOSPITAL SERVICES                                                                X
+EXP132  12 CONTRACTUAL SERVICES                                                             01234 MEDICAL SERVICES                                                                 X
+EXP133  14 TRANSFER PAYMENTS                                                                01433 GENERAL REVENUE SHARING                                                          X
+EXP134  14 TRANSFER PAYMENTS                                                                01434 DISASTER RECOVERY CATEGORICAL AID TO LOCAL GOVERN                                X
+EXP135  14 TRANSFER PAYMENTS                                                                01435 SPECIAL PAYMENTS TO LOCALITIES                                                   X
+EXP136  22 EQUIPMENT                                                                        02230 ELECTRONIC AND PHOTOGRAPHIC EQUIPMENT                                            X
+EXP137  22 EQUIPMENT                                                                        02240 MEDICAL AND LABORATORY EQUIPMENT                                                 X
+EXP138  22 EQUIPMENT                                                                        02250 MOTORIZED EQUIPMENT                                                              X
+EXP139  12 CONTRACTUAL SERVICES                                                             01235 NURSING HOME SERVICES                                                            X
+EXP14   12 CONTRACTUAL SERVICES                                                             01200 CONTRACTUAL SERVICES                                                             X
+EXP140  12 CONTRACTUAL SERVICES                                                             01236 X-RAY & LABORATORY SERVICES                                                      X
+EXP141  22 EQUIPMENT                                                                        02262 OFFICE FURNITURE                                                                 X
+EXP142  22 EQUIPMENT                                                                        02263 OFFICE INCIDENTALS                                                               X
+EXP143  22 EQUIPMENT                                                                        02264 OFFICE MACHINES                                                                  X
+EXP144  12 CONTRACTUAL SERVICES                                                             01237 INSURANCE PREMIUMS-HEALTH SERVICES FOR INDIVIDUALS                               X
+EXP145  12 CONTRACTUAL SERVICES                                                             01238 OTHER MEDICAL SERVICES                                                           X
+EXP146  12 CONTRACTUAL SERVICES                                                             01241 AUDITING SERVICES                                                                X
+EXP147  22 EQUIPMENT                                                                        02268 OFFICE EQUIPMENT IMPROVEMENTS                                                    X
+EXP148  22 EQUIPMENT                                                                        02271 HOUSEHOLD EQUIPMENT                                                              X
+EXP149  22 EQUIPMENT                                                                        02272 LAW ENFORCEMENT EQUIPMENT                                                        X
+EXP15   12 CONTRACTUAL SERVICES                                                             01210 COMMUNICATION SERVICES                                                           X
+EXP150  12 CONTRACTUAL SERVICES                                                             01242 FISCAL SERVICES                                                                  X
+EXP151  12 CONTRACTUAL SERVICES                                                             01243 ATTORNEY SERVICES                                                                X
+EXP152  12 CONTRACTUAL SERVICES                                                             01244 MANAGEMENT SERVICES                                                              X
+EXP153  22 EQUIPMENT                                                                        02273 MANUFACTURING EQUIPMENT                                                          X
+EXP154  22 EQUIPMENT                                                                        02274 NON-POWER REPAIR & MAINTENANCE EQUIPMENT                                         X
+EXP155  22 EQUIPMENT                                                                        02275 RECREATIONAL EQUIPMENT                                                           X
+EXP156  12 CONTRACTUAL SERVICES                                                             01245 PERSONNEL MANAGEMENT SERVICES                                                    X
+EXP157  12 CONTRACTUAL SERVICES                                                             01246 PUBLIC INFORMATION & PUBLIC RELATIONS SERVICES                                   X
+EXP158  12 CONTRACTUAL SERVICES                                                             01247 LEGAL SERVICES                                                                   X
+EXP159  14 TRANSFER PAYMENTS                                                                01436 CATEGORICAL AID LOCAL GOV/CONST OFFICER TECHNOLOGY                               X
+EXP16   12 CONTRACTUAL SERVICES                                                             01220 EMPLOYEE DEVELOPMENT SERVICES                                                    X
+EXP160  14 TRANSFER PAYMENTS                                                                01441 PAYMENTS TO SUBSTATE ENTITIES                                                    X
+EXP161  12 CONTRACTUAL SERVICES                                                             01248 MEDIA SERVICES                                                                   X
+EXP162  12 CONTRACTUAL SERVICES                                                             01251 CUSTODIAL SERVICES                                                               X
+EXP163  12 CONTRACTUAL SERVICES                                                             01252 ELECTRICAL REPAIR & MAINTENANCE SERVICES                                         X
+EXP164  22 EQUIPMENT                                                                        02276 TRAFFIC CONTROL EQUIPMENT                                                        X
+EXP165  22 EQUIPMENT                                                                        02277 FIREARMS EQUIPMENT                                                               X
+EXP166  22 EQUIPMENT                                                                        02278 SPECIFIC USE EQUIPMENT IMPROVEMENTS                                              X
+EXP167  12 CONTRACTUAL SERVICES                                                             01253 EQUIPMENT REPAIR & MAINTENANCE SERVICES                                          X
+EXP168  12 CONTRACTUAL SERVICES                                                             01254 EXTERMINATION/VECTOR CONTROL SERVICES                                            X
+EXP169  12 CONTRACTUAL SERVICES                                                             01255 HIGHWAY REPAIR & MAINTENANCE SERVICES                                            X
+EXP17   12 CONTRACTUAL SERVICES                                                             01230 HEALTH SERVICES                                                                  X
+EXP170  14 TRANSFER PAYMENTS                                                                01442 PAYMENTS TO INDIVIDUALS                                                          X
+EXP171  14 TRANSFER PAYMENTS                                                                01451 GRANTS TO INTERGOVERNMENTAL ORGANIZATIONS                                        X
+EXP172  14 TRANSFER PAYMENTS                                                                01452 GRANTS TO NONGOVERNMENTAL ORGANIZATIONS                                          X
+EXP173  22 EQUIPMENT                                                                        02281 BUILT-IN EQUIPMENT                                                               X
+EXP174  22 EQUIPMENT                                                                        02282 FIXTURES                                                                         X
+EXP175  22 EQUIPMENT                                                                        02283 MECHANICAL EQUIPMENT                                                             X
+EXP176  12 CONTRACTUAL SERVICES                                                             01256 MECHANICAL REPAIR & MAINTENANCE SERVICES                                         X
+EXP177  12 CONTRACTUAL SERVICES                                                             01257 PLANT REPAIR & MAINTENANCE SERVICES                                              X
+EXP178  12 CONTRACTUAL SERVICES                                                             01258 RECLAMATION SERVICES                                                             X
+EXP179  12 CONTRACTUAL SERVICES                                                             01259 VEHICLE REPAIR & MAINTENANCE SERVICES                                            X
+EXP18   12 CONTRACTUAL SERVICES                                                             01240 MANAGEMT AND INFORMATIONAL SERVICES                                              X
+EXP180  12 CONTRACTUAL SERVICES                                                             01261 ARCHITECTURAL & ENGINEERING SERVICES                                             X
+EXP181  22 EQUIPMENT                                                                        02288 STATIONARY EQUIPMENT IMPROVEMENTS                                                X
+EXP182  22 EQUIPMENT                                                                        02291 UNDISTRIBUTED EQUIPMENT RECOVERY                                                 X
+EXP183  22 EQUIPMENT                                                                        02295 UNDISTRIBUTED EQUIPMENT                                                          X
+EXP184  14 TRANSFER PAYMENTS                                                                01453 OUT-OF-STATE POLITICAL ENTITIES                                                  X
+EXP185  14 TRANSFER PAYMENTS                                                                01455 DISASTER RECOVERY GRANTS TO OTHER STATE AGENCIES                                 X
+EXP186  14 TRANSFER PAYMENTS                                                                01456 DISASTER RECOVERY GRANTS TO NONGOVERNMENTAL ORGAN.                               X
+EXP187  22 EQUIPMENT                                                                        02296 INDIRECT COST RCVRY AUX PGM FOR EQUIPMENT                                        X
+EXP188  22 EQUIPMENT                                                                        02297 LATE PAYMENT PENALTIES FOR EQUIPMENT                                             X
+EXP189  22 EQUIPMENT                                                                        02298 INTER-AGENCY RECOVERIES FOR EQUIPMENT                                            X
+EXP19   12 CONTRACTUAL SERVICES                                                             01250 REPAIR AND MAINTENANCE SERVICES                                                  X
+EXP190  12 CONTRACTUAL SERVICES                                                             01262 AVIATION SERVICES                                                                X
+EXP191  12 CONTRACTUAL SERVICES                                                             01263 CLERICAL SERVICES                                                                X
+EXP192  12 CONTRACTUAL SERVICES                                                             01264 FOOD & DIETARY SERVICES                                                          X
+EXP193  22 EQUIPMENT                                                                        02260 OFFICE EQUIPMENT                                                                 X
+EXP194  22 EQUIPMENT                                                                        02270 SPECIFIC USE EQUIPMENT                                                           X
+EXP195  22 EQUIPMENT                                                                        02280 STATIONARY EQUIPMENT                                                             X
+EXP196  22 EQUIPMENT                                                                        02299 INTRA-AGENCY RECOVERIES FOR EQUIPMENT                                            X
+EXP197  23 PLANT AND IMPROVEMENTS                                                           02311 ACQUISITION, BRIDGES                                                             X
+EXP198  23 PLANT AND IMPROVEMENTS                                                           02312 ACQUISITION, BUILDINGS                                                           X
+EXP199  12 CONTRACTUAL SERVICES                                                             01265 LAUNDRY & LINEN SERVICES                                                         X
+EXP2    11 PERSONAL SERVICES                                                                01191 UNDISTRIBUTED AMENDED BUDGET AMTS PERSONAL SRVS                                  X
+EXP20   12 CONTRACTUAL SERVICES                                                             01260 SUPPORT SERVICES                                                                 X
+EXP200  12 CONTRACTUAL SERVICES                                                             01266 MANUAL LABOR SERVICES                                                            X
+EXP201  12 CONTRACTUAL SERVICES                                                             01267 PRODUCTION SERVICES                                                              X
+EXP202  12 CONTRACTUAL SERVICES                                                             01268 SKILLED SERVICES                                                                 X
+EXP203  12 CONTRACTUAL SERVICES                                                             01271 INFORMATION MGMT DESIGN/DEVELOP SVCS (VITA)                                      X
+EXP204  23 PLANT AND IMPROVEMENTS                                                           02313 ACQUISITION, HIGHWAYS                                                            X
+EXP205  23 PLANT AND IMPROVEMENTS                                                           02314 ACQUISITION, WATER PORTS                                                         X
+EXP206  23 PLANT AND IMPROVEMENTS                                                           02321 CONSTRUCTION, BRIDGES                                                            X
+EXP207  23 PLANT AND IMPROVEMENTS                                                           02300 PLANT AND IMPROVEMENTS                                                           X
+EXP208  23 PLANT AND IMPROVEMENTS                                                           02310 ACQUISITION OF PLANT AND IMPROVEMENTS                                            X
+EXP209  23 PLANT AND IMPROVEMENTS                                                           02320 CONSTRCTION OF PLANT AND IMPROVEMETS                                             X
+EXP21   12 CONTRACTUAL SERVICES                                                             01270 TECHNICAL SERVICES                                                               X
+EXP210  12 CONTRACTUAL SERVICES                                                             01272 VITA PASS THRU CHARGES                                                           X
+EXP211  12 CONTRACTUAL SERVICES                                                             01273 INFO MGMT PGM DESIGN/DEVELOP SVCS(NON-VITA/VENDOR)                               X
+EXP212  12 CONTRACTUAL SERVICES                                                             01274 COMPUTER HARDWARE MAINTENANCE SERVICES                                           X
+EXP213  23 PLANT AND IMPROVEMENTS                                                           02322 CONSTRUCTION, BUILDINGS                                                          X
+EXP214  23 PLANT AND IMPROVEMENTS                                                           02323 CONSTRUCTION, HIGHWAYS                                                           X
+EXP215  23 PLANT AND IMPROVEMENTS                                                           02324 CONSTRUCTION, WATER PORTS                                                        X
+EXP216  12 CONTRACTUAL SERVICES                                                             01275 COMPUTER SOFTWARE MAINTENANCE SERVICES                                           X
+EXP217  12 CONTRACTUAL SERVICES                                                             01276 COMPUTER OPERATING SERVICES (VITA)                                               X
+EXP218  12 CONTRACTUAL SERVICES                                                             01277 COMPUTER OPERATING SERVICES (NON-VITA/VENDOR)                                    X
+EXP219  31 OBLIGATIONS                                                                      03100 OBLIGATIONS                                                                      X
+EXP22   12 CONTRACTUAL SERVICES                                                             01280 TRANSPORTATION SERVICES                                                          X
+EXP220  31 OBLIGATIONS                                                                      03110 BONDS                                                                            X
+EXP221  14 TRANSFER PAYMENTS                                                                01461 ADMINISTRATIVE COSTS/LOCAL PROGRAMS                                              X
+EXP222  14 TRANSFER PAYMENTS                                                                01462 COST CONTAINMENT/LOCAL PROGRAMS                                                  X
+EXP223  14 TRANSFER PAYMENTS                                                                01463 HEALTH CARE CLAIMS/LOCAL PROGRAMS                                                X
+EXP225  12 CONTRACTUAL SERVICES                                                             01279 COMPUTER SOFTWARE DEVELOPMENT COSTS                                              X
+EXP226  12 CONTRACTUAL SERVICES                                                             01281 MOVING & RELOCATION SERVICES                                                     X
+EXP227  14 TRANSFER PAYMENTS                                                                01464 HEALTH MAINTENANCE ORGANIZATION COSTS/LOCAL PGM                                  X
+EXP228  14 TRANSFER PAYMENTS                                                                01465 CONSULTING COSTS/LOCAL PROGRAMS                                                  X
+EXP229  14 TRANSFER PAYMENTS                                                                01481 STATEWIDE INDIRECT COST RECOVERIES                                               X
+EXP23   13 SUPPLIES AND MATERIALS                                                           01300 SUPPLIES AND MATERIALS                                                           X
+EXP230  12 CONTRACTUAL SERVICES                                                             01282 TRAVEL, PERSONAL VEHICLE                                                         X
+EXP231  12 CONTRACTUAL SERVICES                                                             01283 TRAVEL, PUBLIC CARRIERS                                                          X
+EXP232  12 CONTRACTUAL SERVICES                                                             01284 TRAVEL, STATE VEHICLES                                                           X
+EXP233  23 PLANT AND IMPROVEMENTS                                                           02327 CONSTRUCTION, BRIDGES & HIGHWAYS IMPROVEMENTS                                    X
+EXP234  23 PLANT AND IMPROVEMENTS                                                           02328 CONSTRUCTION, BUILDINGS IMPROVEMENTS                                             X
+EXP235  23 PLANT AND IMPROVEMENTS                                                           02391 UNDISTRIBUTED PLANT & IMPROVEMENTS RECOVERY                                      X
+EXP236  14 TRANSFER PAYMENTS                                                                01482 AGENCY INDIRECT COST RECOVERIES                                                  X
+EXP237  14 TRANSFER PAYMENTS                                                                01491 UNDISTRIBUTED TRANSFER PAYMENT RECOVERIES                                        X
+EXP238  14 TRANSFER PAYMENTS                                                                01495 UNDISTRIBUTED TRANSFER PAYMENTS                                                  X
+EXP239  12 CONTRACTUAL SERVICES                                                             01285 TRAVEL, SUBSISTENCE, AND LODGING                                                 X
+EXP24   13 SUPPLIES AND MATERIALS                                                           01310 ADMINISTRATIVE SUPPLIES                                                          X
+EXP240  12 CONTRACTUAL SERVICES                                                             01286 TRAVEL, SUPPLEMENTS & AID                                                        X
+EXP241  31 OBLIGATIONS                                                                      03120 LOANS-AGENCY                                                                     X
+EXP242  31 OBLIGATIONS                                                                      03130 LOANS-STATE                                                                      X
+EXP243  11 PERSONAL SERVICES                                                                01111 EMPLOYER RETIRE CONTRIBUTIONS-DEFINED BENEFITS PRG                               X
+EXP244  12 CONTRACTUAL SERVICES                                                             01287 TRAVEL, MEAL REIMBURSEMENT-REPORTABLE TO IRS                                     X
+EXP245  12 CONTRACTUAL SERVICES                                                             01288 TRAVEL, MEAL REIMBURSEMENT-NOT REPORTABLE TO IRS                                 X
+EXP246  12 CONTRACTUAL SERVICES                                                             01291 UNDISTRIBUTED CONTRACTUAL SERVICES RECOVERIES                                    X
+EXP247  11 PERSONAL SERVICES                                                                01112 SOCIAL SECURITY AND MEDICARE                                                     X
+EXP248  11 PERSONAL SERVICES                                                                01113 WAGE SOCIAL SECURITY                                                             X
+EXP249  11 PERSONAL SERVICES                                                                01114 GROUP LIFE INSURANCE                                                             X
+EXP25   13 SUPPLIES AND MATERIALS                                                           01320 ENERGY SUPPLIES                                                                  X
+EXP250  12 CONTRACTUAL SERVICES                                                             01295 UNDISTRIBUTED CONTRACTUAL SERVICES                                               X
+EXP251  12 CONTRACTUAL SERVICES                                                             01296 INDIRECT COST RCVRY AUX PGM FOR CONTRACTUAL SVCS                                 X
+EXP252  12 CONTRACTUAL SERVICES                                                             01297 LATE PAYMENT PENALTIES FOR CONTRACTUAL SERVICES                                  X
+EXP253  11 PERSONAL SERVICES                                                                01115 ANNUAL EMPLOYER HEALTH INSURANCE PREMIUM                                         X
+EXP254  11 PERSONAL SERVICES                                                                01116 RETIREE MEDICAL/HOSPITALIZATION INSURANCE CREDIT                                 X
+EXP255  11 PERSONAL SERVICES                                                                01117 VSDB AND LONG-TERM DISABILITY INSURANCE                                          X
+EXP256  23 PLANT AND IMPROVEMENTS                                                           02395 UNDISTRIBUTED PLANT AND IMPROVEMENTS                                             X
+EXP257  23 PLANT AND IMPROVEMENTS                                                           02396 INDIRECT COST RCVRY AUX PGM PLANT & IMPROVEMENTS                                 X
+EXP258  23 PLANT AND IMPROVEMENTS                                                           02397 LATE PAYMENT PENALTIES FOR PLANT & IMPROVEMENTS                                  X
+EXP259  12 CONTRACTUAL SERVICES                                                             01298 INTER-AGENCY RECOVERIES FOR CONTRACTUAL SERVICES                                 X
+EXP26   13 SUPPLIES AND MATERIALS                                                           01330 MANUFACTURING AND MERCHANDISING SUPPLIES                                         X
+EXP260  12 CONTRACTUAL SERVICES                                                             01299 INTRA-AGENCY RECOVERIES FOR CONTRACTUAL SERVICES                                 X
+EXP261  11 PERSONAL SERVICES                                                                01118 TEACHERS INSURANCE ANNUITY                                                       X
+EXP262  11 PERSONAL SERVICES                                                                01119 EMPLOYER RETIRE CONTRIBUTION-DEFINED CONTRIBUTION                                X
+EXP263  11 PERSONAL SERVICES                                                                01121 SALARIES, ADMINISTRATIVE HIGHER EDUCATION                                        X
+EXP264  11 PERSONAL SERVICES                                                                01122 SALARIES, APPOINTED OFFICIALS                                                    X
+EXP265  11 PERSONAL SERVICES                                                                01123 SALARIES, CLASSIFIED                                                             X
+EXP266  11 PERSONAL SERVICES                                                                01124 SALARIES, OTHER OFFICIALS                                                        X
+EXP267  13 SUPPLIES AND MATERIALS                                                           01309 CHARGE CARD PURCHASES OF SUPPLIES AND MATERIALS                                  X
+EXP268  13 SUPPLIES AND MATERIALS                                                           01311 APPAREL SUPPLIES                                                                 X
+EXP269  13 SUPPLIES AND MATERIALS                                                           01312 OFFICE SUPPLIES                                                                  X
+EXP27   13 SUPPLIES AND MATERIALS                                                           01378 RECREATIONAL SUPPLIES                                                            X
+EXP270  11 PERSONAL SERVICES                                                                01125 SALARIES, OVERTIME                                                               X
+EXP271  11 PERSONAL SERVICES                                                                01126 SALARIES, TEACHING & RESEARCH                                                    X
+EXP272  11 PERSONAL SERVICES                                                                01127 SALARIES, VALORS PARTICIPANTS                                                    X
+EXP273  23 PLANT AND IMPROVEMENTS                                                           02398 INTER-AGENCY RECOVERIES FOR PLANT & IMPROVEMENTS                                 X
+EXP274  23 PLANT AND IMPROVEMENTS                                                           02399 INTRA-AGENCY RECOVERIES FOR PLANT & IMPROVEMENTS                                 X
+EXP275  24 UNALLOTTED CAPITAL AMOUNT                                                        02411 UNALLOTTED CAPITAL AMOUNT                                                        X
+EXP276  13 SUPPLIES AND MATERIALS                                                           01313 STATIONARY & FORMS                                                               X
+EXP277  13 SUPPLIES AND MATERIALS                                                           01321 COAL                                                                             X
+EXP278  13 SUPPLIES AND MATERIALS                                                           01322 GAS                                                                              X
+EXP279  13 SUPPLIES AND MATERIALS                                                           01323 GASOLINE                                                                         X
+EXP28   13 SUPPLIES AND MATERIALS                                                           01379 HIGHWAY EMERGENCY OPERATIONS MATERIALS                                           X
+EXP280  13 SUPPLIES AND MATERIALS                                                           01324 OIL                                                                              X
+EXP281  14 TRANSFER PAYMENTS                                                                01496 INDIRECT COST RCVRY AUX PGM FOR TRANSFER PAYMENTS                                X
+EXP282  14 TRANSFER PAYMENTS                                                                01498 INTER-AGENCY RECOVERIES FOR TRANSFER PAYMENTS                                    X
+EXP283  14 TRANSFER PAYMENTS                                                                01499 INTRA-AGENCY RECOVERIES FOR TRANSFER PAYMENTS                                    X
+EXP284  13 SUPPLIES AND MATERIALS                                                           01325 STEAM                                                                            X
+EXP285  13 SUPPLIES AND MATERIALS                                                           01326 WOOD FUELS                                                                       X
+EXP286  13 SUPPLIES AND MATERIALS                                                           01331 ALCOHOLIC BEVERAGES                                                              X
+EXP287  15 CONTINUOUS CHARGES                                                               01509 CHARGE CARD PURCHASE OF CONTINUOUS CHARGES                                       X
+EXP288  15 CONTINUOUS CHARGES                                                               01511 AIRCRAFT INSURANCE                                                               X
+EXP289  15 CONTINUOUS CHARGES                                                               01512 AUTOMOBILE LIABILITY INSURANCE                                                   X
+EXP29   13 SUPPLIES AND MATERIALS                                                           01391 UNDISTRIBUTED SUPPLIES & MATERIALS RECOVERIES                                    X
+EXP290  13 SUPPLIES AND MATERIALS                                                           01332 LICENSE TAGS                                                                     X
+EXP291  13 SUPPLIES AND MATERIALS                                                           01333 MANUFACTURING SUPPLIES                                                           X
+EXP292  13 SUPPLIES AND MATERIALS                                                           01334 MERCHANDISE                                                                      X
+EXP293  15 CONTINUOUS CHARGES                                                               01513 FLOOD INSURANCE                                                                  X
+EXP294  15 CONTINUOUS CHARGES                                                               01514 INLAND MARINE INSURANCE                                                          X
+EXP295  15 CONTINUOUS CHARGES                                                               01515 MARINE INSURANCE                                                                 X
+EXP296  25 UNALLOTTED CAPITAL DEF PRJ                                                       02501 UNALLOTTED CAPITAL DEF PRJ                                                       X
+EXP297  31 OBLIGATIONS                                                                      03111 BOND ISSUANCE EXPENSES                                                           X
+EXP298  31 OBLIGATIONS                                                                      03112 BOND ISSUANCE FEES                                                               X
+EXP299  13 SUPPLIES AND MATERIALS                                                           01335 PACKAGING & SHIPPING SUPPLIES                                                    X
+EXP3    22 EQUIPMENT                                                                        02211 DESKTOP CLIENT COMPUTERS(MICROCOMPUTERS)                                         X
+EXP30   13 SUPPLIES AND MATERIALS                                                           01340 MEDICAL AND LABORATORY SUPPLIES                                                  X
+EXP300  13 SUPPLIES AND MATERIALS                                                           01341 LABORATORY SUPPLIES                                                              X
+EXP301  13 SUPPLIES AND MATERIALS                                                           01342 MEDICAL & DENTAL SUPPLIES                                                        X
+EXP302  13 SUPPLIES AND MATERIALS                                                           01343 FIELD SUPPLIES                                                                   X
+EXP303  13 SUPPLIES AND MATERIALS                                                           01344 PHARMACEUTICAL DRUGS                                                             X
+EXP304  15 CONTINUOUS CHARGES                                                               01516 PROPERTY INSURANCE                                                               X
+EXP305  15 CONTINUOUS CHARGES                                                               01517 BOILER AND MACHINERY INSURANCE                                                   X
+EXP306  15 CONTINUOUS CHARGES                                                               01521 COMPUTER PERIPHERAL CAPITAL LEASES                                               X
+EXP307  31 OBLIGATIONS                                                                      03113 GENERAL OBLIGATION BOND FINANCING                                                X
+EXP308  31 OBLIGATIONS                                                                      03114 GENERAL OBLIGATION BOND INTEREST RETIREMENT                                      X
+EXP309  31 OBLIGATIONS                                                                      03115 REVENUE BOND FINANCING                                                           X
+EXP31   13 SUPPLIES AND MATERIALS                                                           01350 REPAIR AND MAINTENANCE SUPPLIES                                                  X
+EXP310  13 SUPPLIES AND MATERIALS                                                           01351 BUILDING REPAIR & MAINTENANCE MATERIALS                                          X
+EXP311  13 SUPPLIES AND MATERIALS                                                           01352 CUSTODIAL REPAIR & MAINTENANCE MATERIALS                                         X
+EXP312  13 SUPPLIES AND MATERIALS                                                           01353 ELECTRICAL REPAIR & MAINTENANCE MATERIALS                                        X
+EXP313  15 CONTINUOUS CHARGES                                                               01522 COMPUTER CENTRAL PROCESSOR CAPITAL LEASES                                        X
+EXP314  15 CONTINUOUS CHARGES                                                               01523 COMPUTER SOFTWARE CAPITAL LEASES                                                 X
+EXP315  15 CONTINUOUS CHARGES                                                               01524 EQUIPMENT CAPITAL LEASES                                                         X
+EXP316  13 SUPPLIES AND MATERIALS                                                           01354 MECHANICAL REPAIR & MAINTENANCE MATERIALS                                        X
+EXP317  13 SUPPLIES AND MATERIALS                                                           01355 VEHICLE REPAIR & MAINTENANCE MATERIALS                                           X
+EXP318  13 SUPPLIES AND MATERIALS                                                           01356 HIGHWAY REPAIR & MAINTENANCE MATERIALS                                           X
+EXP319  31 OBLIGATIONS                                                                      03116 REVENUE BOND INTEREST RETIREMENT                                                 X
+EXP32   13 SUPPLIES AND MATERIALS                                                           01360 RESIDENTAL SUPPLIES                                                              X
+EXP320  31 OBLIGATIONS                                                                      03117 REVENUE BOND PRINCIPAL RETIREMENT                                                X
+EXP321  11 PERSONAL SERVICES                                                                01128 SALARIES, INFORMATION TECHNOLOGY EMPLOYEES                                       X
+EXP322  11 PERSONAL SERVICES                                                                01129 SALARIES, OVERTIME INFORMATION TECHNOLOGY EMPLOYEE                               X
+EXP323  11 PERSONAL SERVICES                                                                01131 BONUSES & INCENTIVES                                                             X
+EXP324  11 PERSONAL SERVICES                                                                01132 SALARIES, ARMED FORCES PAY DIFFERENTIAL                                          X
+EXP325  11 PERSONAL SERVICES                                                                01133 OVERSEAS DIFFERENTIAL COMPENSATION                                               X
+EXP326  11 PERSONAL SERVICES                                                                01134 SPECIFIED PER DIEM PAYMENTS                                                      X
+EXP327  13 SUPPLIES AND MATERIALS                                                           01361 CLOTHING SUPPLIES                                                                X
+EXP328  13 SUPPLIES AND MATERIALS                                                           01362 FOOD & DIETARY SUPPLIES                                                          X
+EXP329  13 SUPPLIES AND MATERIALS                                                           01363 FOOD SERVICE SUPPLIES                                                            X
+EXP33   13 SUPPLIES AND MATERIALS                                                           01395 UNDISTRIBUTED SUPPLIES/MATERIALS                                                 X
+EXP330  11 PERSONAL SERVICES                                                                01135 WAGES & ALLOWANCES                                                               X
+EXP331  11 PERSONAL SERVICES                                                                01136 WORK PROGRAMS                                                                    X
+EXP332  11 PERSONAL SERVICES                                                                01137 EMPLOYEE SUGGESTION AWARDS                                                       X
+EXP333  13 SUPPLIES AND MATERIALS                                                           01364 LAUNDRY & LINEN SUPPLIES                                                         X
+EXP334  13 SUPPLIES AND MATERIALS                                                           01365 PERSONAL CARE SUPPLIES                                                           X
+EXP335  13 SUPPLIES AND MATERIALS                                                           01371 AGRICULTURAL SUPPLIES                                                            X
+EXP336  31 OBLIGATIONS                                                                      03121 ANTICIPATION LOAN INTEREST RETIREMENT                                            X
+EXP337  31 OBLIGATIONS                                                                      03131 ANTICIPATION LOAN INTEREST RETIREMENT                                            X
+EXP338  31 OBLIGATIONS                                                                      03132 MORTGAGE LOAN INTEREST RETIREMENT                                                X
+EXP339  13 SUPPLIES AND MATERIALS                                                           01372 ARCHITECTURAL & ENGINEERING SUPPLIES                                             X
+EXP34   13 SUPPLIES AND MATERIALS                                                           01396 INDIRECT COST RCVRY AUX PGM SUPPLIES & MATERIALS                                 X
+EXP340  13 SUPPLIES AND MATERIALS                                                           01373 COMPUTER OPERATING SUPPLIES                                                      X
+EXP341  11 PERSONAL SERVICES                                                                01138 DEFERRED COMPENSATION MATCH PAYMENTS                                             X
+EXP342  11 PERSONAL SERVICES                                                                01139 SPECIAL PAYMENTS FOR ACADEMIC SERVICES                                           X
+EXP343  11 PERSONAL SERVICES                                                                01141 WAGES, GENERAL                                                                   X
+EXP344  11 PERSONAL SERVICES                                                                01142 WAGES, GRADUATE ASSISTANT                                                        X
+EXP345  11 PERSONAL SERVICES                                                                01143 WAGES, OVERTIME                                                                  X
+EXP346  11 PERSONAL SERVICES                                                                01144 WAGES, STUDENT                                                                   X
+EXP347  13 SUPPLIES AND MATERIALS                                                           01374 EDUCATIONAL SUPPLIES                                                             X
+EXP348  13 SUPPLIES AND MATERIALS                                                           01375 FISH & WILDLIFE SUPPLIES                                                         X
+EXP35   13 SUPPLIES AND MATERIALS                                                           01397 LATE PAYMENT PENALTIES FOR SUPPLIES & MATERIALS                                  X
+EXP350  11 PERSONAL SERVICES                                                                01145 WAGES, TEACHING & RESEARCH PART-TIME                                             X
+EXP351  11 PERSONAL SERVICES                                                                01146 WAGES, FEDERAL WORK STUDY STUDENT                                                X
+EXP352  11 PERSONAL SERVICES                                                                01147 WAGES, SUBSTITUTE JUDGES                                                         X
+EXP353  31 OBLIGATIONS                                                                      03195 UNDISTRIBUTED OBLIGATIONS                                                        X
+EXP354  31 OBLIGATIONS                                                                      03196 INDIRECT COST RCVRY AUX PGM FOR OBLIGATIONS                                      X
+EXP355  31 OBLIGATIONS                                                                      03198 INTER-AGENCY RECOVERIES FOR OBLIGATIONS                                          X
+EXP356  11 PERSONAL SERVICES                                                                01148 WAGES, STATE WORK STUDY STUDENT                                                  X
+EXP357  11 PERSONAL SERVICES                                                                01149 WAGES, INFORMATION TECHNOLOGY EMPLOYEES                                          X
+EXP358  11 PERSONAL SERVICES                                                                01151 WORKERS' COMPENSATION AWARDS                                                     X
+EXP359  11 PERSONAL SERVICES                                                                01152 SUPPLEMENTAL WORKERS' COMPENSATION AWARDS                                        X
+EXP36   13 SUPPLIES AND MATERIALS                                                           01370 SPECIFIC USE SUPPLIES                                                            X
+EXP360  11 PERSONAL SERVICES                                                                01153 SHORT-TERM DISABILITY BENEFITS                                                   X
+EXP361  15 CONTINUOUS CHARGES                                                               01525 BUILDING CAPITAL LEASES                                                          X
+EXP362  15 CONTINUOUS CHARGES                                                               01526 LAND CAPITAL LEASES                                                              X
+EXP363  15 CONTINUOUS CHARGES                                                               01527 LAND AND BUILDING CAPITAL LEASES                                                 X
+EXP364  15 CONTINUOUS CHARGES                                                               01531 COMPUTER PERIPHERAL RENTALS                                                      X
+EXP365  15 CONTINUOUS CHARGES                                                               01532 COMPUTER PROCESSOR RENTALS                                                       X
+EXP366  15 CONTINUOUS CHARGES                                                               01533 COMPUTER SOFTWARE RENTALS                                                        X
+EXP367  31 OBLIGATIONS                                                                      03199 INTRA-AGENCY RECOVERIES FOR OBLIGATIONS                                          X
+EXP368  41 UNDIST BUDGET AMOUNTS                                                            04100 UNDISTRIBUTED BUDGET AMOUNTS                                                     X
+EXP369  41 UNDIST BUDGET AMOUNTS                                                            04101 SUM SUFFICIENT RECOVERY                                                          X
+EXP37   14 TRANSFER PAYMENTS                                                                01400 TRANSFER PAYMENTS                                                                X
+EXP370  15 CONTINUOUS CHARGES                                                               01534 EQUIPMENT RENTALS                                                                X
+EXP371  15 CONTINUOUS CHARGES                                                               01535 BUILDING RENTALS                                                                 X
+EXP372  15 CONTINUOUS CHARGES                                                               01536 LAND RENTALS                                                                     X
+EXP373  51 UNDIST SAVINGS AMOUNT                                                            05100 UNDISTRIBUTED SAVINGS AMOUNT                                                     X
+EXP374  51 UNDIST SAVINGS AMOUNT                                                            05101 UNDISTRIBUTED SAVINGS AMOUNTS/NGF                                                X
+EXP375  61 UNDIST BIENNIAL BUDGET AMOUNTS                                                   06100 UNDISTRIBUTED BIENNIAL BUDGET AMOUNTS                                            X
+EXP376  15 CONTINUOUS CHARGES                                                               01537 LAND AND BUILDING RENTALS                                                        X
+EXP377  15 CONTINUOUS CHARGES                                                               01541 AGENCY SERVICE CHARGES                                                           X
+EXP378  15 CONTINUOUS CHARGES                                                               01542 ELECTRICAL SERVICE CHARGES                                                       X
+EXP379  62 UNDIST NONPERS SVC REDUCT                                                        06200 UNDISTRIBUTED NONPERSONAL SVC ACROSS-THE-BD REDUCT                               X
+EXP38   14 TRANSFER PAYMENTS                                                                01410 AWARDS, CONTRIBUTIONS, AND CLAIMS                                                X
+EXP380  71 UNDIST AMENDED BUDGET AMOUNTS                                                    07100 UNDISTRIBUTED AMENDED BUDGET AMOUNTS                                             X
+EXP381  11 PERSONAL SERVICES                                                                01154 SUPPLEMENTAL DISABILITY BENEFITS                                                 X
+EXP382  11 PERSONAL SERVICES                                                                01158 RECOVERIES FOR WORKERS' COMPENSATION AWARDS                                      X
+EXP383  11 PERSONAL SERVICES                                                                01161 EARLY RETIREMENT INCENTIVE PAYMENTS                                              X
+EXP384  15 CONTINUOUS CHARGES                                                               01543 REFUSE SERVICE CHARGES                                                           X
+EXP385  15 CONTINUOUS CHARGES                                                               01544 WATER & SEWER SERVICE CHARGES                                                    X
+EXP386  15 CONTINUOUS CHARGES                                                               01545 DGS PARKING CHARGES                                                              X
+EXP387  11 PERSONAL SERVICES                                                                01162 SALARIES, ANNUAL LEAVE BALANCES                                                  X
+EXP388  11 PERSONAL SERVICES                                                                01163 SALARIES, SICK LEAVE BALANCES                                                    X
+EXP389  11 PERSONAL SERVICES                                                                01164 SALARIES, COMPENSATORY LEAVE BALANCES                                            X
+EXP39   13 SUPPLIES AND MATERIALS                                                           01398 INTER-AGENCY RECOVERIES FOR SUPPLIES & MATERIALS                                 X
+EXP390  15 CONTINUOUS CHARGES                                                               01546 SPCC AND EDI CHECK FEES                                                          X
+EXP391  15 CONTINUOUS CHARGES                                                               01547 PRIVATE VENDOR SERVICE CHARGES                                                   X
+EXP392  15 CONTINUOUS CHARGES                                                               01551 GENERAL LIABILITY INSURANCE                                                      X
+EXP393  11 PERSONAL SERVICES                                                                01171 WTA - PAYMENTS FOR TRANSITIONAL SEVERANCE BENEFITS                               X
+EXP394  11 PERSONAL SERVICES                                                                01172 WTA- FED OLD-AGE INSURANCE SALARIED STATE EMPLOYEE                               X
+EXP395  11 PERSONAL SERVICES                                                                01173 WTA - MEDICAL/HOSPITALIZATION INSURANCE                                          X
+EXP396  15 CONTINUOUS CHARGES                                                               01552 MONEY & SECURITIES INSURANCE                                                     X
+EXP397  15 CONTINUOUS CHARGES                                                               01553 PAY ST INSURANCE TRUST FD                                                        X
+EXP398  15 CONTINUOUS CHARGES                                                               01554 SURETY BONDS                                                                     X
+EXP399  11 PERSONAL SERVICES                                                                01174 WTA - GROUP LIFE INSURANCE                                                       X
+EXP4    22 EQUIPMENT                                                                        02212 MOBILE CLIENT COMPUTERS(MICROCOMPUTERS)                                          X
+EXP40   13 SUPPLIES AND MATERIALS                                                           01399 INTRA-AGENCY RECOVERIES FOR SUPPLIES & MATERIALS                                 X
+EXP400  11 PERSONAL SERVICES                                                                01175 WTA - EARLY RETIREMENT PAYMENTS                                                  X
+EXP401  81 ANTICIPATION LOAN PRNCPLE RET                                                    08100 ANTICIPATION LOAN PRINCIPLE RETIREMENT                                           X
+EXP402  86 UNDISTRIB LEGISLATIVE APPROP                                                     08600 UNDISTRIBUTED LEGISLATIVE APPROPRIATION                                          X
+EXP403  87 INDIRECT COSTS                                                                   08700 INDIRECT COSTS                                                                   X
+EXP404  11 PERSONAL SERVICES                                                                01176 WTA - SALARIES, ANNUAL LEAVE BALANCES                                            X
+EXP405  11 PERSONAL SERVICES                                                                01177 WTA - SALARIES, SICK LEAVE BALANCES                                              X
+EXP406  11 PERSONAL SERVICES                                                                01178 WTA - SALARIES, COMPENSATORY LEAVE BALANCES                                      X
+EXP407  88 CONTINGENCY EXPENSES                                                             08800 CONTINGENCY EXPENSES                                                             X
+EXP408  89 PROBUD REDISTRIBUTION CODE                                                       08900 PROBUD REDISTRIBUTION CODE                                                       X
+EXP409  90 UNDISTRIB AMENDED APPROP                                                         09000 UNDISTRIBUTED AMENDED APPROPRIATION                                              X
+EXP41   22 EQUIPMENT                                                                        02214 MAINFRAME COMPUTERS AND COMPONENTS                                               X
+EXP410  11 PERSONAL SERVICES                                                                01179 WTA - UNEMPLOYMENT COMPENSATION AWARDS                                           X
+EXP411  11 PERSONAL SERVICES                                                                01184 FTE-UNDIST AMEND LEG APPR                                                        X
+EXP412  11 PERSONAL SERVICES                                                                01185 FTE, UNDISTRIBUTED LEGISLATIVE APPROPRIATION                                     X
+EXP413  91 SUBGRANTS TO STATE AGENCIES                                                      09100 SUBGRANTS TO STATE AGENCIES                                                      X
+EXP416  11 PERSONAL SERVICES                                                                01186 UNDISTRIBUTED REGRADE FUNDS                                                      X
+EXP417  11 PERSONAL SERVICES                                                                01187 NONGENERAL FUND G TRANSACTION SUPPLEMENT                                         X
+EXP418  11 PERSONAL SERVICES                                                                01188 UNALLOTTED PERSONAL SERVICES                                                     X
+EXP419  15 CONTINUOUS CHARGES                                                               01555 WORKERS' COMPENSATION                                                            X
+EXP42   22 EQUIPMENT                                                                        02215 NETWORK SERVERS                                                                  X
+EXP420  15 CONTINUOUS CHARGES                                                               01561 COMPUTER PERIPHERAL INSTALLMENT PURCHASES                                        X
+EXP421  15 CONTINUOUS CHARGES                                                               01562 COMPUTER PROCESSOR INSTALLMENT PURCHASES                                         X
+EXP422  15 CONTINUOUS CHARGES                                                               01563 COMPUTER SOFTWARE INSTALLMENT PURCHASES                                          X
+EXP423  15 CONTINUOUS CHARGES                                                               01564 EQUIPMENT INSTALLMENT PURCHASES                                                  X
+EXP424  15 CONTINUOUS CHARGES                                                               01565 BUILDING INSTALLMENT PURCHASES                                                   X
+EXP425  15 CONTINUOUS CHARGES                                                               01566 LAND INSTALLMENT PURCHASES                                                       X
+EXP426  15 CONTINUOUS CHARGES                                                               01571 ADMINISTRATIVE COSTS                                                             X
+EXP427  15 CONTINUOUS CHARGES                                                               01572 COST CONTAINMENT                                                                 X
+EXP428  15 CONTINUOUS CHARGES                                                               01573 HEALTH CARE CLAIMS                                                               X
+EXP429  15 CONTINUOUS CHARGES                                                               01574 HEALTH MAINTENANCE ORGANIZATION COSTS                                            X
+EXP43   22 EQUIPMENT                                                                        02216 NETWORK COMPONENTS                                                               X
+EXP430  15 CONTINUOUS CHARGES                                                               01575 CONSULTING COSTS                                                                 X
+EXP431  15 CONTINUOUS CHARGES                                                               01591 UNDISTRIBUTED CONTINUOUS CHARGES RECOVERIES                                      X
+EXP432  15 CONTINUOUS CHARGES                                                               01595 UNDISTRIBUTED CONTINUOUS CHARGES                                                 X
+EXP433  15 CONTINUOUS CHARGES                                                               01596 INDIRECT COST RCVRY AUX PGM FOR CONTINUOUS CHARGES                               X
+EXP434  15 CONTINUOUS CHARGES                                                               01597 LATE PAYMENT PENALTIES FOR CONTINUOUS CHARGES                                    X
+EXP435  15 CONTINUOUS CHARGES                                                               01598 INTER AGENCY RECOVERIES FOR CONTINUOUS CHARGES                                   X
+EXP436  15 CONTINUOUS CHARGES                                                               01599 INTRA-AGENCY RECOVERIES FOR CONTINUOUS CHARGES                                   X
+EXP437  16 UNALLOTTED NONPERSONAL SERVICES                                                  01611 UNALLOTTED NONPERSONAL SERVICES                                                  X
+EXP438  16 UNALLOTTED NONPERSONAL SERVICES                                                  01612 UNALLOTTED NP SVCS 2% RED                                                        X
+EXP439  21 PROPERTY IMPROVEMENTS                                                            02111 ACQUISITION, PROPERTY                                                            X
+EXP44   11 PERSONAL SERVICES                                                                01192 TURNOVER/VACANCY FACULTY                                                         X
+EXP440  21 PROPERTY IMPROVEMENTS                                                            02112 ACQUISITION, RIGHTS-OF-WAY                                                       X
+EXP441  21 PROPERTY IMPROVEMENTS                                                            02113 ACQUISITION, WATERWAYS & IMPROVEMENTS                                            X
+EXP442  21 PROPERTY IMPROVEMENTS                                                            02121 ANIMALS                                                                          X
+EXP443  21 PROPERTY IMPROVEMENTS                                                            02122 MINERALS                                                                         X
+EXP444  21 PROPERTY IMPROVEMENTS                                                            02123 PLANTS                                                                           X
+EXP445  21 PROPERTY IMPROVEMENTS                                                            02131 SITE IMPROVEMENTS                                                                X
+EXP446  21 PROPERTY IMPROVEMENTS                                                            02132 SITE PREPARATION                                                                 X
+EXP447  21 PROPERTY IMPROVEMENTS                                                            02133 UTILITIES                                                                        X
+EXP448  21 PROPERTY IMPROVEMENTS                                                            02191 UNDISTRIBUTED PROPERTY & IMPROVEMENTS RECOVERY                                   X
+EXP449  21 PROPERTY IMPROVEMENTS                                                            02195 UNDISTRIBUTED PROPERTY AND IMPROVEMENTS                                          X
+EXP45   11 PERSONAL SERVICES                                                                01193 TURNOVER/VACANCY BENEFITS                                                        X
+EXP450  21 PROPERTY IMPROVEMENTS                                                            02196 INDIRECT COST RCVRY AUX PGM PROPERTY/IMPROVEMENTS                                X
+EXP451  21 PROPERTY IMPROVEMENTS                                                            02197 LATE PAYMENT PENALTIES FOR PROPERTY & IMPROVEMENTS                               X
+EXP452  21 PROPERTY IMPROVEMENTS                                                            02198 INTER-AGENCY RECOVERIES FOR PROPERTY/IMPROVEMENTS                                X
+EXP453  21 PROPERTY IMPROVEMENTS                                                            02199 INTRA-AGENCY RECOVERIES FOR PROPERTY & IMPROVEMENT                               X
+EXP454  22 EQUIPMENT                                                                        02209 CHARGE CARD PURCHASES OF EQUIPMENT                                               X
+EXP457  11 PERSONAL SERVICES                                                                00000 PERSONAL SERVICES - LOCAL FUNDS                                                  X
+EXP458  12 CONTRACTUAL SERVICES                                                             00000 CONTRACTURAL SERVICES - LOCAL FUNDS                                              X
+EXP459  13 SUPPLIES AND MATERIALS                                                           00000 SUPPLIES AND MATERIALS - LOCAL FUNDS                                             X
+EXP46   11 PERSONAL SERVICES                                                                01194 TURNOVER/VACANCY MEDICAL/HOSPITAL INSURANCE                                      X
+EXP460  14 TRANSFER PAYMENTS                                                                00000 TRANSFER PAYMENTS - LOCAL FUNDS                                                  X
+EXP461  15 CONTINUOUS CHARGES                                                               00000 CONTINUOUS CHARGES - LOCAL FUNDS                                                 X
+EXP462  21 PROPERTY IMPROVEMENTS                                                            00000 PROPERTY IMPROVEMENTS - LOCAL FUNDS                                              X
+EXP463  22 EQUIPMENT                                                                        00000 EQUIPMENT - LOCAL FUNDS                                                          X
+EXP464  23 PLANT AND IMPROVEMENTS                                                           00000 PLANT AND IMPROVEMENTS - LOCAL FUNDS                                             X
+EXP465  31 OBLIGATIONS                                                                      00000 OBLIGATIONS - LOCAL FUNDS                                                        X
+EXP466  87 INDIRECT COSTS                                                                   00000 INDIRECT COSTS - LOCAL FUNDS                                                     X
+EXP47   22 EQUIPMENT                                                                        02217 OTHER COMPUTER EQUIPMENT                                                         X
+EXP474  11 PERSONAL SERVICES                                                                01166 DEFINED CONTRIBUTION MATCH-VRS HYBRID RETIRE PLAN                                X
+EXP48   22 EQUIPMENT                                                                        02218 COMPUTER SOFTWARE PURCHASES                                                      X
+EXP484  12 CONTRACTUAL SERVICES                                                             01249 RECRUITMENT ADVERTISING                                                          X
+EXP485  12 CONTRACTUAL SERVICES                                                             01278 VITA INFO TECH INFRASTRUCTURE SERVICES (VITA)                                    X
+EXP49   22 EQUIPMENT                                                                        02219 DEVELOPMENT TOOLS PURCHASES                                                      X
+EXP5    11 PERSONAL SERVICES                                                                01110 EMPLOYEE BENEFITS                                                                X
+EXP50   11 PERSONAL SERVICES                                                                01195 TURNOVER/VACANCY CLASSIFIED                                                      X
+EXP502  11 PERSONAL SERVICES                                                                01182 UNFUNDED VACANT POSITIONS                                                        X
+EXP503  14 TRANSFER PAYMENTS                                                                01416 PAYMENTS ON BEHALF OF INDIVIDUALS                                                X
+EXP504  24 UNALLOTTED CAPITAL AMOUNT                                                        00000 UNALLOTTED CAPITAL AMOUNT - LOCAL FUNDS                                          X
+EXP51   11 PERSONAL SERVICES                                                                01196 INDIRECT COST RCVRY AUX PGM FOR PERSONAL SERVICES                                X
+EXP52   11 PERSONAL SERVICES                                                                01197 INDIRECT COST RECOVERIES-SPONSORED PGMS/PERSONAL                                 X
+EXP524  11 PERSONAL SERVICES                                                                01165 EMPLOYEE RETIRE CONTRIBUTIONS-DEFINED BENEFITS PRG                               X
+EXP525  15 CONTINUOUS CHARGES                                                               01538 BUILDING RENTALS - STATE OWNED                                                   X
+EXP526  15 CONTINUOUS CHARGES                                                               01539 BLDG RENTALS-NON-STATE OWNED FACIL (ADMIN BY DGS)                                X
+EXP53   14 TRANSFER PAYMENTS                                                                01411 INDIVIDUAL CLAIMS & SETTLEMENTS                                                  X
+EXP54   14 TRANSFER PAYMENTS                                                                01412 WORKERS' COMPENSATION AWARDS                                                     X
+EXP544  14 TRANSFER PAYMENTS                                                                01459 TIER III GENERAL FUND DISTRIBUTIONS                                              X
+EXP55   14 TRANSFER PAYMENTS                                                                01413 PREMIUMS                                                                         X
+EXP56   22 EQUIPMENT                                                                        02221 COLLEGE LIBRARY BOOKS                                                            X
+EXP564  14 TRANSFER PAYMENTS                                                                01426 PAYOUTS TO STATE 529 PLANS INVSTMNT MNGEMNT FIRM                                 X
+EXP57   22 EQUIPMENT                                                                        02222 EDUCATIONAL EQUIPMENT                                                            X
+EXP58   22 EQUIPMENT                                                                        02223 EXHIBIT EQUIPMENT                                                                X
+EXP584  12 CONTRACTUAL SERVICES                                                             01292 VITA Service Provider to Out of Scope Agencies                                   X
+EXP59   11 PERSONAL SERVICES                                                                01198 INTER-AGENCY RECOVERIES FOR PERSONAL SERVICES                                    X
+EXP6    11 PERSONAL SERVICES                                                                01120 SALARIES                                                                         X
+EXP60   11 PERSONAL SERVICES                                                                01199 INTRA-AGENCY RECOVERIES FOR PERSONAL SERVICES                                    X
+EXP61   12 CONTRACTUAL SERVICES                                                             01205 SEAT MANAGEMENT SERVICES                                                         X
+EXP62   12 CONTRACTUAL SERVICES                                                             01209 CHARGE CARD PURCHASES OF CONTRACTUAL SERVICES                                    X
+EXP63   12 CONTRACTUAL SERVICES                                                             01211 EXPRESS SERVICES                                                                 X
+EXP64   22 EQUIPMENT                                                                        02224 REFERENCE EQUIPMENT                                                              X
+EXP65   22 EQUIPMENT                                                                        02228 EDUCATIONAL & CULTURAL EQUIPMENT IMPROVEMENTS                                    X
+EXP66   22 EQUIPMENT                                                                        02231 ELECTRONIC EQUIPMENT                                                             X
+EXP67   12 CONTRACTUAL SERVICES                                                             01212 OUTBOUND FREIGHT SERVICES                                                        X
+EXP68   12 CONTRACTUAL SERVICES                                                             01213 MESSENGER SERVICES                                                               X
+EXP69   12 CONTRACTUAL SERVICES                                                             01214 POSTAL SERVICES                                                                  X
+EXP7    13 SUPPLIES AND MATERIALS                                                           01376 LAW ENFORCEMENT SUPPLIES                                                         X
+EXP70   14 TRANSFER PAYMENTS                                                                01414 UNEMPLOYMENT COMPENSATION AWARDS                                                 X
+EXP71   14 TRANSFER PAYMENTS                                                                01415 UNEMPLOYMENT COMPENSATION REIMBURSEMENTS                                         X
+EXP72   14 TRANSFER PAYMENTS                                                                01417 INCOME ASSISTANCE PAYMENTS                                                       X
+EXP73   12 CONTRACTUAL SERVICES                                                             01215 PRINTING SERVICES                                                                X
+EXP74   12 CONTRACTUAL SERVICES                                                             01216 TELECOMMUNICATIONS SERVICES (VITA)                                               X
+EXP75   12 CONTRACTUAL SERVICES                                                             01217 TELECOMMUNICATIONS SERVICES (NON-STATE)                                          X
+EXP76   22 EQUIPMENT                                                                        02232 PHOTOGRAPHIC EQUIPMENT                                                           X
+EXP77   22 EQUIPMENT                                                                        02233 VOICE & DATA TRANSMISSION EQUIPMENT                                              X
+EXP78   22 EQUIPMENT                                                                        02238 ELECTRONIC & PHOTOGRAPHIC EQUIPMENT IMPROVEMENTS                                 X
+EXP79   12 CONTRACTUAL SERVICES                                                             01218 TELECOMMUNICATIONS SERVICES (STATE)                                              X
+EXP8    13 SUPPLIES AND MATERIALS                                                           01377 PHOTOGRAPHIC SUPPLIES                                                            X
+EXP80   12 CONTRACTUAL SERVICES                                                             01219 INBOUND FREIGHT SERVICES                                                         X
+EXP81   14 TRANSFER PAYMENTS                                                                01420 EDUCATIONAL AND TRAINING ASSISTANCE                                              X
+EXP82   14 TRANSFER PAYMENTS                                                                01430 GRANTS AND AIDS TO LOCAL GOVERNMENTS                                             X
+EXP83   14 TRANSFER PAYMENTS                                                                01440 PAYMENTS ON BEHALF OF LOCAL GOVERNMENTS                                          X
+EXP84   14 TRANSFER PAYMENTS                                                                01450 GRANTS TO OTHER ORGANIZATIONS                                                    X
+EXP85   14 TRANSFER PAYMENTS                                                                01460 PAYMENTS FOR LOCAL EMPLOYEES HEALTH INSURANCE PROGRAMS                           X
+EXP86   14 TRANSFER PAYMENTS                                                                01480 INDIRECT COST RECOVERIES                                                         X
+EXP87   15 CONTINUOUS CHARGES                                                               01500 CONTINUOUS CHARGES                                                               X
+EXP88   15 CONTINUOUS CHARGES                                                               01510 INSURANCE-FIXED ASSETS                                                           X
+EXP89   15 CONTINUOUS CHARGES                                                               01520 CAPITAL LEASE PAYMENTS                                                           X
+EXP9    11 PERSONAL SERVICES                                                                01130 SPECIAL PAYMENTS                                                                 X
+EXP90   15 CONTINUOUS CHARGES                                                               01530 OPERATING LEASE PAYMENTS                                                         X
+EXP91   15 CONTINUOUS CHARGES                                                               01540 SERVICE CHARGES                                                                  X
+EXP92   15 CONTINUOUS CHARGES                                                               01550 INSURANCE-OPERATIONS                                                             X
+EXP93   12 CONTRACTUAL SERVICES                                                             01221 ORGANIZATION MEMBERSHIPS                                                         X
+EXP94   12 CONTRACTUAL SERVICES                                                             01222 PUBLICATION SUBSCRIPTIONS                                                        X
+EXP95   12 CONTRACTUAL SERVICES                                                             01224 EMPLOYEE TRAINING COURSES/WORKSHOPS/CONFERENCES                                  X
+EXP96   15 CONTINUOUS CHARGES                                                               01560 INSTALLMENT PURCHASES                                                            X
+EXP97   15 CONTINUOUS CHARGES                                                               01570 PAYMENTS FOR STATE EMPLOYEE HEALTH INSURANCE PROGRAMS                            X
+EXP98   21 PROPERTY IMPROVEMENTS                                                            02100 PROPERTY AND IMPROVEMENTS                                                        X
+EXP99   12 CONTRACTUAL SERVICES                                                             01225 EMPLOYEE TUITION REIMBURSEMENT                                                   X

@@ -1,0 +1,2 @@
+POFileName,PaymentFileName,Contents,RecFormat,Delimiter,FileCount,FileYear,FileQtr,RecCount,ControlAmtSum
+VA_opendata_FY2003_small.txt,FY03q1exp_small.txt,E,A,T,1,2003,1,0,0
