@@ -1,0 +1,63 @@
+      * (c) Copyright IBM Corporation 2020.  
+      *     Copyright Contributors to the GenevaERS Project.*
+      * SPDX-License-Identifier: Apache-2.0
+      *
+      * ************************************************************
+      *                                                                           
+      *   Licensed under the Apache License, Version 2.0 (the
+      *  "License");          
+      *   You may not use this file except in compliance with
+      *   the License. You may obtain a copy of the License at                                 
+      *                                                                           
+      *     http://www.apache.org/licenses/LICENSE-2.0                            
+      *                                                                           
+      *   Unless required by applicable law or agreed to in
+      *   writing, software distributed under the License
+      *   is distributed on an "AS IS" BASIS,
+      *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+      *   either express or implied. See the License for
+      *   the specific language governing permissions and
+      *   limitations under the License.                                          
+      * ************************************************************
+      ******************************************************************
+      *   VA - BNNNBAL - BALANCE
+      ******************************************************************
+      *
+       01  VBB-BALANCE-REC.
+           05  VBB-INST-ID                     PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VBB-BAL-ID                      PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VBB-LEDGER                      PIC  X(07).
+           05  FILLER                          PIC  X(01).
+           05  VBB-JRNL-TYPE                   PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-BOOK-CODE                   PIC  X(14).
+           05  FILLER                          PIC  X(01).
+           05  VBB-LEGAL-ENTITY                PIC  X(04).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CENTER-ID                   PIC  X(05).
+           05  FILLER                          PIC  X(01).
+           05  VBB-PROJECT-ID                  PIC  X(05).
+           05  FILLER                          PIC  X(01).
+           05  VBB-PRODUCT                     PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VBB-NOMINAL-ACNT                PIC  X(06).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-CODE-SRC               PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-TYPE-CD                PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-CODE-TRGT              PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-TYPE-CD-TRGT           PIC  X(07).
+           05  FILLER                          PIC  X(01).
+           05  VBB-FISC-YEAR                   PIC  X(04).
+           05  FILLER                          PIC  X(01).
+           05  VBB-TRAN-AMT                    PIC  X(12).
+           05  FILLER                          PIC  X(01).
+           05  VBB-MOVEMENT-FLAG               PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VBB-UOM                         PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VBB-STAT-AMT                    PIC  X(01).
