@@ -1,0 +1,4 @@
+TRN_ID,TRN_DEPCODE,TRN_DESCRIP,TRN_TYPE,TRN_DATE,TRN_COMPANY,TRN_AMOUNT
+0001,DowntownB,'Monthly Mortgage Payment',mortpay,20141021,01,-782.00
+0002,MainOff,"Reserve Expense",resvesp,20141101,01,12.31
+0003,MainOff,"Reserve Expense",lgapresv,20141101,01,1.21
