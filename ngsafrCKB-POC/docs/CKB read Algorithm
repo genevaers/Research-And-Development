@@ -1,0 +1,52 @@
+The following are outlines for CKB Read processing algorithm:
+
+Read configuration file with all files to be compared and loaded
+Open each file in configuration file
+Initial Read of a single record from each file listed in the configuration collection
+Initialize comparison attributes in the extended configuration collection with keys of read records
+(if a file does not include an effective date field, per the configuration file, initialize those fields to high values?)
+Initialize output collection(OC) (based upon passed parameter to program of amount of memory to take)
+
+While each file <> EOF
+    Sort configuration collection by key to find lowest common key
+    Save the selected key for future comparisons
+    Loop until saved key not found in configuration file
+        Search configuration collection for saved key with lowest effective date
+        If Output Collection(OC) size exceeded
+            Abort run, error message OR allocate more memory for OC
+        End if
+        Load record for that key to output collection(OC)
+        Read that file next record and load to configuration collection
+    End Loop
+
+    Link to View LogicTable (in the short run, do a println of the dumpped buffer)
+    If file_real_time_flg for this group of files <> Real Time
+        Clear Collection of Prior Data
+    Else
+        Release unused collection memory
+        Allocate new collections  for a next set of data....
+Loop
+
+
+
+Questions to consider:
+1) Prefixes need to specify partition data is from?  Is there another approach to this? Particularly as we
+are holding each record type in its own collection.
+1a) I think we want all records of a particular type in one collection, to allow set functions, including
+lookups (date effective ones) to them.
+2) Do we put the partition on the front of the record?  The Partition ID is important for views that use them
+to maintain the output files.  And we don't want to store the data, when the file tells us
+2a) Effectively we are talking about file charateristics, not data.  Perhaps our collection should have something
+more like that.
+
+3) The MergeParms file allows identifying multiple partitions of a single type by being on the same row of data,
+do we want to make that more readable?
+3a) I think the answer here is yes; the file today is pretty unreadable.  Making it more understandable is a good idea
+
+4) Do we want to move towards a Logic Table for MergeParm processing?
+5) Why would that be beneficial?  Really, the more important point is to allow view output buffers to be CKB inputs
+6) We do want to have Control Break Logic Tables though; if so, then why have two approaches to CKB?
+7) Answer is that CKB is unique because it is control break on multiple files, not just one
+It's a sync point in processing across multiple files/buffers
+
+8) There are multiple exit points in CKB; we do want ultimate to execute threads of views in those points

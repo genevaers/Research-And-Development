@@ -1,0 +1,65 @@
+<!-- (c) Copyright IBM Corporation. 2019-->
+<!-- SPDX-License-Identifier: Apache-2.0-->
+<!-- By Kip Twitchell-->
+
+@*
+* This template takes a three arguments, a String containing a
+* message to display, the image to be displayed
+* and an AssetsFinder to locate static assets.
+*@
+@(message: String, image: String)(implicit assetsFinder: AssetsFinder)
+
+@*
+* Call the `main` template with two arguments. The first
+* argument is a `String` with the title of the page, the second
+* argument is an `Html` object containing the body of the page.
+*@
+@main("Universal Ledger Mockups", assetsFinder) {
+
+
+@defining(play.core.PlayVersion.current) { version =>
+
+<section id="image">
+
+
+</section>
+
+<div id="content" class="wrapper doc" >
+
+    <article>
+        <p>
+            <img style='vertical-align:left;' src='/assets/images/@image'></img>
+        </p>
+    </article>
+
+    <aside>
+        <h3>Go Home</h3>
+            <ul>
+
+                <li><a href="@routes.HomeController.index">Home</a></li>
+
+            </ul>
+            <h3>Initial Set-up</h3>
+            <ul>
+                <li><a href="@routes.MockupsController.mockups("ul_1_login.png")">Login Definition</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_2_fields.png")">Field Definition</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_3_ledgers.png")">Ledger Definition</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_4_participants.png")">Participant Definition</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_5_shared_fields.png")">Shared Field Definition</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_6_posted_fields.png")">Posted Field Definition</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_7_rules.png")">Posting Rules Definition</a></li>
+            </ul>
+            <h3>Initial Processes</h3>
+            <ul>
+                <li><a href="@routes.MockupsController.mockups("ul_8_file_list.png")">Processing File Selection</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_9_trans_import.png")">Transaction Import</a></li>
+                <li><a href="@routes.MockupsController.mockups("ul_10_involve_party_results.png")">Involved Party Identification</a></li>
+            </ul>
+    </aside>
+
+</div>
+
+
+}
+
+}
