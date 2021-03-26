@@ -1,0 +1,151 @@
+*.class
+*.log
+*.iml
+.idea/*.*
+
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/codeStyles/Project.xml
+initTest/.idea
+
+# sbt
+dist/*
+target
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.history
+.cache
+.lib/
+
+# Generated files
+.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# Gradle and Maven with auto-import
+# When using Gradle or Maven with auto-import, you should exclude module files,
+# since they will be recreated, and may cause churn.  Uncomment if using
+# auto-import.
+# .idea/modules.xml
+# .idea/*.iml
+# .idea/modules
+
+# Vagrant
+.vagrant
+
+# IntelliJ
+out/
+
+# Uncompressed VA Data Files
+data/FY03q1exp.txt
+data/FY03q2exp.txt
+data/FY03q3exp.txt
+data/FY03q4exp.txt
+data/FY03rev.txt
+data/FY04q1exp.txt
+data/FY04q2exp.txt
+data/FY04q3exp.txt
+data/FY04q4exp.txt
+data/FY04rev.txt
+data/FY05q1exp.txt
+data/FY05q2exp.txt
+data/FY05q3exp.txt
+data/FY05q4exp.txt
+data/FY05rev.txt
+data/FY06q1exp.txt
+data/FY06q2exp.txt
+data/FY06q3exp.txt
+data/FY06q4exp.txt
+data/FY06rev.txt
+data/FY07q1exp.txt
+data/FY07q2exp.txt
+data/FY07q3exp.txt
+data/FY07q4exp.txt
+data/FY07rev.txt
+data/FY08q1exp.txt
+data/FY08q2exp.txt
+data/FY08q3exp.txt
+data/FY08q4exp.txt
+data/FY08rev.txt
+data/FY09q1exp.txt
+data/FY09q2exp.txt
+data/FY09q3exp.txt
+data/FY09q4exp.txt
+data/FY09rev.txt
+data/FY10q1exp.txt
+data/FY10q2exp.txt
+data/FY10q3exp.txt
+data/FY10q4exp.txt
+data/FY10rev.txt
+data/FY11q1exp.txt
+data/FY11q2exp.txt
+data/FY11q3exp.txt
+data/FY11q4exp.txt
+data/FY11rev.txt
+data/FY12q1exp.txt
+data/FY12q2exp.txt
+data/FY12q3exp.txt
+data/FY12q4exp.txt
+data/FY12rev.txt
+data/FY13q1exp.txt
+data/FY13q2exp.txt
+data/FY13q3exp.txt
+data/FY13q4exp.txt
+data/FY13rev.txt
+data/FY14q1exp.csv
+data/FY14q2exp.csv
+data/FY14q3exp.csv
+data/FY14q4exp.csv
+data/FY14rev.csv
+data/FY15q1exp.csv
+data/FY15q2exp.csv
+data/FY15q3exp.csv
+data/FY15q4exp.csv
+data/FY15rev.csv
+data/FY16q1exp.csv
+data/FY16q2exp.csv
+data/FY16q3exp.csv
+data/FY16q4exp.csv
+data/FY16rev.csv
+data/list.*
+
+# Uncompressed VA Data output Files
+data/output/*.*
+
+# Others
+temp*.*
+~$*.doc*
+~$*.ppt*
+~$*.xls*
+*.timestamp
+
+
+play/.mergify.yml
+play/.mergify.yml
+play/.travis.yml
+play/test/*
+play/test/BrowserSpec.scala
+play/test/FunctionalSpec.scala
+play/test/UnitSpec.scala
+
+SAFRonSpark/.idea
+*.*OUTPUTDIR*
+SAFRonSpark/data/InitEnv/OUTPUTDIR
+SAFRonSpark/data/InitEnv/MacVsRunSAFRonSpark.sh

@@ -1,0 +1,12 @@
+      ******************************************************************
+      *   VA - U1NNQNEXP - VENDOR MASTER UPDATE TRANS
+      ******************************************************************
+      *
+       01  VU1-VENDOR-REC.
+           05  VU1-INST-ID                     PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VU1-HOLDER-NAME                 PIC  X(40).
+           05  FILLER                          PIC  X(01).
+           05  VU1-TYPE-ID                     PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VU1-DATE                        PIC  X(10).

@@ -1,0 +1,165 @@
+Historic SAFR Integration:
+
+    In the short run, we will interface with the existing SAFR reference file build processes.
+    Historic SAFR has a preprocess that reads reference files, (targets of joins), and puts them
+    into a specific format, called the RED format, Reference Extracted Data.  Additionally, it also builds
+    a single record for each reference file that describes the key length for that reference file
+    and gives the number of records in the refernce file.  This is called the REH file
+    or Reference Extracted Header file
+
+    During view process initialization, SAFR opens the REH file and for each record in it
+    opens the corresponding RED file containing the DATA for that reference file (as opposed to the
+    header record).  It then loads the RED records into memory for use in Join Processing
+    before it starts processing the views
+
+    Here is a sample historic REH File
+
+
+         BROWSE    GEBT.RTC20420.STFM.REH                   Line 0000000000 Col 001 080
+        ----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8
+         ------------------------------------------------------------------------------
+                ..{k            <Reserved space>........................................
+        4444444400C94444444444444D8A89A884A988860000000000000000000000000000000000000000
+        000000000102000000000000C95259554027135E0000000000000000000000000000000000000000
+         ------------------------------------------------------------------------------
+                ...Õ            <Reserved space>........................................
+        44444444000E4444444444444D8A89A884A988860000000000000000000000000000000000000000
+        00000000004F000000000000C95259554027135E0000000000000000000000000000000000000000
+         ------------------------------------------------------------------------------
+                ...b            <Reserved space>........................................
+        4444444400284444444444444D8A89A884A988860000000000000000000000000000000000000000
+        000000000052000000000000C95259554027135E0000000000000000000000000000000000000000
+         ------------------------------------------------------------------------------
+    Here is the record strucure (in ASM) for the REH:
+
+    *        LOOK-UP TABLE DATA HEADER RECORD DEFINITION (REH)
+    *
+    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+    *
+    TBLHEADR DSECT                 TABLE   DATA   HEADER RECORD
+    *
+    TBFILEID DS    FL04            FILE    ID
+    TBRECID  DS    FL04            LOGICAL RECORD ID
+    TBRECCNT DS    FL04            RECORD  COUNT
+    TBRECLEN DS    HL02            RECORD  LENGTH
+    TBKEYOFF DS    HL02            KEY     OFFSET
+    TBKEYLEN DS    HL02            KEY     LENGTH
+    TBXFILE# DS   0HL02            "JLT"   EXTRACT  FILE NUMBER
+    TBDSAMRD DS    CL01            "DSAM"    READ INDICATOR (VERSION 3)
+    TBEFFIND DS    CL01            EFFECTIVE DATE INDICATOR (VERSION 3)
+    TBABOVET DS   0FL04            ABOVE   THRESHOLD RECORD  COUNT (V3)
+    TBREDVER DS    CL01            "RED"   VERSION  (SET BY MR96)
+    TBEFFDAT DS    XL01            EFFECTIVE DATE OPTION CODE
+    TBADJPOS DS    XL01            ADJUST  STARTING POSITIONS (N/Y)
+    TBTXTFLG DS    XL01            TEXT DATA FLAG
+    TBBELOWT DS    FL04            BELOW   THRESHOLD RECORD  COUNT (V3)
+    TBV3FILE DS    FL04            V4 FILEID IN  V3  REH
+    TBV3LRID DS    FL04            V4 LRID   IN  V3  REH
+    TBrefmem ds    fd              Memory needed for all refernce data
+    *
+
+
+    Here is a companion RED...it is not for this same REH, but gives a sense of what the
+    Data will look like in an RED
+
+     BROWSE    GEBT.R19299.FILE003.RED                  Line 0000000000 Col 001 080
+    ----+----1----+----2----+----3----+----4----+----5----+----6----+----7----+----8
+     ------------------------------------------------------------------------------
+    ....................¬....¬....¬....¬....¬....*....*....*....*1234512345123451234
+    0000000000000000001350013500135001350013500135001350013500135FFFFFFFFFFFFFFFFFFF
+    00000000000000000024F0024F0024F0024F0024F0024C0024C0024C0024C1234512345123451234
+     ------------------------------------------------------------------------------
+    ....................¬....¬....¬....¬....¬....)....)....)....)1234512345123451234
+    0000000000000000002350023500135001350013500135001350013500135FFFFFFFFFFFFFFFFFFF
+    00000000000000000024F0024F0024F0024F0024F0024D0024D0024D0024D1234512345123451234
+     ------------------------------------------------------------------------------
+
+     The main feature of this record is reserving 16 bytes (I beleive) at the front of the record
+     for the binary pointers, forwards and backwards, for the search processes.  It also has
+     the key values for each reference file record placed immediately after these blank 16 bytes.
+     So, in effect, if the key to a reference file in the original file is in position 40 - 45,
+     that data will be moved to position 17-22.
+
+     It would be much easier if we did not have to force that kind of file structure on the
+     RED, and we could simply use data in original positions for the keys.
+
+     In the longer term, We will want to be able to have Views generate RED files dynamically;
+     such that the REDs do not have to be written to disk in one step, and read in another.
+
+     Also, not that in historic SAFR, the RED's had to be in sorted order by key before
+     Being read in the preprocess; we will want to be able to use Sort-Control Break views
+     that will sort the files.
+
+     I'm not sure how we will do memory management on the reference files.  Todays' REH tells
+     us how many records need to be allocated in memory; I guess a sort process gives us that
+     sort of count as well.  So we could make an REH of sorts perhaps.  But we don't want to have to
+     require a sort to get the REH.
+
+     it would be nice if did not have to move data from the preprocess view output for use in the binary search.
+     Maybe that is a step too far in the short term though; considering a simple move might be easier.
+     It would allow for the build of the binary search paths at that time.
+
+     OK, so then in the short run, thinking of an REH like file, and corresponding RED
+     for each reference file is the right starting point.  And we will try to not force and RED
+     structure, but use the native data structure instead.
+
+Sample Data Application
+    In the same set of views below, we are going to
+    1 - have two views which read the transaction records from the CKB
+    2 - have one view which reads the balance records from the CKB
+    3 - Later we will add another view which reads both transactions and balnces from the CKB
+
+
+
+Initialize Processing
+    [These steps are performed before CKB loop processing is started]
+    Open REH file
+    For Each REH Record
+        Open corresponding RED File (not sure how we are going to make this linkage)
+        For each RED Record
+            Load Reference Data Files (read all records into memory--this is the essence of a simple join)
+            Perform forward pointer and backwards pointer calculations
+        Loop RED
+    Loop REH
+    Open View Logic Table which gives View Logic Specifications (assuming we are doing rules
+    processing)
+    Generate and compile view logic.
+
+View Processing
+    [This section of code is linked to and processed after each CKB buffer dump.]
+
+    For each record in the collection for the specific view
+
+        [views that process transactions against the transaction collection, balance views against
+        balance records etc.]
+
+        [View 1 Logic, aggregate all transactions, summing ammount by Agency Name]
+        Select Agency Key field from transaction
+        Search Agency Table for that key
+        Format Extract Record with Agency Name (from Agency Table) and amount
+        [Historic SAFR does the aggregation by Agency Name in another phase...
+        for purposes of this sprint, simply println formatted records]
+
+        [View 2 Logic, aggregate all transactions, summing by Object Name
+        Select Object Key field from transaction
+        Search Object Table for that key
+        Format Extract Record with Object Name (from Object Table) and amount
+        [Println formatted extract record]
+    Loop next Transaction record in CKB Collection
+    [Note that in this case View 1 and View 2 could be executed in parallel,
+    That can be done in a later sprint, but perhaps consider how to design for it]
+
+    For each balance record in the CKB Collection
+        [View 3 Logic, aggregate Balances by combination of Agency and Object Key]
+        Select Agency Key field from Balance
+        Search Agency Table for that key
+        Select Object Key field from Balance
+        Search Object Table for that key
+        Format Extract record with Agency Name, Object Name, and Amount
+        Println formatted extract record
+    Loop next Balance record in CKB Collection
+    [Note that in this instance each thread can be executed in Parallel]
+End of View Processing, return to CKB Processing
+
+
+

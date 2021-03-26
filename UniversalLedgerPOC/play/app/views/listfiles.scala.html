@@ -1,0 +1,61 @@
+<!-- (c) Copyright IBM Corporation. 2019-->
+<!-- SPDX-License-Identifier: Apache-2.0-->
+<!-- By Kip Twitchell-->
+
+@import datatypes.FileAttributes
+
+@(message: String, filelist: List[FileAttributes])(implicit request: MessagesRequestHeader, assetsFinder: AssetsFinder)
+
+@main(message, assetsFinder) {
+
+    <section id="top">
+        <div class="wrapper">
+            <h1><a href="https://ledgerlearning.com/about/">@message</a></h1>
+
+        </div>
+    </section>
+
+    <div id="content" class="wrapper doc">
+        <article>
+
+            <ul id="Files"></ul>
+    <h1>Full List of Files on Server</h1>
+
+            <table>
+                <tr>
+                    <th><b>File Name</b></th>
+                    <th><b>Creation Time</b></th>
+                    <th><b>Dir</b></th>
+                    <th><b>File</b></th>
+                    <th><b>Access</b></th>
+                    <th><b>Mod</b></th>
+                    <th><b>Size</b></th>
+                </tr>
+                @for(file <- filelist){
+                <tr>
+                    <td><a href="@routes.StartProcessController.startprocess(file.fileName)">@file.fileName</a></td>
+                    <td>@file.creationTime</td>
+                    <td>@file.isDirectory</td>
+                    <td>@file.isRegularFile</td>
+                    <td>@file.lastAccessTime</td>
+                    <td>@file.lastModifiedTime</td>
+                    <td>@file.size</td>
+                </tr>
+                }
+            </table>
+
+
+        </article>
+
+        <aside>
+            <h3>Go Home</h3>
+            <ul>
+
+                <li><a href="@routes.HomeController.index">Home</a></li>
+
+            </ul>
+            @aside()
+
+        </aside>
+    </div>
+}

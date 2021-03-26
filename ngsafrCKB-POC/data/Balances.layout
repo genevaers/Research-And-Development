@@ -1,0 +1,42 @@
+      ******************************************************************
+      *   VA - BNNNBAL - BALANCE
+      ******************************************************************
+      *
+       01  VBB-BALANCE-REC.
+           05  VBB-INST-ID                     PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VBB-BAL-ID                      PIC  X(10).
+           05  FILLER                          PIC  X(01).
+           05  VBB-LEDGER                      PIC  X(07).
+           05  FILLER                          PIC  X(01).
+           05  VBB-JRNL-TYPE                   PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-BOOK-CODE                   PIC  X(14).
+           05  FILLER                          PIC  X(01).
+           05  VBB-LEGAL-ENTITY                PIC  X(04).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CENTER-ID                   PIC  X(05).
+           05  FILLER                          PIC  X(01).
+           05  VBB-PROJECT-ID                  PIC  X(05).
+           05  FILLER                          PIC  X(01).
+           05  VBB-PRODUCT                     PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VBB-NOMINAL-ACNT                PIC  X(06).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-CODE-SRC               PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-TYPE-CD                PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-CODE-TRGT              PIC  X(03).
+           05  FILLER                          PIC  X(01).
+           05  VBB-CURR-TYPE-CD-TRGT           PIC  X(07).
+           05  FILLER                          PIC  X(01).
+           05  VBB-FISC-YEAR                   PIC  X(04).
+           05  FILLER                          PIC  X(01).
+           05  VBB-TRAN-AMT                    PIC  X(12).
+           05  FILLER                          PIC  X(01).
+           05  VBB-MOVEMENT-FLAG               PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VBB-UOM                         PIC  X(01).
+           05  FILLER                          PIC  X(01).
+           05  VBB-STAT-AMT                    PIC  X(01).

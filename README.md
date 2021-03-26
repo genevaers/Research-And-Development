@@ -1,83 +1,19 @@
-# spark-poc
+# IBMSAFR-Spark
 
-This project will test intersections and interactions between GenevaERS and Apache Spark. When complete, this repo will include the following:
+This repository contains two POC projects conducted starting in 2015 (SAFR on Spark), and ngsafr, in 2018.  The SAFR on Spark POC was then included in the Unviversal Ledger POC in the Spring of 2019.
 
-- An overview of the POC (here in this document)
-- Source data assets, including links to publicly available data files and scripts to convert them into appropriate formats
-- Spark code to produce a baseline output
-- Spark code leveraging jzos, the z/OS java IO routines
-- Spark code leveraging genlib, GenevaERS encapsulated utlities to perform GenevaERS function in a stand alone mode
-- GenevaERS XML defining GenevaERS processes to produce the same outputs.
+These POC provide source code and other materials relevant to the GenevaERS integration with Spark, and thus are contributed by IBM to the GenevaERS project.  
 
-This project has been built with the hope that others can download, run, and analyze the outputs.  This will give a sense of GenevaERS capabilities, and how they compare to the more well-known Apache Spark capabilities.  
+Learn more about GenevaERS at [GenevaERS Training](https://genevaers.org/training-videos/).  Join in the conversation at the [#GenevaERS channel on Open Mainframe Project Slack](https://slack.openmainframeproject.org). After requesting access with the above link, look for the [GenevaERS channel](https://openmainframeproject.slack.com/archives/C01711931GA)
 
-Here is the framework being considered for the next generation GenevaERS.
-![Slide3](https://user-images.githubusercontent.com/29467627/88852211-95280300-d1b3-11ea-8eec-f106e61bcefa.jpeg)
+This repo is managed according to the policies listed in the [GenevaERS Community Repo](https://github.com/genevaers/community)
 
-This outlines the Spark POC approach
-![Slide4](https://user-images.githubusercontent.com/29467627/88852298-b4269500-d1b3-11ea-857a-8998ae55b04c.jpeg)
+## Contributing
+Anyone can contribute to the GenevaERS project - learn more at [CONTRIBUTING.md](https://github.com/genevaers/community/blob/master/CONTRIBUTING.md)
 
-And this starts to describe what will be learned from this POC
-![GenevaERS and Spark POC](https://user-images.githubusercontent.com/29467627/88857602-3915ac80-d1bc-11ea-8905-a8041c566a2e.jpg)
-
-More information about the initiative can be found at the [GenevaERS.org website](https://genevaers.org/2020/07/29/organize-and-commit-to-the-spark-genevaers-poc/) activity entry.
-
-The plan for the POC is as follows:
-
-Week Ending-Tasks to be complete as of end of week
-
-8/4/20
-
-  [ ] Maven build of Spark jzos on z/OS
-
-  [ ] Initial design of outputs
-
-  [ ] Data design complete, ASCII, ftp, zip, etc.
-
-8/11/20
-
-  [ ] Have UR20 working under Spark
-
-  [ ] Final design of outputs to be produced
-
-  [ ] Sample data ready for use
-
-8/18/20
-
-  [ ] Spark code complete
-
-  [ ] UR45 conversion complete
-
-  [ ] Full data conversion with partiitioning
-
-  [ ] GenevaERS views built and run
-
-8/25/20
-
-  [ ] Initial runs on cloud, and z/OS
-
-  [ ] Repartitioning, performance tuning
-
-  [ ] Execution of following configs
-	  - [ ] Spark on Cloud
-	  - [ ] Spark/Jzos
-	  - [ ] Spark UR20
-	  - [ ] Spark UR45
-	  - [ ] GenevaERS
-
-9/1/20
-
-  [ ] Execution, tuning, testing, rerun
-
-9/8/20
-
-  [ ] End of technical work, build presentation
-
-9/15/20
-
-  [ ] OMP Presentation
+## Governance
+GenevaERS is a project hosted by the [Open Mainframe Project](https://openmainframeproject.org). This project has established it's own processes for managing day-to-day processes in the project at [GOVERNANCE.md](https://github.com/genevaers/community/blob/master/GOVERNANCE.md).
 
 
-Data files will be created by:
-  [ ] Scripts in repo with addin python program will create partitioned datasets with a serial number on the data for partitioning. 
-  [ ] These files will be ascii utf-8 and possibly tarfiles to be uploadable to mainframe for further testing. 
+## Reporting Issues
+To report a problem, you can open an [issue](https://github.com/genevaers/gvblib/issues) in repository against a specific workflow. If the issue is sensitive in nature or a security related issue, please do not report in the issue tracker but instead email  genevaers-private@lists.openmainframeproject.org.
