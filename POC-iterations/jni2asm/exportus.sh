@@ -1,0 +1,8 @@
+export STEPLIB="CBC.SCCNCMP"
+export MAKESTARTUP=$HOME/csi/startup.mk
+export _C89_SSUFFIX=s
+export _C89_WORK_SPACE="(64000,(60,60))"
+export _C89_SUSRLIB="$LOGNAME.PRIVATE.MACLIB"
+export _CC_CVERSION=0x41070000
+export _CC_PVERSION=0x41070000
+export PATH=$PATH:/Java/J8.0_64/bin
