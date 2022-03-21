@@ -31,7 +31,7 @@ object initFiles {
     val driver = "org.postgresql.Driver"
     val url = "jdbc:postgresql://ulserver/universal_ledger"
     val username = "vagrant"
-    val password = "univledger"
+    // val password = "univledger"
 
     // there's probably a better way to do this
     var connection:Connection = null
