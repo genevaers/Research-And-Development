@@ -40,6 +40,7 @@ HOST     DS    0H
 * -----------------------------------------------------------
 SYSPLEX  DS    0H
          LLGT  R2,CVTPTR               R1 -> CVT
+         LLGT  R2,CVTECVT-CVT(,R2)     R2 -> ECVT
          MVC   0(L'ECVTSPLX,R9),ECVTSPLX-ECVT(R2)   Sysplex
          B     EXIT0                   And Exit
 * ----------------------------------------------------
