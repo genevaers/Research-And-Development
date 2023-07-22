@@ -1,0 +1,75 @@
+*
+*        DYNAMIC WORK AREA
+*
+DYNAREA  DSECT
+*
+         IHASAVER DSECT=NO,SAVER=NO,SAVF4SA=YES,TITLE=NO
+*
+EYEBALL  DS    CL8
+         DS    0F
+WKPRINT  DS    XL131           PRINT LINE
+WKJFLAG  DS    XL1             JAVAFLAG
+         DS   0F
+WKREENT  DS    XL256           REENTRANT WORKAREA/PARMLIST
+WKDBLWK  DS    XL08            DOUBLE WORK WORKAREA
+WKDDNAME DS    CL8
+WKRETC   DS    F
+GVBMR95E DS    A
+WKTOKNRC DS    A                  NAME/TOKEN  SERVICES RETURN CODE
+WKTOKNAM DS    XL16               TOKEN NAME
+WKTOKN   DS   0XL16               TOKEN VALUE
+WKTOKNCTT DS   A                  A(CTT)
+         DS    A
+         DS    A
+         DS    A
+*
+WKATCB   DS    A                  TCB address
+WKICTR   DS    H                  CTR idx this subtask is using
+         DS    H
+         DS    A
+DYNLEN   EQU   *-DYNAREA                 DYNAMIC AREA LENGTH
+*
+*        COMMUNICATIONS TENSOR TABLE DSECTS
+*
+CTTAREA  DSECT
+CTTEYE   DS    CL8
+CTTACTR  DS    A               ADDR CTRAREA
+CTTNUME  DS    H               NUMBER OF ENTRIES
+CTTACTIV DS    X
+         DS    X
+CTTTECB  DS    F               TERMINATION ECB
+CTTGECB  DS    F               GO ECB
+CTTGECB2 DS    F               Acknowledge GO
+         DS    XL4
+CTTLEN   EQU   *-CTTAREA
+*
+*
+CTRAREA  DSECT
+CTRECB1  DS    F               ECB JAVA WORKER WAITS ON
+CTRECB2  DS    F               ECB ASM  WORKER WAITS ON
+CTRCSWRD DS    F               CS CONTROL WORD
+CTRREQ   DS    CL4             REQUEST FUNCTION
+CTRACLSS DS    D               ADDRESS OF CLASS FIELD (A32)
+CTRAMETH DS    D               ADDRESS OF METHOD FIELD (A32)
+CTRLENIN DS    D               LENGTH INPUT AREA
+CTRLENOUT DS   D               LENGTH OUTPUT AREA
+CTRMEMIN DS    D               ADDR INPUT AREA
+CTRMEMOUT DS   D               ADDR OUTPUT AREA
+CTRTHRDN DS    H
+         DS    XL14
+CTRLEN   EQU   *-CTRAREA
+*
+*
+PARMSTR  DSECT
+PAFUN    DS    CL8
+PAOPT    DS    CL8
+PACLASS  DS    CL32
+PAMETHOD DS    CL32
+PALEN1   DS    D
+PALEN2   DS    D
+PAADDR1  DS    D
+PAADDR2  DS    D
+PARETC   DS    D
+PAANCHR  DS    D
+PARMLEN  EQU   *-PARMSTR
+*

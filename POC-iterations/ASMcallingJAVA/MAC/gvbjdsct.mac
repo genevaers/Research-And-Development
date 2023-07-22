@@ -1,0 +1,45 @@
+*
+*        COMMUNICATIONS TENSOR TABLE DSECTS
+*
+CTTAREA  DSECT               ==HEADER
+CTTEYE   DS    CL8
+CTTACTR  DS    A               ADDR CTRAREA
+CTTNUME  DS    H               NUMBER OF ENTRIES
+CTTACTIV DS    X
+         DS    X
+CTTTECB  DS    F               TERMINATION ECB
+CTTGECB  DS    F               GO ECB
+CTTGECB2 DS    F               Acknowledge GO
+         DS    XL4
+CTTLEN   EQU   *-CTTAREA
+*
+*
+CTRAREA  DSECT               ==TABLE ENTRY
+CTRECB1  DS    F               ECB JAVA WORKER WAITS ON
+CTRECB2  DS    F               ECB ASM  WORKER WAITS ON
+CTRCSWRD DS    F               CS CONTROL WORD
+CTRREQ   DS    CL4             REQUEST FUNCTION
+CTRACLSS DS    D               ADDRESS OF CLASS FIELD (A32)
+CTRAMETH DS    D               ADDRESS OF METHOD FIELD (A32)
+CTRLENIN DS    D               LENGTH INPUT AREA
+CTRLENOUT DS   D               LENGTH OUTPUT AREA
+CTRMEMIN DS    D               ADDR INPUT AREA
+CTRMEMOUT DS   D               ADDR OUTPUT AREA
+CTRTHRDN DS    H
+         DS    XL14
+CTRLEN   EQU   *-CTRAREA
+*
+*
+PARMSTR  DSECT               ==Internal Parameter Structure
+PAFUN    DS    CL8             when communicating with Tensor table
+PAOPT    DS    CL8
+PACLASS  DS    CL32
+PAMETHOD DS    CL32
+PALEN1   DS    D
+PALEN2   DS    D
+PAADDR1  DS    D
+PAADDR2  DS    D
+PARETC   DS    D
+PAANCHR  DS    D
+PARMLEN  EQU   *-PARMSTR
+*
