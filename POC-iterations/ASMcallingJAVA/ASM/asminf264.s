@@ -1,9 +1,9 @@
-         TITLE 'GVBTSUB - subtask and memory testing'                           
+         TITLE 'GVBJINF - interface to ASM service routines'    
 ********************************************************************#VB         
 *   SAFR                                                              *         
 ********************************************************************#VE         
 *                                                                               
-* (c) Copyright IBM Corporation 2008.                                           
+* (c) Copyright IBM Corporation 2023.                                           
 *     Copyright Contributors to the GenevaERS Project.                          
 * SPDX-License-Identifier: Apache-2.0                                           
 *                                                                               
@@ -22,11 +22,10 @@
 *   See the License for the specific language governing permissions and         
 *   limitations under the License.                                              
 ***********************************************************************         
-*============================================================                   
 *                                                                               
-* ASMINF - Provide z/OS Host or Sysplex Name                                    
+* ASMINF64 - JNI Interface to ASM service routines (64 bit)                                    
 *                                                                               
-*============================================================                   
+***********************************************************************         
          YREGS                                                                  
 *                                                                               
 ASMINF64 CELQPRLG PARMWRDS=1,BASEREG=R10,EXPORT=YES                             
