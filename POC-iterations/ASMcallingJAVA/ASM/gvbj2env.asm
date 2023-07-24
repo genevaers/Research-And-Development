@@ -1,7 +1,7 @@
          TITLE 'GVBJ2ENV - ASM stub for calling Java'
 **********************************************************************
 *
-* (C) COPYRIGHT IBM CORPORATION 2009, 2010.
+* (C) COPYRIGHT IBM CORPORATION 2023.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -20,13 +20,14 @@
 *  See the License for the specific language governing permissions
 *  and limitations under the License.
 *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 ***********************************************************************
 *                                                                     *
 *  MODULE DESCRIPTION:                                                *
 *                                                                     *
-*      - THIS MODULE RETURNS THE ADDRESS OF THE SAFR ENVIRONMENT      *
-*        INFORMATION                                                  *
+*      - THIS MODULE INVOKES A JAVA CLASS AND METHOD                  *
+*          CLASS: MyClass                                             *
+*          METHOD : MethodX                                           *
+*            where X is supplied as a one byte character from the key *    
 *                                                                     *
 *                                                                     *
 *  SAFR MODULES USED      : NONE                                      *

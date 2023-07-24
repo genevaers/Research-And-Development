@@ -1,4 +1,47 @@
          TITLE    'TELL JAVA ENVIRONMENT HOW MANY THREADS AND PROCEED'
+***********************************************************************
+*
+* (c) Copyright IBM Corporation 2023.
+*     Copyright Contributors to the GenevaERS Project.
+* SPDX-License-Identifier: Apache-2.0
+*
+***********************************************************************
+*
+*   Licensed under the Apache License, Version 2.0 (the "License");
+*   you may not use this file except in compliance with the License.
+*   You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+*   Unless required by applicable law or agreed to in writing, software
+*   distributed under the License is distributed on an "AS IS" BASIS,
+*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+*   or implied.
+*   See the License for the specific language governing permissions and
+*   limitations under the License.
+***********************************************************************
+*
+* This module is called by GVBMR95 just after the lines shown below
+* to indicate to the GvbJavaDaemon how many threads it should start
+* in order to service requests made by MR95 threads.
+*
+* * DISPLAY "THREADS STARTED" MESSAGE                                 
+* *********************************************************************
+*         LH    R0,THRDCNT         INDICATE HOW   MANY THREADS STARTED
+*         L     R14,EXECDADR       LOAD PARAMETER DATA ADDRESS
+*         USING EXECDATA,R14
+*         if CLI,EXECSNGL,eq,C'1',or,    FIRST THREAD   ONLY MODE  ???
+*               CLI,EXECSNGL,eq,C'A'     or ONE   THREAD   MODE ???
+*           LHI R0,1               YES - CHANGE  COUNT TO  1
+*           STH R0,THRDCNT
+*         endif
+*         DROP  R14
+*         CVD   R0,DBLWORK
+*         OI    DBLWORK+L'DBLWORK-1,X'0F'
+*         UNPK  errdata(3),DBLWORK
+*
+***********************************************************************
+*
          IHASAVER DSECT=YES,SAVER=YES,SAVF4SA=YES,SAVF5SA=YES,TITLE=NO
 *
          YREGS
