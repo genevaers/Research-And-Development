@@ -1,18 +1,35 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TESTUR70.
       ******************************************************************
-      **                PROGRAM INFORMATION                            *
+      *
+      * (c) Copyright IBM Corporation 2023.
+      *     Copyright Contributors to the GenevaERS Project.
+      * SPDX-License-Identifier: Apache-2.0
+      *
+      ******************************************************************
+      *
+      *   Licensed under the Apache License, Version 2.0 (the "License");
+      *   you may not use this file except in compliance with the License.
+      *   You may obtain a copy of the License at
+      *
+      *     http://www.apache.org/licenses/LICENSE-2.0
+      *
+      *   Unless required by applicable law or agreed to in writing,
+      *   software distributed under the License is distributed on an 
+      *   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+      *    either express or implied.
+      *   See the License for the specific language governing
+      *   permissions and limitations under the License.
       ******************************************************************
       **                                                               *
-      ** DESCRIPTION: VSAM READ/WRITE TEST PROGRAM FOR GVBTP90         *
-      **              AND GVBUR70.                                     *
+      ** DESCRIPTION: COBOL TEST PROGRAM FOR GVBUR70                   *
       **                                                               *
       ** MODULES CALLED: GVBTP90 - I/O HANDLER                         *
       **                 GVBUR70 - ASM/3GL/NATURAL TO JAVA INTERFACE   *
       **                                                               *
-      ** INPUT FILES:   M456                                           *
+      ** INPUT FILES:   D001                                           *
       **                                                               *
-      ** OUTPUT FILES:  M456                                           *
+      ** OUTPUT FILES:  D001                                           *
       **                                                               *
       ** REPORTS:       NONE                                           *
       **                                                               *
@@ -258,7 +275,7 @@
        110-OPEN-FILE.
 
            SET  FIFIX-ANCHOR              TO NULL
-           MOVE 'M456    '                TO FIFIX-DDNAME
+           MOVE 'D001    '                TO FIFIX-DDNAME
            MOVE FIFIX-VALUE-OPEN          TO FIFIX-FUNCTION-CODE
            MOVE FIFIX-VALUE-VSAM          TO FIFIX-FILE-TYPE
       *    MOVE FIFIX-VALUE-OUTPUT        TO FIFIX-FILE-MODE
@@ -276,7 +293,7 @@
                                  FIFIX-RECORD-KEY
 
            IF FIFIX-RETURN-CODE NOT = FIFIX-VALUE-SUCCESSFUL
-              DISPLAY 'MTEST: DD:  M456'
+              DISPLAY 'MTEST: DD:  D001'
                       ', FIFIX FAILED, '
                       ' RET CD = ', FIFIX-RETURN-CODE
                       ' FUNCTION = ', FIFIX-FUNCTION-CODE
@@ -297,7 +314,7 @@
       ******************************************************************
        120-CLOSE-FILE.
 
-           MOVE 'M456    '                TO FIFIX-DDNAME
+           MOVE 'D001    '                TO FIFIX-DDNAME
            MOVE FIFIX-VALUE-CLOSE         TO FIFIX-FUNCTION-CODE
            MOVE FIFIX-VALUE-VSAM          TO FIFIX-FILE-TYPE
       *    MOVE FIFIX-VALUE-OUTPUT        TO FIFIX-FILE-MODE
@@ -315,7 +332,7 @@
                                  FIFIX-RECORD-KEY
 
            IF FIFIX-RETURN-CODE NOT = FIFIX-VALUE-SUCCESSFUL
-              DISPLAY 'MTEST: DD: M456'
+              DISPLAY 'MTEST: DD: D001'
                       ', FIFIX FAILED, '
                       ' RET CD = ', FIFIX-RETURN-CODE
                       ' FUNCTION = ', FIFIX-FUNCTION-CODE
@@ -354,7 +371,7 @@
       ******************************************************************
        300-WRITE-RECORD.
 
-           MOVE 'M456    '                TO FIFIX-DDNAME
+           MOVE 'D001    '                TO FIFIX-DDNAME
            MOVE FIFIX-VALUE-WRITE         TO FIFIX-FUNCTION-CODE
            MOVE FIFIX-VALUE-VSAM          TO FIFIX-FILE-TYPE
       *    MOVE FIFIX-VALUE-OUTPUT        TO FIFIX-FILE-MODE
@@ -384,7 +401,7 @@
            DISPLAY 'PARMS: ' FIFIX-PARAMETER-AREA
       *
            IF FIFIX-RETURN-CODE NOT = FIFIX-VALUE-SUCCESSFUL
-              DISPLAY 'MTEST DD: M456'
+              DISPLAY 'MTEST DD: D001'
                       ', FIFIX FAILED, '
                       ' RET CD = ', FIFIX-RETURN-CODE
                       ' FUNCTION = ', FIFIX-FUNCTION-CODE
@@ -408,7 +425,7 @@
       ******************************************************************
        400-READ-RECORD.
 
-           MOVE 'M456    '                TO FIFIX-DDNAME
+           MOVE 'D001    '                TO FIFIX-DDNAME
            MOVE FIFIX-VALUE-READ          TO FIFIX-FUNCTION-CODE
            MOVE FIFIX-VALUE-VSAM          TO FIFIX-FILE-TYPE
       *    MOVE FIFIX-VALUE-OUTPUT        TO FIFIX-FILE-MODE
@@ -427,7 +444,7 @@
                                  FIFIX-RECORD-KEY
 
            IF FIFIX-RETURN-CODE NOT = FIFIX-VALUE-SUCCESSFUL
-              DISPLAY 'MTEST: DD: M456'
+              DISPLAY 'MTEST: DD: D001'
                       ', FIFIX FAILED, '
                       ' RET CD = ', FIFIX-RETURN-CODE
                       ' FUNCTION = ', FIFIX-FUNCTION-CODE
