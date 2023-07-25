@@ -20,10 +20,10 @@
 *   See the License for the specific language governing permissions and
 *   limitations under the License.
 ***********************************************************************
-*                                                                               
-* ASMINF64 - JNI Interface to ASM service routines (64 bit)                                    
-*                                                                               
-***********************************************************************         
+*
+* ASMINF64 - JNI Interface to ASM service routines (64 bit)
+*
+***********************************************************************
          YREGS                                                                  
 *                                                                               
 ASMINF64 CELQPRLG PARMWRDS=1,BASEREG=R10,EXPORT=YES                             

@@ -18,6 +18,11 @@
 *   or implied.
 *   See the License for the specific language governing permissions and
 *   limitations under the License.
+*
+***********************************************************************
+*
+*   This program is invoked by Java using JNI and then calls asminf264
+*
 ***********************************************************************   
 * Java declaration */
 

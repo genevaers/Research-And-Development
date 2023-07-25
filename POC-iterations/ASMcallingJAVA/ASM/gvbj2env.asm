@@ -25,7 +25,7 @@
 *  MODULE DESCRIPTION:                                                *
 *                                                                     *
 *      - THIS MODULE INVOKES A JAVA CLASS AND METHOD                  *
-*          CLASS: MyClass                                             *
+*          CLASS  : MyClass                                           *
 *          METHOD : MethodX                                           *
 *            where X is supplied as a one byte character from the key *    
 *                                                                     *
@@ -65,7 +65,7 @@
 *            - RETURN    ADDR                                         *
 *                                                                     *
 *        R13 - CALLER  SAVE AREA ADDRESS                              *
-*        R12 -                                                        *
+*        R12 - Base register                                          *
 *        R11 -                                                        *
 *        R10 -                                                        *
 *        R9  -                                                        *
@@ -77,7 +77,7 @@
 *        R3  -                                                        *
 *        R2  -                                                        *
 *                                                                     *
-*        R1  - PARAMETER LIST    ADDRESS             (UPON ENTRY)     *
+*        R1  - PARAMETER LIST    ADDRESS             (GENPARM)        *
 *                                                                     *
 *        R0  - TEMPORARY WORK    REGISTER                             *
 *                                                                     *
