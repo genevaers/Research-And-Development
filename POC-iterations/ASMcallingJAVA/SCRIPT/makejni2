@@ -65,7 +65,7 @@ CFLAGS      = $(C_FLAGS) $(CRFLAGS)
 SFLAGS      = -c -Wc,SSCOMM,"LANG(LONGLONG,EXTENDED)" -D_CRT_SECURE_NO_DEPRECATE $(DEFS) -I"$(JNIINC)"
 
 # LIBS        = "$(JNILIB)/jni32.lib"
-# LIBS        = -l skrb
+# LIBS        = //PRIVATE.BTCHOBJ
 
 L_FLAGS     = -V -W l,p,map
 DLL_FLAGS   = -V -W l,lp64,dll,map
@@ -92,12 +92,20 @@ lib_objects = "$(JNIOBJ)/jniasm"
 
 jniasm_objects =    $(JNIOBJ)/jnizos2.o     \
                     $(JNIOBJ)/asminf2.o     \
-                    $(JNIOBJ)/asminf264.o
+                    $(JNIOBJ)/asminf264.o	\
+					$(JNIOBJ)/gvbjwait.o	\
+					$(JNIOBJ)/gvbjpost.o	\
+					$(JNIOBJ)/gvbjmain.o	\
+					$(JNIOBJ)/gvbjmr95.o
  
 sources =           ./C/jnizos2.c
  
 asm_sources =       ./ASM/asminf2.s   \
-                    ./ASM/asminf264.s
+                    ./ASM/asminf264.s \
+					./ASM/gvbjwait.s  \
+					./ASM/gvbjpost.s  \
+					./ASM/gvbjmain.s  \
+					./ASM/gvbjmr95.s
  
 # asm_macros =        jniequ.mac
 
