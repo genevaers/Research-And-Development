@@ -1,6 +1,31 @@
-# IBMSAFR-Spark
+# POC-Iterations
 
-This repository contains two POC projects conducted starting in 2015 (SAFR on Spark), and ngsafr, in 2018.  The SAFR on Spark POC was then included in the Unviversal Ledger POC in the Spring of 2019.
+## JZOS SPARK Test
+
+This POC investigates integration of Spark with SAFR (GenevaERS) and was conducted in 2015.
+
+## NGSAFR CKB
+
+This is a Spark implementation of GenevaERS common key buffer and was done in 2018.
+
+## UniversalLedger
+
+Unviversal Ledger Spark POC was from Spring of 2019.
+
+## JNI2ASM
+
+JNI2ASM seeks to emulate the technique for calling IBM assembler using an example shown in the Longpela web site.
+
+https://www.longpelaexpertise.com.au/ezine/HLASMfromJava.php
+
+## Scala2ASM
+
+This POC implements a mechanism for calling IBM assembler code from Scala and was done in 2020.
+
+## ASMcallingJAVA
+
+This POC builds upon the experience gained in JNI2ASM to do the opposite. That is to call a generalized Java Class and Method from a single or multi-threaded assembler program. The specific case here is enabling GenevaERS Performance Engine to dynamically call Java written "exits".
+
 
 These POC provide source code and other materials relevant to the GenevaERS integration with Spark, and thus are contributed by IBM to the GenevaERS project.  
 
