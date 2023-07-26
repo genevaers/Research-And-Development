@@ -4,23 +4,22 @@
 //          MSGLEVEL=(1,1),
 //          MSGCLASS=H
 //*
+//*********************************************************************
+//* Run GVBDEMO Extract job that will call ASM, COBOL and JAVA exits
+//*********************************************************************
+//*
 //         EXPORT SYMLIST=*
 //*
 //*        SET HLQ=<YOUR-TSO-PREFIX>
-//         SET HLQ=GEBT
 //*        SET MLQ=GVBDEMO
-//         SET MLQ=RTC22589
 //*
-//*        JCLLIB ORDER=AJV.V11R0M0.PROCLIB
-//         JCLLIB ORDER=GEBT.RTC22964.EXITS.JCL
+//         JCLLIB ORDER=&LVL1..RTC&RTC..JCL
 //*
 //JOBLIB   DD DISP=SHR,DSN=AJV.V11R0M0.SIEALNKE
-//*        DD DISP=SHR,DSN=GEBT.NBEESLE.GVBLOAD
-//         DD DISP=SHR,DSN=GEBT.RTC22964.GVBLOAD
-//         DD DISP=SHR,DSN=GEBT.LATEST.GVBLOAD
+//         DD DISP=SHR,DSN=&LVL1..RTC&RTC..GVBLOAD
 //*
 //*********************************************************************
-//* Copy dll JNIzOS64 to accessible location
+//* Copy dll JNIzOS64 to accessible location for Java LIBPATH
 //*********************************************************************
 //*
 //COPYDLL  EXEC PGM=IKJEFT1A
@@ -90,7 +89,6 @@
  DELETE  &HLQ..&MLQ..PASS1E1.F0010897 PURGE
  DELETE  GEBT.RTC10539.PASS1E1.F0010901 PURGE
 
-
  /* DATA SETS  GOING TO FORMAT PHASE */
 
  DELETE  &HLQ..&MLQ..PASS1E1.FILE001.EXT PURGE
@@ -104,33 +102,6 @@
  IF LASTCC > 0 THEN        /* IF OPERATION FAILED,     */    -
      SET MAXCC = 0          /* PROCEED AS NORMAL ANYWAY */
 
-//*
-//*The following DDs can/should be present in the calling JCL
-//*
-//*********************************************************************
-//*   DELETE DATA SETS
-//*********************************************************************
-//*
-//* DELETE    EXEC PGM=IDCAMS
-//*
-//* SYSPRINT  DD SYSOUT=*,DCB=(LRECL=133,BLKSIZE=12901,RECFM=FBA)
-//*
-//* SYSIN     DD *
-//* DELETE  GEBT.FTEST.NEW.JMR91.JLT PURGE
-//* IF LASTCC > 0  THEN        /* IF OPERATION FAILED,     */    -
-//*     SET MAXCC = 0          /* PROCEED AS NORMAL ANYWAY */
-//*
-//* DELETE  GEBT.FTEST.NEW.JMR91.VDP PURGE
-//* IF LASTCC > 0  THEN        /* IF OPERATION FAILED,     */    -
-//*     SET MAXCC = 0          /* PROCEED AS NORMAL ANYWAY */
-//*
-//* DELETE  GEBT.FTEST.NEW.JMR91.XLT PURGE
-//* IF LASTCC > 0  THEN        /* IF OPERATION FAILED,     */    -
-//*     SET MAXCC = 0          /* PROCEED AS NORMAL ANYWAY */
-//* DELETE  GEBT.FTEST.BIGASS.ALIGN.MR91LOG PURGE
-//* IF LASTCC > 0  THEN        /* IF OPERATION FAILED,     */    -
-//*     SET MAXCC = 0          /* PROCEED AS NORMAL ANYWAY */
-//*********************************************************************
 //*
 //*******************************************************************
 //* Licensed Materials - Property of IBM
@@ -190,7 +161,9 @@ IJO="-Xms16m -Xmx128m"
 IJO="$IJO -Dfile.encoding=ISO8859-1"
 export IBM_JAVA_OPTIONS="$IJO "
 
-//*
+//*******************************************************************
+//* EXEC CARDS FOR MAIN PROGRAM
+//*******************************************************************
 //DDEXEC   DD *
 PGM=GVBMR95E
 /*

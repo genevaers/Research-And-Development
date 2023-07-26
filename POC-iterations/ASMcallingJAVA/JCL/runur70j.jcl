@@ -4,19 +4,20 @@
 //          MSGLEVEL=(1,1),
 //          MSGCLASS=H
 //*
+//*********************************************************************
+//* RUN GVBUR70 TEST PROGRAM TESTUR70 TO CALL JAVA CLASS METHOD
+//*********************************************************************
+//*
 //         EXPORT SYMLIST=*
 //*
 //*        SET HLQ=<YOUR-TSO-PREFIX>
-//         SET HLQ=GEBT
 //*        SET MLQ=GVBDEMO
-//         SET MLQ=RTC22589
 //*
 //*        JCLLIB ORDER=AJV.V11R0M0.PROCLIB
-//         JCLLIB ORDER=GEBT.RTC22964.EXITS.JCL
+//         JCLLIB ORDER=&LVL1..RTC&RTC..JCL
 //*
 //JOBLIB   DD DISP=SHR,DSN=AJV.V11R0M0.SIEALNKE
-//         DD DISP=SHR,DSN=GEBT.NBEESLE.GVBLOAD
-//         DD DISP=SHR,DSN=GEBT.RTC22964.GVBLOAD
+//         DD DISP=SHR,DSN=&LVL1..RTC&RTC..GVBLOAD
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //*
 //*********************************************************************
@@ -132,12 +133,15 @@ export IBM_JAVA_OPTIONS="$IJO "
 //STDOUT   DD SYSOUT=*
 //STDERR   DD SYSOUT=*
 //*
+//*******************************************************************
+//* EXEC CARD FOR MAIN PROGRAM WHICH CALLS JAVA AND READS VSAM DATA
+//*******************************************************************
 //*
 //DDEXEC   DD *
 PGM=TESTUR70
 /*
 //*
-//M456     DD DISP=(SHR,KEEP,KEEP),DSN=GEBT.RTC22964.M456.CLUSTER
+//M456     DD DISP=(SHR,KEEP,KEEP),DSN=&LVL1..RTC&RTC..M456.CLUSTER
 //SYSIN    DD DUMMY
 //SYSPRINT DD SYSOUT=*
 //SYSOUT   DD SYSOUT=*

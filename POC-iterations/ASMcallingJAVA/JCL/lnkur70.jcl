@@ -4,8 +4,8 @@
 //            MSGLEVEL=(1,1),
 //            MSGCLASS=H
 //*
-//         SET LVL1=GEBT
-//         SET RTC=22964
+//*        SET HLQ=<YOUR-TSO-PREFIX>
+//*        SET MLQ=GVBDEMO
 //*
 //*********************************************************************
 //*  LINK-EDIT GVBUR70
