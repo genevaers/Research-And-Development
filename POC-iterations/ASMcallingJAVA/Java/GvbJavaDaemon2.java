@@ -1,28 +1,6 @@
-/**********************************************************************
-*
-* (c) Copyright IBM Corporation 2023.
-*     Copyright Contributors to the GenevaERS Project.
-* SPDX-License-Identifier: Apache-2.0
-*
-***********************************************************************
-*
-*   Licensed under the Apache License, Version 2.0 (the "License");
-*   you may not use this file except in compliance with the License.
-*   You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-*   Unless required by applicable law or agreed to in writing, software
-*   distributed under the License is distributed on an "AS IS" BASIS,
-*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-*   or implied.
-*   See the License for the specific language governing permissions and
-*   limitations under the License.
-*
-*   GvbJavaDaemon2 (improved performance)
-*
-**********************************************************************/
-
+//
+// Java Daemon to service request from ASM/3GL and dynamically load and execute user methods and classes
+//
 import java.lang.reflect.Method;
 
 class RunMR95 implements Runnable {
@@ -215,17 +193,16 @@ class RunSupervisor implements Runnable {
 
     zOSInfo2 a = new zOSInfo2();
     GVBA2I b = new GVBA2I();
-    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
-    GVBCLASSLOADER2 javaClassLoader2 = new GVBCLASSLOADER2();
+    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();           // Load and execute
+    GVBCLASSLOADER2 javaClassLoader2 = new GVBCLASSLOADER2();        // Separate load and execute functions
 
     Class aarg[] = new Class[1];
     Method[] method = {null,null,null,null,null,null,null,null,null,null};
-    //String[] mName = {null,null,null,null,null,null,null,null,null,null};
     String[] mName = {"Method1","Method2","Method3","Method4","Method5","Method6","Method7","Method8","Method9","Method0"};
     boolean found, added, once = false;
 
 
-    javaClassLoader.invokeClassMethod("MyClass", "PokeShedman","STUFF");
+    javaClassLoader.invokeClassMethod("MyClass", "MethodA","STUFF");
 
     threadIdentifier = String.format("%6s%04d", threadName, thrdNbr);
     System.out.println(threadIdentifier + ":Running");
@@ -353,7 +330,7 @@ class RunSupervisor implements Runnable {
             break;
         }
 
-          // Let the thread sleep for a while.
+          // Let the thread sleep for a while. 
           // Thread.sleep(1);
           // } catch (InterruptedException e) {
           // System.out.println(threadIdentifier + ":Interrupted.");
@@ -392,9 +369,9 @@ public class GvbJavaDaemon2 {
       /* --- Do some class loading --------------------- */
       GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
       GVBCLASSLOADER2 javaClassLoader2 = new GVBCLASSLOADER2();
-      javaClassLoader.invokeClassMethod("MyClass", "PokeShedman","STUFF");
-      javaClassLoader.invokeClassMethod("MyClass", "DickWaite", "STUFF");
-      javaClassLoader.invokeClassMethod("MyClass", "Eierschaukeln", "STUFF");
+      javaClassLoader.invokeClassMethod("MyClass", "MethodA","STUFF");
+      javaClassLoader.invokeClassMethod("MyClass", "MethodB", "STUFF");
+      javaClassLoader.invokeClassMethod("MyClass", "MethodC", "STUFF");
       System.out.println("Done class loader tests!!");
 
       /* --- Get Hostname ------------------------------ */
@@ -407,16 +384,17 @@ public class GvbJavaDaemon2 {
       System.out.println(a.showZos2(0, "SYSINFO ", "OPTS", "SYSPLEX", lenout));
       System.out.println(strin + lenout);
 
-      /* --- Get Sysplex Name: ------------------------- */
+      /* --- Get IPL time: ------------------------- */
       System.out.print("Ipltime: ");
       System.out.println(a.showZos2(0, "SYSINFO ", "OPTS", "IPLTIME", lenout));
       System.out.println(strin + lenout);
 
+      /* --- Run GVBMAIN --------------------------- */
       System.out.print("Gvbmain: ");
       System.out.println(a.showZos2(4, "RUNMAIN ", "OPTS", "DARTH", lenout));
       System.out.println(strin + lenout);
 
-      /* numberThread: This must not be hard coded now that MR95 tells us how many threads it's using */
+      /* --- Run thread supervisor ----------------- */
       RunSupervisor R2 = new RunSupervisor( "Supervisor", "string1", 16, "string2");
       R2.start();
    }   
