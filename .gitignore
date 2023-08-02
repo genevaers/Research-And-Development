@@ -149,5 +149,5 @@ SAFRonSpark/.idea
 *.*OUTPUTDIR*
 SAFRonSpark/data/InitEnv/OUTPUTDIR
 SAFRonSpark/data/InitEnv/MacVsRunSAFRonSpark.sh
-*.xml
+# *.xml
 UniversalLedgerPOC/lib/postgresql-42.2.5.jar
