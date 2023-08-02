@@ -1,4 +1,4 @@
-//NCBMR95 JOB (ACCT),'BUILD MR95 JAVA BITS',                            JOB22327
+//NASMUR70  JOB (ACCT),'BUILD MR95 JAVA BITS',
 //            NOTIFY=&SYSUID.,
 //            CLASS=A,
 //            MSGLEVEL=(1,1),
@@ -9,7 +9,7 @@
 //*        SET MLQ=GVBDEMO
 //*
 //****************************************************************
-//*  ASSEMBLE GVBGO95 AND GVBJ2ENV MODULES
+//*  ASSEMBLE GVBUR70, TSTUR70 AND GVBJLENV MODULES
 //****************************************************************
 //ASMP1    PROC
 //ASM      EXEC PGM=ASMA90,
@@ -47,6 +47,8 @@
 //*
 //         PEND
 //*
+//ASMUR70  EXEC ASMP1,MEMBER=GVBUR70
+//ASMUR70T EXEC ASMP1,MEMBER=TSTUR70
+//ASMJLENV EXEC ASMP1,MEMBER=GVBJLENV
 //ASMJGO95 EXEC ASMP1,MEMBER=GVBJGO95
-//ASMJLENV EXEC ASMP1,MEMBER=GVBJ2ENV
 //

@@ -10,7 +10,7 @@ The example Java class MyClass.java contains 13 methods. Each of these can be co
 
 Compile with: javac MyClass.java
 
- The class and method names are specified in a small assembler/COBOL stub exit (GVBJ2ENV) but will eventually be specified through the GenevaERS workbench.
+ The class and method names are specified in a small assembler/COBOL stub exit (GVBJLENV) but will eventually be specified through the GenevaERS workbench. The example uses view number 10903 and reads the GVBDEMO customer file.
 
 ## Sample assembler and COBOL programs to call Java
 
@@ -24,13 +24,13 @@ Compile with: javac GvbJavaDaemon.java
 
 ## The ZOS DLL JNIASM
 
-This DLL provides the communications between Java and assembler.
+This DLL provides the communications between Java and assembler. It comprises modules written in C and assembler, using the JNI interface.
 
-Build with: makejni2
+Build with: make -f makejni2
 
 ## Assembling and linking GVBUR70 and other assembler written portions
 
-The JCL asmjv.jcl assembles GVBUR70, GVBJ2ENV and TSTUR70. lnkjv.jcl link edits these modules.
+The JCL asmjv.jcl assembles GVBUR70, GVBJLENV and TSTUR70. lnkjv.jcl link edits these modules.
 
 ## Running the assembler GVBUR70 test program
 

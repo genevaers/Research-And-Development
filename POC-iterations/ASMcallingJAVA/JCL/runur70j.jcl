@@ -13,7 +13,6 @@
 //*        SET HLQ=<YOUR-TSO-PREFIX>
 //*        SET MLQ=GVBDEMO
 //*
-//*        JCLLIB ORDER=AJV.V11R0M0.PROCLIB
 //         JCLLIB ORDER=&LVL1..RTC&RTC..JCL
 //*
 //JOBLIB   DD DISP=SHR,DSN=AJV.V11R0M0.SIEALNKE
@@ -21,7 +20,7 @@
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //*
 //*********************************************************************
-//* Copy dll JNIzOS64 to ZFS location as can't figure out PDSE LIBPATH
+//* Copy dll JNIzOS64 to ZFS location
 //*********************************************************************
 //*
 //COPYDLL  EXEC PGM=IKJEFT1A
@@ -68,16 +67,12 @@
 //ISPFTTRC DD SYSOUT=*,RECFM=VB,LRECL=259        TSO OUTPUT
 //*
 //SYSTSIN  DD *
- OPUT  'NBEESLE.PRIVATE.LOADLIB(JNIASM)' -
+ OPUT  '&LVL1..RTC&RTC..GVBLOAD(JNIASM)' -
        '/safr/mf_build/lib/JNIzOS64'
 //*
 //*******************************************************************
-//* Licensed Materials - Property of IBM
-//* 5655-DGJ
-//* Copyright IBM Corp. 1997, 2021
-//* STATUS = HJVBB00
 //*
-//* Batch job to run the Java VM calling gvbmr95e
+//* Batch job to run the Java VM calling TSTUR70
 //*
 //* Tailor the proc and job for your installation:
 //* 1.) Modify the Job card per your installation's requirements
@@ -96,14 +91,14 @@
 # Variables must be exported to be seen by the launcher.
 
 . /etc/profile
-. /u/nbeesle/jcallhlasmprofile2
+. /u/<user-id>/jcallhlasmprofile2
 
 LIBPATH=/lib:/usr/lib:"${JAVA_HOME}"/bin
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib/j9vm
 LIBPATH="$LIBPATH":/safr/mf_build/lib
 export LIBPATH="$LIBPATH":
-# LIBPATH="$LIBPATH":"//NBEESLE.PRIVATE.LOADLIB"
+# LIBPATH="$LIBPATH":"//&LVL1..RTC&RTC..GVBLOAD"
 # Customize your CLASSPATH here
 
 
@@ -134,7 +129,7 @@ export IBM_JAVA_OPTIONS="$IJO "
 //STDERR   DD SYSOUT=*
 //*
 //*******************************************************************
-//* EXEC CARD FOR MAIN PROGRAM WHICH CALLS JAVA AND READS VSAM DATA
+//* EXEC CARD FOR MAIN TSTUR70 PROGRAM CALLING JAVA
 //*******************************************************************
 //*
 //DDEXEC   DD *

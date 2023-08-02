@@ -1,11 +1,11 @@
-//JZOSMR95 JOB (ACCT),'JZOS JAVA&MR95',
+//JMR95E   JOB (ACCT),'JAVA&MR95E',
 //          NOTIFY=&SYSUID.,
 //          CLASS=A,
 //          MSGLEVEL=(1,1),
 //          MSGCLASS=H
 //*
 //*********************************************************************
-//* Run GVBDEMO Extract job that will call ASM, COBOL and JAVA exits
+//* Run GVBDEMO Extract job that will call JAVA exit(s)
 //*********************************************************************
 //*
 //         EXPORT SYMLIST=*
@@ -15,8 +15,7 @@
 //*
 //         JCLLIB ORDER=&LVL1..RTC&RTC..JCL
 //*
-//JOBLIB   DD DISP=SHR,DSN=AJV.V11R0M0.SIEALNKE
-//         DD DISP=SHR,DSN=&LVL1..RTC&RTC..GVBLOAD
+//JOBLIB   DD DISP=SHR,DSN=&LVL1..RTC&RTC..GVBLOAD
 //*
 //*********************************************************************
 //* Copy dll JNIzOS64 to accessible location for Java LIBPATH
@@ -66,7 +65,7 @@
 //ISPFTTRC DD SYSOUT=*,RECFM=VB,LRECL=259        TSO OUTPUT
 //*
 //SYSTSIN  DD *
- OPUT  'NBEESLE.PRIVATE.LOADLIB(JNIASM)' -
+ OPUT  '&LVL1..RTC&RTC..GVBLOAD(JNIASM)' -
        '/safr/mf_build/lib/JNIzOS64'
 //*
 //*
@@ -81,22 +80,7 @@
 //SYSIN    DD *,SYMBOLS=EXECSYS
  /* VIEW DATA SETS: */
 
- DELETE  &HLQ..&MLQ..PASS1E1.OUTPUT01 PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.OUTPUT02 PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.OUTPUT03 PURGE
- DELETE  GEBT.RTC10539.PASS1E1.OUTPUT06 PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.F0010724 PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.F0010897 PURGE
- DELETE  GEBT.RTC10539.PASS1E1.F0010901 PURGE
-
- /* DATA SETS  GOING TO FORMAT PHASE */
-
- DELETE  &HLQ..&MLQ..PASS1E1.FILE001.EXT PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.FILE001.SXT PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.FILE002.EXT PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.FILE002.SXT PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.FILE003.EXT PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.FILE003.SXT PURGE
+ DELETE  &HLQ..&MLQ..PASS1E1.F0010903 PURGE
  DELETE  &HLQ..&MLQ..PASS1E1.SYSMDUMP PURGE
 
  IF LASTCC > 0 THEN        /* IF OPERATION FAILED,     */    -
@@ -104,12 +88,8 @@
 
 //*
 //*******************************************************************
-//* Licensed Materials - Property of IBM
-//* 5655-DGJ
-//* Copyright IBM Corp. 1997, 2021
-//* STATUS = HJVBB00
 //*
-//* Batch job to run the Java VM calling gvbmr95e
+//* Batch job to run the Java VM calling GVBMR95(E)
 //*
 //* Tailor the proc and job for your installation:
 //* 1.) Modify the Job card per your installation's requirements
@@ -121,23 +101,22 @@
 //*
 //*******************************************************************
 //JAVA EXEC PROC=JVMPRC16,
-// JAVACLS='GvbJavaDaemon'
+// JAVACLS='GvbJavaDaemon2'
 //STDENV DD *
 # This is a shell script which configures
 # any environment variables for the Java JVM.
 # Variables must be exported to be seen by the launcher.
 
 . /etc/profile
-. /u/nbeesle/jcallhlasmprofile2
+. /u/<user-id>/jcallhlasmprofile2
 
 LIBPATH=/lib:/usr/lib:"${JAVA_HOME}"/bin
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib/j9vm
 LIBPATH="$LIBPATH":/safr/mf_build/lib
 export LIBPATH="$LIBPATH":
-# LIBPATH="$LIBPATH":"//NBEESLE.PRIVATE.LOADLIB"
+# LIBPATH="$LIBPATH":"//&LVL1..RTC&RTC..GVBLOAD"
 # Customize your CLASSPATH here
-
 
 # Add Application required jars to end of CLASSPATH
 for i in $(find $APP_HOME -type f);do
@@ -162,7 +141,7 @@ IJO="$IJO -Dfile.encoding=ISO8859-1"
 export IBM_JAVA_OPTIONS="$IJO "
 
 //*******************************************************************
-//* EXEC CARDS FOR MAIN PROGRAM
+//* EXEC CARDS FOR MAIN GVBMR95 PROGRAM
 //*******************************************************************
 //DDEXEC   DD *
 PGM=GVBMR95E
@@ -218,90 +197,26 @@ PGM=GVBMR95E
 $SUBSYS=DM12
 $QUAL=SDATRT01
 //*
-//*MR95VDP  DD DSN=&HLQ..&MLQ..PASS1C1.VDP,
-//*            DISP=SHR
-//*
-//*EXTRLTBL DD DSN=&HLQ..&MLQ..PASS1C1.XLT,
-//*            DISP=SHR
-//*
-//*EXTRREH  DD DSN=&HLQ..&MLQ..PASS1D1.REH,
-//*            DISP=SHR
-//*
-//MR95VDP  DD DSN=GEBT.RTC10539.PASS1C1.VDP,
+//MR95VDP  DD DSN=&HLQ..&MLQ..PASS1C1.VDP,
 //            DISP=SHR
-//*
-//EXTRLTBL DD DSN=GEBT.RTC10539.PASS1C1.XLT,
+//
+//EXTRLTBL DD DSN=&HLQ..&MLQ..PASS1C1.XLT,
 //            DISP=SHR
-//*
-//EXTRREH  DD DSN=GEBT.RTC10539.PASS1D1.REH,
+//
+//EXTRREH  DD DSN=&HLQ..&MLQ..PASS1D1.REH,
 //            DISP=SHR
 //*
 //*        <<< INPUT GENEVAERS REFERENCE WORK FILES >>>
 //*                                                                 %%%
-//REFR001  DD DISP=SHR,DSN=GEBT.RTC10539.PASS1D1.FILE001.RED
-//REFR002  DD DISP=SHR,DSN=GEBT.RTC10539.PASS1D1.FILE002.RED
-//REFR003  DD DISP=SHR,DSN=GEBT.RTC10539.PASS1D1.FILE003.RED
-//REFR004  DD DISP=SHR,DSN=GEBT.RTC10539.PASS1D1.FILE004.RED
-//REFR005  DD DISP=SHR,DSN=GEBT.RTC10539.PASS1D1.FILE005.RED
+//*            NONE
 //*
 //*        <<< INPUT SOURCE FILES >>>
 //*                                                                 %%%
-//CUSTOMER  DD DISP=SHR,DSN=GEBT.RTC22589.CUSTOMER
-//*                                                                 %%%
-//*           FILES READ BY GVBXR6 GVBXR7 GVBXR8 GVBXR9             %%%
-//*                                                                 %%%
-//CUSTNAM6 DD DISP=SHR,DSN=&HLQ..&MLQ..CUSTNAME
-//CUSTNAM8 DD DISP=(SHR,KEEP,KEEP),DSN=&HLQ..&MLQ..CUSTNAME.CLUSTER
-//CUSTNAM7 DD DISP=SHR,DSN=&HLQ..&MLQ..CUSTNAME
-//CUSTNAM9 DD DISP=(SHR,KEEP,KEEP),DSN=&HLQ..&MLQ..CUSTNAME.CLUSTER
-//*
-//*        <<< OUTPUT FILES GOING TO FORMAT PHASE >>>
-//*
-//EXTR001  DD DSN=&HLQ..&MLQ..PASS1E1.FILE001.EXT,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=(SYSDA,10),
-//            SPACE=(TRK,(1,1000),RLSE),
-//            DCB=(DSORG=PS,RECFM=VB,LRECL=8192)
-//*
-//SORT001  DD DSN=&HLQ..&MLQ..PASS1E1.FILE001.SXT,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=SYSDA,
-//            SPACE=(TRK,(1,1),RLSE),
-//            DCB=(DSORG=PS,RECFM=FB,LRECL=80)
-//*
-//EXTR002  DD DSN=&HLQ..&MLQ..PASS1E1.FILE002.EXT,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=(SYSDA,10),
-//            SPACE=(TRK,(1,1000),RLSE),
-//            DCB=(DSORG=PS,RECFM=VB,LRECL=8192)
-//*
-//SORT002  DD DSN=&HLQ..&MLQ..PASS1E1.FILE002.SXT,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=SYSDA,
-//            SPACE=(TRK,(1,1),RLSE),
-//            DCB=(DSORG=PS,RECFM=FB,LRECL=80)
-//*
-//EXTR003  DD DSN=&HLQ..&MLQ..PASS1E1.FILE003.EXT,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=(SYSDA,10),
-//            SPACE=(TRK,(1,1000),RLSE),
-//            DCB=(DSORG=PS,RECFM=VB,LRECL=8192)
-//*
-//SORT003  DD DSN=&HLQ..&MLQ..PASS1E1.FILE003.SXT,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=SYSDA,
-//            SPACE=(TRK,(1,1),RLSE),
-//            DCB=(DSORG=PS,RECFM=FB,LRECL=80)
+//CUSTOMER  DD DISP=SHR,DSN=&HLQ..&MLQ..GVBDEMO.CUSTOMER
 //*
 //*        <<< OUTPUT EXTRACT VIEW FILES >>>
 //*                                                                 %%%
-//OUTPUT06 DD DSN=GEBT.RTC10539.PASS1E1.OUTPUT06,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=SYSDA,
-//            SPACE=(TRK,(100,100),RLSE),
-//            DCB=(DSORG=PS,RECFM=VB,LRECL=1004)
-//*                                                                 %%%
-//F0010901 DD DSN=GEBT.RTC10539.PASS1E1.F0010901,
+//F0010903 DD DSN=&HLQ..&MLQ..PASS1E1.F0010903,
 //            DISP=(NEW,CATLG,DELETE),
 //            UNIT=SYSDA,
 //            SPACE=(TRK,(100,100),RLSE),
