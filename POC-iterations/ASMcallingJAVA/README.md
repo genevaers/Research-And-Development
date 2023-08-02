@@ -14,7 +14,7 @@ Compile with: javac MyClass.java
 
 ## Sample assembler and COBOL programs to call Java
 
-TSTUR70.ASM and TESTUR70.COB provide examples of how to call Java from assembler/3GL. They are also useful test harnesses when developing Java exits for GenevaERS. GVBUR70 will start the requested number of threads.
+TSTUR70.ASM and TESTUR70.COB provide examples of how to call Java from assembler/3GL. They are also useful test harnesses when developing Java exits for GenevaERS. The GVBUR70 INIT call will start the requested number of threads.
 
 ## The GvbJavaDaemon
 
