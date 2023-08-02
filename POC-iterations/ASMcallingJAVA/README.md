@@ -22,6 +22,12 @@ This is a multi-threaded Java daemon that starts the requested number of threads
 
 Compile with: javac GvbJavaDaemon.java
 
+## The ZOS DLL JNIASM
+
+This DLL provides the communications between Java and assembler.
+
+Build with: makejni2
+
 ## Assembling and linking GVBUR70 and other assembler written portions
 
 The JCL asmjv.jcl assembles GVBUR70, GVBJ2ENV and TSTUR70. lnkjv.jcl link edits these modules.
