@@ -1,4 +1,4 @@
-         TITLE 'GVBJ2ENV - ASM stub for calling Java'
+         TITLE 'GVBJLENV - ASM stub for calling Java'
 **********************************************************************
 *
 * (C) COPYRIGHT IBM CORPORATION 2023.
@@ -155,7 +155,7 @@ GVBJLENV RMODE ANY
 GVBJLENV AMODE 31
 GVBJLENV CSECT
          J     start
-         DC    CL8'GVBJ2ENV',CL8'&SYSDATC',CL6'&SYSTIME'
+         DC    CL8'GVBJLENV',CL8'&SYSDATC',CL6'&SYSTIME'
 *
 static   loctr
 CODE     loctr
