@@ -10,17 +10,17 @@ The example Java class MyClass.java contains 13 methods. Each of these can be co
 
 Compile with: javac MyClass.java
 
- The class and method names are specified in a small assembler/COBOL stub exit (GVBJLENV) but will eventually be specified through the GenevaERS workbench. The example uses view number 10903 and reads the GVBDEMO customer file.
+ The class and method names are specified in a small assembler stub exit (GVBJLENV) but will eventually be specified through the GenevaERS workbench. The example uses view number 10903 and reads the GVBDEMO customer file.
 
-## Sample assembler and COBOL programs to call Java
+## Sample assembler program to call Java
 
-TSTUR70.ASM and TESTUR70.COB provide examples of how to call Java from assembler/3GL. They are also useful test harnesses when developing Java exits for GenevaERS. The GVBUR70 INIT call will start the requested number of threads.
+TSTUR70.ASM provides an example of how to call Java from assembler/3GL. They are also useful test harnesses when developing Java exits for GenevaERS. The GVBUR70 INIT call will start the requested number of threads.
 
 ## The GvbJavaDaemon
 
 This is a multi-threaded Java daemon that starts the requested number of threads to service calls to Java methods.
 
-Compile with: javac GvbJavaDaemon.java
+Compile with: javac GvbJavaDaemon2.java
 
 ## The ZOS DLL JNIASM
 
@@ -34,11 +34,11 @@ The JCL asmjv.jcl assembles GVBUR70, GVBJLENV and TSTUR70. lnkjv.jcl link edits 
 
 ## Running the assembler GVBUR70 test program
 
-runur70.jcl runs the test program tstur70 (main program) which calls Java methods and classes, passing and returning data, according to what's specified in the calling interface parameters.
+runur70t.jcl runs the test program tstur70 (main program) which calls Java methods and classes, passing and returning data, according to what's specified in the calling interface parameters.
 
 ## Running performance engine and calling Java exits
 
-jzosmr9j.jcl is a regular GenevaERS extract job that contains some additional components (job steps), for example copying the ZOS DLL load module into the required LIBPATH and starting the JVM.
+runmr9j.jcl is a regular GenevaERS extract job that contains some additional components (job steps), for example copying the ZOS DLL load module into the required LIBPATH and starting the JVM.
 
 
 Learn more about GenevaERS at [GenevaERS Training](https://genevaers.org/training-videos/).  Join in the conversation at the [#GenevaERS channel on Open Mainframe Project Slack](https://slack.openmainframeproject.org). After requesting access with the above link, look for the [GenevaERS channel](https://openmainframeproject.slack.com/archives/C01711931GA)
