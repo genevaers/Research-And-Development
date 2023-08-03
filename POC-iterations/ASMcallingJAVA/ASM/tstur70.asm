@@ -189,7 +189,7 @@ A0006    EQU   *
          OI    UR70LIST,X'80'
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(32),=CL32'TSTUR70: CALLING SETT (#threads)'
+         MVC   WKPRINT(32),=CL32'TSTUR70: CALLING INIT (#threads)'
          LA    R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
@@ -212,7 +212,7 @@ A0008    EQU   *
 *
 A0010    EQU   *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(33),=CL33'TSTUR70: CALLED SETT SUCCESSFULLY'
+         MVC   WKPRINT(33),=CL33'TSTUR70: CALLED INIT SUCCESSFULLY'
          LA    R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
