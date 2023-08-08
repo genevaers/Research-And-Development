@@ -46,11 +46,15 @@ INDCB    DS    XL(INFILEL)     REENTRANT DCB AND DCBE AREAS
 *
 WKCARD   DS   3CL80            PARM CARD
 WKPRINT  DS    XL131           PRINT LINE
-         DS    XL1
+WKSTAT   DS    XL1
+QSTART   EQU   X'80'           Quote started/off if end quote found
          DS   0F
 WKREENT  DS    XL256           REENTRANT WORKAREA/PARMLIST
 WKDBLWK  DS    XL08            DOUBLE WORK WORKAREA
 WKDDEXEC DS    CL8
+WKEPARMA DS    A
+WKDDPRML DS    H
+WKDDPARM DS    CL30
 WKRETC   DS    F
 GVBMR95E DS    A
 WKTOKNRC DS    A                  NAME/TOKEN  SERVICES RETURN CODE
@@ -173,12 +177,68 @@ MAIN_092 EQU   *
          JE    MAIN_093
          WTO  'GVBJMR95: EXEC CARD NOT FOUND FOR DDEXEC' 
          MVC   WKRETC,=F'16'
-*         J     DONEDONE
+         J     DONEDONE
+*
 MAIN_093 EQU   *
-         MVC   WKDDEXEC,WKCARD+4
+         MVC   WKDDEXEC,SPACES
+         MVC   WKDDPARM,SPACES
+         XC    WKDDPRML,WKDDPRML
+         LA    R1,WKCARD+4
+         LA    R2,8                      char max
+         LA    R15,WKDDEXEC
+MAIN_094 EQU   *
+         CLI   0(R1),C' '
+         JE    MAIN_098
+         CLI   0(R1),0
+         JE    MAIN_098
+         CLI   0(R1),C','
+         JE    MAIN_095
+         MVC   0(1,R15),0(R1)
+         LA    R15,1(,R15)
+         LA    R1,1(,R1)
+         BRCT  R2,MAIN_094
+*
+MAIN_095 EQU   *
+         CLC   0(6,R1),=CL6',PARM='
+         JNE   MAIN_098
+         LA    R1,6(,R1)
+         LA    R2,30                     char max
+         LA    R15,WKDDPARM
+         XR    R0,R0
+MAIN_096 EQU   *
+         CLI   0(R1),X'7D'               and I quote...
+         JNE   MAIN096C
+         LA    R1,1(,R1)                 skip and note..
+MAIN096A EQU   *
+         TM    WKSTAT,QSTART             used as toggle to ignore
+         JO    MAIN096B                  comma..
+         OI    WKSTAT,QSTART
+         J     MAIN096C
+MAIN096B EQU   *
+         NI    WKSTAT,255-QSTART
+MAIN096C EQU   *
+         CLI   0(R1),C' '
+         JE    MAIN_097
+         CLI   0(R1),0
+         JE    MAIN_097
+         TM    WKSTAT,QSTART             use toggle to ignore comma
+         JO    MAIN096D
+         CLI   0(R1),C','
+         JE    MAIN_097
+MAIN096D EQU   *
+         MVC   0(1,R15),0(R1)
+         LA    R15,1(,R15)
+         LA    R1,1(,R1)
+         AHI   R0,1
+         BRCT  R2,MAIN_096
+MAIN_097 EQU   *
+         STH   R0,WKDDPRML
+*
+MAIN_098 EQU   *
+*         MVC   WKDDEXEC,WKCARD+4
 *
 *      OPEN MESSAGE FILE
-*         J     MAIN_096
+*         J     MAIN_099
          LA    R14,OUTFILE               COPY MODEL   DCB
 D1       USING IHADCB,OUTDCB
          MVC   OUTDCB(OUTFILEL),0(R14)
@@ -190,7 +250,7 @@ D1       USING IHADCB,OUTDCB
          MVC   WKREENT(8),OPENPARM
          OPEN  ((R2),(EXTEND)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
-         JO    MAIN_096                  YES - BYPASS ABEND
+         JO    MAIN_099                  YES - BYPASS ABEND
          WTO 'GVBJMR95: DDPRINT OPEN FAILED'
          MVC   WKRETC,=F'16'
          J     DONEDONE
@@ -199,7 +259,7 @@ D1       USING IHADCB,OUTDCB
 *  FIND GLOBAL NAME/TOKEN AREA                                        *
 ***********************************************************************
 *
-MAIN_096 EQU   *
+MAIN_099 EQU   *
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(10),=CL10'GVBJMR95: '
          MVC   WKPRINT+10(80),WKCARD
@@ -240,6 +300,9 @@ MAIN_114 EQU   *
          ST    R0,GVBMR95E
          WTO 'GVBJMR95: TARGET ACQUIRED'
 *
+         LAY   R1,WKDDPRML
+         ST    R1,WKEPARMA
+         LAY   R1,WKEPARMA
          L     R15,GVBMR95E
          BASR  R14,R15
 *
