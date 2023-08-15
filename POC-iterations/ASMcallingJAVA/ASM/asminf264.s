@@ -1,4 +1,4 @@
-         TITLE 'GVBJINF - interface to ASM service routines'    
+         TITLE 'GVBJINF - interface to ASM service routines'
 ***********************************************************************
 *
 * (c) Copyright IBM Corporation 2023.
@@ -193,47 +193,7 @@ CDLOAD   DS    0H
 * -----------------------------------------------------------                   
 * Wait on multiple events                                                       
 * -----------------------------------------------------------
-WAITM    DS    0H                                                               
-         CLC   PAOPT(4),=CL4'TERM'
-         JNE   WAIT119
-         LGHI  R0,-1                   WAIT on CTTTECB
-         J     WAIT18
-WAIT119  EQU   *
-         CLC   PAOPT(4),=CL4'GO95'
-         JNE   WAIT120
-         LGHI  R0,0                    WAIT on CTTTECB + CTTGECB
-         J     WAIT18
-WAIT120  EQU   *
-         CLC   PAOPT(4),=CL4'0001'
-         JNE   WAIT121
-         LGHI  R0,1                    Index of ECB to wait
-         J     WAIT18
-WAIT121  EQU   *
-         CLC   PAOPT(4),=CL4'0002'
-         JNE   WAIT122
-         LGHI  R0,2                    Index of ECB to wait
-         J     WAIT18
-WAIT122  EQU   *
-         CLC   PAOPT(4),=CL4'0003'
-         JNE   WAIT123
-         LGHI  R0,3                    Index of ECB to wait
-         J     WAIT18
-WAIT123  EQU   *
-         CLC   PAOPT(4),=CL4'0004'
-         JNE   WAIT124
-         LGHI  R0,4                    Index of ECB to wait
-         J     WAIT18
-WAIT124  EQU   *
-         CLC   PAOPT(4),=CL4'0005'
-         JNE   WAIT125
-         LGHI  R0,5                    Index of ECB to wait
-         J     WAIT18
-WAIT125  EQU   *
-         wto 'illegal wait'
-         dc    h'0'
-WAIT18   EQU   *
-         STH   R0,PAOPT+4              Directions to ECB's
-*
+WAITM    DS    0H
          sysstate amode64=NO                                                    
          sam31                                                                  
 *                                                                               
@@ -243,6 +203,43 @@ WAIT18   EQU   *
          LLGTR R13,R1
          USING WORKAREA,R13
 *
+         sam64                                                                  
+         sysstate amode64=YES                                                   
+*
+         CLC   PAOPT(4),=CL4'TERM'
+         JNE   WAIT119
+         LGHI  R0,-1                   WAIT on CTTTECB
+         J     WAIT18
+WAIT119  EQU   *
+         CLC   PAOPT(4),=CL4'GO95'
+         JNE   WAIT120
+         LGHI  R0,0                    WAIT on CTTTECB + CTTGECB
+         J     WAIT18
+WAIT120  EQU   *                       Check for numeric directive
+         LAY   R1,PAOPT
+         LGHI  R2,4
+WAIT1200 EQU   *
+         CLI   0(R1),C'0'
+         JL    WAIT125
+         CLI   0(R1),C'9'
+         JH    WAIT125
+         LA    R1,1(,R1)
+         BRCT  R2,WAIT1200
+         LAY   R1,PAOPT
+         LGHI  R2,3
+         OY    R2,=Xl4'00000070'       Set L1 in pack's L1L2
+         EXRL  R2,EXEPACK                                   
+         CVB   R0,WKDBLWRK             Index of ECB to wait
+         J     WAIT18
+WAIT125  EQU   *
+         wto 'GVBUR70 : illegal wait'
+         dc    h'0'
+WAIT18   EQU   *
+         STH   R0,PAOPT+4              Directions to ECB's
+*
+         sysstate amode64=NO                                                    
+         sam31                                                                  
+*
          LLGT  R15,=V(GVBJWAIT)
          LGR   R1,R9                   Points to Parmstruct
          BASR  R14,R15
@@ -251,15 +248,29 @@ WAIT18   EQU   *
          LLGTR R1,R13
          LG    R13,WKSAV13
          FREEMAIN RU,LV=(0),A=(1)
-         DROP  R13 WORKAREA
 *                                                                               
          sam64                                                                  
          sysstate amode64=YES                                                   
-         J     EXIT                    And Exit                                 
+         J     EXIT                    And Exit
+*
+EXEPACK  PACK  WKDBLWRK(0),0(0,R1)
+         DROP  R13 WORKAREA
 * -----------------------------------------------------------                   
 * Post for event                                                                
 * -----------------------------------------------------------                   
 POST     DS    0H
+*
+         sysstate amode64=NO                                                    
+         sam31 
+*
+         LGHI  R0,WORKLEN
+         GETMAIN RU,LV=(0),LOC=(31)
+         STG   R13,WKSAV13-WORKAREA(R1)  
+         LLGTR R13,R1
+         USING WORKAREA,R13
+*
+         sam64                                                                  
+         sysstate amode64=YES                                                   
 *
          CLC   PAOPT(4),=CL4'WRKT'     Poke all worker threads
          JNE   POST119                   to terminate
@@ -270,45 +281,30 @@ POST119  EQU   *
          JNE   POST120
          LGHI  R0,0                    Index of ECB to post
          J     POST18
-POST120  EQU   *
-         CLC   PAOPT(4),=CL4'0001'
-         JNE   POST121
-         LGHI  R0,1                    Index of ECB to post
-         J     POST18
-POST121  EQU   *
-         CLC   PAOPT(4),=CL4'0002'
-         JNE   POST122
-         LGHI  R0,2                    Index of ECB to post
-         J     POST18
-POST122  EQU   *
-         CLC   PAOPT(4),=CL4'0003'
-         JNE   POST123
-         LGHI  R0,3                    Index of ECB to post
-         J     POST18
-POST123  EQU   *
-         CLC   PAOPT(4),=CL4'0004'
-         JNE   POST124
-         LGHI  R0,4                   Index of ECB to post
-         J     POST18
-POST124  EQU   *
-         CLC   PAOPT(4),=CL4'0005'
-         JNE   POST125
-         LGHI  R0,5                   Index of ECB to post
+POST120  EQU   *                       Check for numeric directive
+         LAY   R1,PAOPT
+         LGHI  R2,4
+POST1200 EQU   *
+         CLI   0(R1),C'0'
+         JL    POST125
+         CLI   0(R1),C'9'
+         JH    POST125
+         LA    R1,1(,R1)
+         BRCT  R2,POST1200
+         LAY   R1,PAOPT
+         LGHI  R2,3
+         OY    R2,=Xl4'00000070'       Set L1 in pack's L1L2
+         EXRL  R2,EXEPACK                                   
+         CVB   R0,WKDBLWRK             Index of ECB to post
          J     POST18
 POST125  EQU   *
-         wto 'illegal post'
+         wto 'GVBUR70 : illegal post'
          dc    h'0'
 POST18   EQU   *
          STH   R0,PAOPT+4             Directions to ECB
 *
          sysstate amode64=NO                                                    
          sam31 
-*
-         LGHI  R0,WORKLEN
-         GETMAIN RU,LV=(0),LOC=(31)
-         STG   R13,WKSAV13-WORKAREA(R1)  
-         LLGTR R13,R1
-         USING WORKAREA,R13
 *
          LLGT  R15,=V(GVBJPOST)
          LGR   R1,R9                   Points to Parmstruct

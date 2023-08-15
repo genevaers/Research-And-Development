@@ -97,7 +97,9 @@ CTRLENOUT DS   D               LENGTH OUTPUT AREA
 CTRMEMIN DS    D               ADDR INPUT AREA
 CTRMEMOUT DS   D               ADDR OUTPUT AREA
 CTRTHRDN DS    H
-         DS    XL14
+         DS    XL2
+CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
+         DS    XL8
 CTRLEN   EQU   *-CTRAREA
 *
 *
