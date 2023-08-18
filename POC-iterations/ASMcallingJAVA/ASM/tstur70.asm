@@ -83,11 +83,13 @@ WKPLISTL DS    F
 WKSUBPA1 DS    A
 WKSUBPA2 DS    A
 WKSUBPA3 DS    A
+WKSUBPAN DS    A
 WKSUBPL1 DS    F
 WKSUBPL2 DS    F
 WKSUBPL3 DS    F
+WKSUBPLN DS    F
 WKTASKS  DS    H
-         DS    H
+WKNCALL  DS    H
 WKECBLST DS  20A
 WKECBSUB DS  20F
 WKTCBSUB DS  20F
@@ -98,8 +100,12 @@ WKDBL3   DS    D
 WKEPARMA DS    A
 WKDDPRML DS    H
 WKDDPARM DS    CL30
+WKXPARM0 DS    A               Some additional parameters,, for TASKS=0
+WKXPARM1 DS    A
+WKXPARM2 DS    A
+WKXPARM3 DS    A
          DS    0F
-OUTDCB   DS    XL(outfilel)    Reentrant DCB and DCBE areas
+OUTDCBA  DS    A               Reentrant DCB and DCBE areas
 *
          DS    0F
 WKRETC   DS    F
@@ -108,6 +114,10 @@ WKSEND   DS    CL1024          SEND BUFFER
 WKRECV   DS    CL1024          RECV BUFFER
 *
 WORKLEN  EQU   (*-WORKAREA)
+*
+WORKDCB  DSECT
+OUTDCB   DS    XL(outfilel)    Reentrant DCB and DCBE areas
+WORKDCBL EQU   (*-WORKDCB)
 *
          print off
          SYSSTATE ARCHLVL=2
@@ -142,7 +152,7 @@ CODE     loctr                    followed by the code loctr
          LLGTR R9,R1              ORIGINAL PARAMETER LIST
          USING (TSTUR70,code),R12
 *
-         STORAGE OBTAIN,LENGTH=WORKLEN+8,LOC=24,CHECKZERO=YES
+         STORAGE OBTAIN,LENGTH=WORKLEN+8,LOC=31,CHECKZERO=YES
          CIJE  R15,14,A0002       zeroed?
          LR    R10,R1             save address
          LR    R0,R1              ZERO  WORK  AREA
@@ -158,6 +168,7 @@ A0002    EQU   *
          ST    R13,4(,R1)         save caller's r13 in our SVA
          ST    R1,8(,R13)         save our SVA in caller's
          LLGTR R13,R1             Our workarea into r13
+         USING WORKAREA,R13
          J     MAINLINE           BEGIN
 *
 *
@@ -165,27 +176,11 @@ CHAIN    DS    0H <-- never comes here
          ST    R13,4(,R1)         save caller's r13 in our SVA
          ST    R1,8(,R13)         save our SVA in caller's
          LLGTR R13,R1             Get new workarea into r13
-         USING WORKAREA,R13
 *
 ***********************************************************************
 MAINLINE DS    0H
 ***********************************************************************
          XC    WKRETC,WKRETC
-*
-***********************************************************************
-*  OPEN MESSAGE FILE                                                  *
-***********************************************************************
-*      open message file (DD SYSOUT=*)
-         LA    R14,outfile               COPY MODEL   DCB
-d1       using ihadcb,outdcb
-         MVC   outdcb(outfilel),0(R14)
-         lay   R0,outdcb                 SET  DCBE ADDRESS IN  DCB
-         aghi  R0,outfile0
-         sty   R0,d1.DCBDCBE
-*
-         LAY   R2,OUTDCB
-         MVC   WKREENT(8),OPENPARM
-         OPEN  ((R2),(OUTPUT)),MODE=31,MF=(E,WKREENT)
 *
 ***********************************************************************
 *  DISCOVER PARAMETERS SUPPLIED                                       *
@@ -202,7 +197,6 @@ d1       using ihadcb,outdcb
          BCTR  R15,0
          LA    R1,2(,R8)          == parm value
          EXRL  R15,MVCPARM
-         LA    R0,WKPARM
 *
 *
 A00010   EQU   *
@@ -275,16 +269,11 @@ A000108  EQU   *
 *
 *
 A000109  EQU   *
-         MVC   WKPRINT,SPACES
-         MVC   WKPRINT(27),=CL27'TSTUR70: INPUT PARAMETERS: '
-         MVC   WKPRINT+27(100),WKPARM
-         LA    R2,OUTDCB
-         LA    R0,WKPRINT
-         PUT   (R2),(R0)
+         MVC   WKTASKS,=H'1'      default value
+         MVC   WKNCALL,=H'1'      default value
 *
          L     R1,WKSUBPA1
          L     R2,WKSUBPL1
-         MVC   WKTASKS,=H'1'      default value
          CLC   0(5,R1),=CL5'TASKS'
          JNE   A00120
          JAS   R14,SUBTASKS
@@ -293,20 +282,36 @@ A000109  EQU   *
          MVC   WKTASKS,=H'20'
          wto 'TSTUR70 : too many tasks -- now set to TASKS=20'
 A00120   EQU   *
+         CLC   0(5,R1),=CL5'NCALL'
+         JNE   A00130
+         ST    R1,WKSUBPAN
+         ST    R2,WKSUBPLN
+         JAS   R14,NCALLS
+A00130   EQU   *
+*
+         L     R1,WKSUBPA2
+         L     R2,WKSUBPL2
+         CLC   0(5,R1),=CL5'TASKS'
+         JNE   A00140
+         JAS   R14,SUBTASKS
+         CLC   WKTASKS,=H'20'                  To many subtasks..?
+         JNH   A00140                          Set lower
+         MVC   WKTASKS,=H'20'
+         wto 'TSTUR70 : too many tasks -- now set to TASKS=20'
+A00140   EQU   *
+         CLC   0(5,R1),=CL5'NCALL'
+         JNE   A00150
+         ST    R1,WKSUBPAN
+         ST    R2,WKSUBPLN
+         JAS   R14,NCALLS
+A00150   EQU   *
+**       CLC   WKNCALL,=H'8'
+**       JE    A00150B
+**       L     R0,WKPLISTA        ===> PARAMETER LIST ADDRESS ADDR
+**       DC    H'0'
+A00150B  EQU   *
 *
 ***********************************************************************
-*  LOAD GVBUR70                                                       *
-***********************************************************************
-         LOAD  EPLOC=LINKNAME,ERRET=A0004
-         OILH  R0,MODE31
-         ST    R0,WKUR70A
-         J     A0006
-A0004    EQU   *
-         WTO 'TSTUR70 : UNABLE TO LOAD GVBUR70'
-         MVC   WKRETC,=F'16'
-         J     DONE
-***********************************************************************
-A0006    EQU   *
          LA    R3,UR70PARM
          USING UR70STR,R3
          ST    R3,UR70LIST
@@ -315,17 +320,80 @@ A0006    EQU   *
          LAY   R0,WKRECV
          ST    R0,UR70LIST+08
          OI    UR70LIST,X'80'
+*
+         CLC   WKTASKS,=H'0'
+         JNE   A0003
+*
 ***********************************************************************
-* What's our mission: single/multi threaded, or subtask ?
+*  IF SUBTASK (NTASK=0) GET THE DCB AND FIXED AREA AND OTHER FIELDS   *
 ***********************************************************************
-         CLC   WKTASKS,=H'0'                   Is this a subtask ?
-         JE    A0010A                          No, Don't do open call
-*                                              Or start subtasks
+         L     R9,WKPLISTA        SAVED PARAMETER LIST ADDRESS ADDR
+         L     R8,0(,R9)          => PARM LIST
+         L     R1,32+0(,R8)       => WKXPARM0
+         MVC   WKTASKS,0(R1)
+         MVC   WKNCALL,2(R1)
+         MVC   WKUR70A,4(R1)
+         LA    R1,32+4(,R8)       => WKXPARM1
+         L     R0,0(,R1)
+         ST    R0,OUTDCBA
+*
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(27),=CL27'TSTUR70: INPUT PARAMETERS: '
+         MVC   WKPRINT+27(100),WKPARM
+         JAS   R10,MYPUT
+         J     A0010A
+*
+***********************************************************************
+*  IF NOT SUBTASK -- LOAD GVBUR70                                     *
+***********************************************************************
+A0003    EQU   *
+         LOAD  EPLOC=LINKNAME,ERRET=A0004
+         OILH  R0,MODE31
+         ST    R0,WKUR70A
+         J     A0006
+A0004    EQU   *
+         WTO 'TSTUR70 : UNABLE TO LOAD GVBUR70'
+         MVC   WKRETC,=F'16'
+         J     DONE
+A0006    EQU   *
+*
+***********************************************************************
+*  IF NOT SUBTASK -- ALLOCATE DCB AND FIXED AREA AND OPEN TRACE FILE  *
+***********************************************************************
+         STORAGE OBTAIN,LENGTH=WORKDCBL,LOC=24
+         ST    R1,OUTDCBA
+*
+         STORAGE OBTAIN,LENGTH=32,LOC=31
+         ST    R1,WKXPARM0
+*
+*
+         LA    R14,outfile               COPY MODEL   DCB
+         L     R2,OUTDCBA
+d1       using ihadcb,R2
+         MVC   0(outfilel,R2),0(R14)
+         aghi  R2,outfile0
+         sty   R2,d1.DCBDCBE
+         L     R2,OUTDCBA
+         MVC   WKREENT(8),OPENPARM
+         OPEN  ((R2),(OUTPUT)),MODE=31,MF=(E,WKREENT)
+         TM    48(R2),X'10'
+         JO    A0008
+         WTO 'GVBUR70 : Trace file not opened'
+         MVC   WKRETC,=F'16'
+         J     DONE
+*
+A0008    EQU   *
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(27),=CL27'TSTUR70: INPUT PARAMETERS: '
+         MVC   WKPRINT+27(100),WKPARM
+         JAS   R10,MYPUT
+*
+***********************************************************************
+*  IF NOT SUBTASK -- PERFORM INITIALIZATION CALL
+***********************************************************************
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(32),=CL32'TSTUR70: CALLING INIT (#threads)'
-         LA    R2,OUTDCB
-         LA    R0,WKPRINT
-         PUT   (R2),(R0)
+         JAS   R10,MYPUT
 *
          XC    UR70ANCH,UR70ANCH
          MVC   UR70FUN,=CL8'INIT'             Set number of threads
@@ -337,9 +405,9 @@ A0006    EQU   *
          L     R15,WKUR70A
          BASR  R14,R15
          LTR   R15,R15
-         JZ    A0008
+         JZ    A0009
          DC    H'0'
-A0008    EQU   *
+A0009    EQU   *
          ICM   R15,B'1111',UR70RETC
          JZ    A0010
          DC    H'0'
@@ -347,10 +415,10 @@ A0008    EQU   *
 A0010    EQU   *
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(33),=CL33'TSTUR70: CALLED INIT SUCCESSFULLY'
-         LA    R2,OUTDCB
-         LA    R0,WKPRINT
-         PUT   (R2),(R0)
+         JAS   R10,MYPUT
 *
+***********************************************************************
+*  IF NOT SUBTASK -- AND MORE THAN ONE THREAD: START SUBTASKS
 ***********************************************************************
          CLC   WKTASKS,=H'1'                   Is this a mother..?
          JE    A0010A                          No, Don't start subtasks
@@ -358,17 +426,38 @@ A0010    EQU   *
          WTO 'TSTUR70 : STARTING SUBTASKS'
          MVC   WKDDPRML,=H'7'
          MVC   WKDDPARM,=CL30'TASKS=0'
+         L     R1,WKXPARM0
+         MVC   0(2,R1),WKTASKS      pass down number tasks
+         MVC   2(2,R1),WKNCALL                number calls
+         MVC   4(4,R1),WKUR70A                address gvbur70
+         L     R0,OUTDCBA
+         ST    R0,WKXPARM1          pass DCB address to subtask also
+*
+         J     A0010G               SKIP
+         ICM   R1,B'1111',WKSUBPAN
+         JZ    A0010G
+         L     R2,WKSUBPLN
+         BCTR  R2,0
+         MVI   WKDDPARM+7,C','
+         EX    R2,EXENTASK
+         LA    R1,7+1(,R1)
+         AR    R1,R2
+         MVI   1(R1),X'7D'
+         L     R2,WKSUBPLN
+         LA    R2,8(,R2)
+         STH   R2,WKDDPRML
+
+A0010G   DS    0H
          LAY   R0,WKDDPRML
          ST    R0,WKEPARMA
-*
          LH    R5,WKTASKS
          LAY   R6,WKTCBSUB
          LAY   R7,WKECBSUB
 A0010C   DS    0H
          LAY   R1,WKEPARMA          start the subtasks (passed to subt)
 *
-         basr  r9,0
-         USING *,R9
+* ***    basr  r9,0
+* ***    USING *,R9
 * * * *  ATTACH EP=TSTUR70,         entry point of subtask             +
                SVAREA=YES,                                             +
                ECB=(7)
@@ -377,14 +466,14 @@ A0010C   DS    0H
          LA    R15,IHB0034
          ST    R7,8(,R15)
          OI    8(R15),X'80'
-         SVC   42                   Attach subtask
+         SVC   42
 *
          ST    R1,0(,R6)
 *
          LA    R6,4(,R6)
          LA    R7,4(,R7)
          BRCT  R5,A0010C
-         DROP  R9
+* ***    DROP  R9
 *
          LA    R1,WKECBLST          build list of ECB addresses
          LA    R2,WKECBSUB
@@ -403,10 +492,12 @@ A0010D   EQU   *
 A0010E   EQU   *
          LAY   R1,WKECBLST
          WAIT  1,ECBLIST=(1)
-         WTO 'TSTUR70 : SUBTASK has COMPLETED'
+         WTO 'TSTUR70 : SUBTASK HAS COMPLETED'
          BRCT  R5,A0010E
 *
-         WTO 'TSTUR70 : DETACHING SUBTASKS'
+         WTO 'TSTUR70 : DETACHING SUBTASKS SHORTLY'
+*
+         STIMER WAIT,BINTVL=FIVESEC
 *
          LAY   R4,WKTCBSUB
          LH    R5,WKTASKS           detach them
@@ -424,9 +515,7 @@ A0010A   EQU   *
          WTO 'TSTUR70 : ABOUT TO CALL JAVA METHOD'
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(32),=CL32'TSTUR70: CALLING MyClass Method1'
-         LA    R2,OUTDCB
-         LA    R0,WKPRINT
-         PUT   (R2),(R0)
+         JAS   R10,MYPUT
 *
          MVC   UR70FUN,=CL8'CALL'
          MVC   UR70OPT,SPACES
@@ -437,6 +526,8 @@ A0010A   EQU   *
          XC    UR70RETC,UR70RETC
          MVC   WKSEND(10),=CL10'0123456789'
 *
+         LH    R2,WKNCALL
+A0011B   EQU   *
          LAY   R1,UR70LIST
          L     R15,WKUR70A
          BASR  R14,R15
@@ -449,20 +540,18 @@ A0011    EQU   *
          DC    H'0'
 *
 A0012    EQU   *
+         BRCT  R2,A0011B
+*
          WTO 'TSTUR70 : HAS CALLED JAVA METHOD'
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(09),=CL09'TSTUR70: '
          MVC   WKPRINT+09(22),WKRECV
-         LA    R2,OUTDCB
-         LA    R0,WKPRINT
-         PUT   (R2),(R0)
+         JAS   R10,MYPUT
 ***********************************************************************
 A0016    EQU   *
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(31),=CL31'TSTUR70: CALLING JAVA COMPLETED'
-         LA    R2,OUTDCB
-         LA    R0,WKPRINT
-         PUT   (R2),(R0)
+         JAS   R10,MYPUT
 *
 DONE     DS    0H
          LLGT  R15,WKRETC
@@ -473,13 +562,24 @@ DONE     DS    0H
          BR    R14                     RETURN
 *
 ***********************************************************************
+MYPUT    DS    0F
+         MVC   WKREENT(MDLENQXL),MDLENQX
+         ENQ   MF=(E,WKREENT)
+         L     R2,OUTDCBA
+         LA    R0,WKPRINT
+         PUT   (R2),(R0)
+         MVC   WKREENT(MDLDEQXL),MDLDEQX
+         DEQ   MF=(E,WKREENT)
+         BR    R10
+*
+***********************************************************************
 *
 * TASKS= sub parameter (R1 => subparameter, R2 = length)
 *
 SUBTASKS DS    0H
          STM   R14,R12,WKSAVE2+12
 *
-         CLC   0(6,R1),=CL6'TASKS='
+         CLC   0(6,R1),=CL6'TASKS=' = NN IS LARGEST NUMBER
          JNE   A000170
          CHI   R2,7                    Too little
          JL    A000170
@@ -488,13 +588,13 @@ SUBTASKS DS    0H
          LA    R4,6(,R1)
          LR    R3,R2
          AHI   R3,-6
-A000190  EQU   *                       Check for numerics
+A000175  EQU   *                       Check for numerics
          CLI   0(R4),C'0'
          JL    A000170
          CLI   0(R4),C'9'
          JH    A000170
          LA    R4,1(,R4)
-         BRCT  R3,A000190
+         BRCT  R3,A000175
 *
          LA    R1,6(,R1)               First digit of number
 
@@ -509,6 +609,48 @@ A000190  EQU   *                       Check for numerics
 A000170  EQU   *
          wto 'TSTUR70 : error in TASKS sub parameter'
 A000180  EQU   *
+*
+         LM    R14,R12,WKSAVE2+12
+         BR    R14
+*
+*
+***********************************************************************
+*
+* NCALL= sub parameter (R1 => subparameter, R2 = length)
+*
+NCALLS   DS    0H
+         STM   R14,R12,WKSAVE2+12
+*
+         CLC   0(6,R1),=CL6'NCALL='    = NNNN IS LARGEST NUMBER
+         JNE   A000150
+         CHI   R2,7                    Too little
+         JL    A000150
+         CHI   R2,10                   Too much
+         JH    A000150
+         LA    R4,6(,R1)
+         LR    R3,R2
+         AHI   R3,-6
+A000155  EQU   *                       Check for numerics
+         CLI   0(R4),C'0'
+         JL    A000150
+         CLI   0(R4),C'9'
+         JH    A000150
+         LA    R4,1(,R4)
+         BRCT  R3,A000155
+*
+         LA    R1,6(,R1)               First digit of number
+
+         AHI   R2,-7                   Number length - 1 =L2
+         OY    R2,=Xl4'00000070'       Set L1 in pack's L1L2
+         EXRL  R2,EXEPACK
+         CVB   R0,WKDBL1
+         STH   R0,WKNCALL
+*
+         wto 'TSTUR70 : NCALL number of calls per thread specified'
+         J     A000160
+A000150  EQU   *
+         wto 'TSTUR70 : error in NCALL sub parameter'
+A000160  EQU   *
 *
          LM    R14,R12,WKSAVE2+12
          BR    R14
@@ -530,17 +672,28 @@ CLCR1R14 CLC   0(0,R1),0(R14)     * * * * E X E C U T E D * * * *
 MVCPARM  MVC   WKPARM(0),0(R1)    EXECUTED <<< <<< <<< <<<
 *
 EXEPACK  PACK  WKDBL1(0),0(0,R1)
+EXENTASK MVC   WKDDPARM+8(0),0(R1)
 *
          DS   0D
 MODE31   equ   X'8000'
          DS   0D
 OPENPARM DC    XL8'8000000000000000'
 *
+FIVESEC  DC    F'500'
 EYEBALL  DC    CL8'GVBUR70'
 SNDLEN   DC    F'10'
 RECLEN   DC    F'22'
 LINKNAME DC    CL8'GVBUR70'
 SPACES   DC    CL256' '
+         DS    0F
+MDLENQX  ENQ   (GENEVA,LOGNAME,E,,STEP),RNL=NO,MF=L
+MDLENQXL EQU   *-MDLENQX
+*
+MDLDEQX  DEQ   (GENEVA,LOGNAME,,STEP),RNL=NO,MF=L
+MDLDEQXL EQU   *-MDLDEQX
+*
+GENEVA   DC    CL8'GENEVA'
+LOGNAME  DC    CL128'GVBUR70'
 *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *                                                                     *

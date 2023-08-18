@@ -37,7 +37,7 @@
 *
 DYNAREA  DSECT
 *
-SAVEAREA DC    18F'0'
+SAVEAREA DC    18F'0'          SAVE AREA for calls in 31 BIT mode
 SAVER13  DS    D
 *
          DS    0F
@@ -137,7 +137,12 @@ GVBJMR95 CSECT
          USING PARMSTR,R9
 *
          GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
-         LR    R11,R1                    MOVE GETMAINED ADDRESS TO R11
+         LLGTR R11,R1                    MOVE GETMAINED ADDRESS TO R11
+         LGR   R0,R11
+         LGHI  R1,DYNLEN
+         XGR   R14,R14 
+         XGR   R15,R15 
+         MVCL  R0,R14  
          USING DYNAREA,11                ADDRESSABILITY TO DSECT
          STG   R13,SAVER13               SAVE CALLER SAVE AREA ADDRESS
          LAY   R15,SAVEAREA              GET ADDRESS OF OWN SAVE AREA
@@ -308,6 +313,8 @@ MAIN_114 EQU   *
          L     R15,GVBMR95E
          BASR  R14,R15
 *
+         STIMER WAIT,BINTVL=FIVESEC
+*
 MAIN_200 EQU   *
 *         J     MAIN_201
          MVC   WKPRINT,SPACES
@@ -360,6 +367,7 @@ CLCR1R14 CLC   0(0,R1),0(R14)     * * * * E X E C U T E D * * * *
 *
 *        CONSTANTS
 *
+FIVESEC  DC    F'500'
 H1       DC    H'1'
 H4       DC    H'4'
 H255     DC    H'255'

@@ -138,7 +138,12 @@ GVBJPOST CSECT
          sam31
 *
          GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
-         LR    R11,R1                    MOVE GETMAINED ADDRESS TO R11
+         LLGTR R11,R1                    MOVE GETMAINED ADDRESS TO R11
+         LGR   R0,R11
+         LGHI  R1,DYNLEN
+         XGR   R14,R14 
+         XGR   R15,R15 
+         MVCL  R0,R14  
          USING DYNAREA,11                ADDRESSABILITY TO DSECT
          STG   R13,SAVER13               SAVE CALLER SAVE AREA ADDRESS
          LAY   R15,SAVEAREA              GET ADDRESS OF OWN SAVE AREA
