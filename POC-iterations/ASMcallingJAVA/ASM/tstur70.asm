@@ -57,6 +57,7 @@
 WORKAREA DSECT
 WKSVA    ds  18F               Save area
 WKSAVE2  DS  18F               next SVA
+WKR14R1  DS   4F               wto  SVA
 *
 WKTIMWRK DS   0XL16
 WKDBLWK1 DS    D               TEMPORARY DOUBLEWORD  WORK AREA
@@ -96,7 +97,7 @@ WKTCBSUB DS  20F
 WKPL6    DS    PL6
 WKDBL1   DS    D
 WKDBL2   DS    D
-WKDBL3   DS    D
+WKDBL3   DS    XL08               Doubleword work area
 WKEPARMA DS    A
 WKDDPRML DS    H
 WKDDPARM DS    CL30
@@ -280,7 +281,9 @@ A000109  EQU   *
          CLC   WKTASKS,=H'20'                  To many subtasks..?
          JNH   A00120                          Set lower
          MVC   WKTASKS,=H'20'
+         STM   R14,R1,WKR14R1
          wto 'TSTUR70 : too many tasks -- now set to TASKS=20'
+         LM    R14,R1,WKR14R1
 A00120   EQU   *
          CLC   0(5,R1),=CL5'NCALL'
          JNE   A00130
@@ -305,11 +308,6 @@ A00140   EQU   *
          ST    R2,WKSUBPLN
          JAS   R14,NCALLS
 A00150   EQU   *
-**       CLC   WKNCALL,=H'8'
-**       JE    A00150B
-**       L     R0,WKPLISTA        ===> PARAMETER LIST ADDRESS ADDR
-**       DC    H'0'
-A00150B  EQU   *
 *
 ***********************************************************************
          LA    R3,UR70PARM
@@ -392,7 +390,12 @@ A0008    EQU   *
 *  IF NOT SUBTASK -- PERFORM INITIALIZATION CALL
 ***********************************************************************
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(32),=CL32'TSTUR70: CALLING INIT (#threads)'
+         MVC   WKPRINT(36),=CL36'TSTUR70: DOING INIT FOR:XXXX THREADS'
+         LH    R15,WKTASKS
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+24(4),NUMMSK+8
+         MVI   WKPRINT+24,C' '
+         ED    WKPRINT+24(4),WKDBL3+6
          JAS   R10,MYPUT
 *
          XC    UR70ANCH,UR70ANCH
@@ -405,12 +408,20 @@ A0008    EQU   *
          L     R15,WKUR70A
          BASR  R14,R15
          LTR   R15,R15
-         JZ    A0009
-         DC    H'0'
-A0009    EQU   *
+         JNZ   A0009
          ICM   R15,B'1111',UR70RETC
          JZ    A0010
-         DC    H'0'
+A0009    EQU   *
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(34),=CL34'TSTUR70: GVBUR70 ERROR XXXX (INIT)'
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+23(4),NUMMSK+8
+         MVI   WKPRINT+23,C' '
+         ED    WKPRINT+23(4),WKDBL3+6
+         JAS   R10,MYPUT
+         WTO 'TSTUR70 : ERROR CALLING GVBUR70 (INIT)'
+         MVC   WKRETC,=F'8'
+         J     DONE
 *
 A0010    EQU   *
          MVC   WKPRINT,SPACES
@@ -514,7 +525,13 @@ A0010F   EQU   *
 A0010A   EQU   *
          WTO 'TSTUR70 : ABOUT TO CALL JAVA METHOD'
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(32),=CL32'TSTUR70: CALLING MyClass Method1'
+         MVC   WKPRINT(43),=CL43'TSTUR70: CALLING MyClass Method1 XXXX +
+               TIMES'
+         LH    R15,WKNCALL
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+33(4),NUMMSK+8
+         MVI   WKPRINT+33,C' '
+         ED    WKPRINT+33(4),WKDBL3+6
          JAS   R10,MYPUT
 *
          MVC   UR70FUN,=CL8'CALL'
@@ -532,12 +549,20 @@ A0011B   EQU   *
          L     R15,WKUR70A
          BASR  R14,R15
          LTR   R15,R15
-         JZ    A0011
-         DC    H'0'
-A0011    EQU   *
+         JNZ   A0011
          ICM   R15,B'1111',UR70RETC
          JZ    A0012
-         DC    H'0'
+A0011    EQU   *
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(34),=CL34'TSTUR70: GVBUR70 ERROR XXXX (CALL)'
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+23(4),NUMMSK+8
+         MVI   WKPRINT+23,C' '
+         ED    WKPRINT+23(4),WKDBL3+6
+         JAS   R10,MYPUT
+         WTO 'TSTUR70 : ERROR CALLING GVBUR70 (CALL)'
+         MVC   WKRETC,=F'8'
+         J     DONE
 *
 A0012    EQU   *
          BRCT  R2,A0011B
@@ -684,6 +709,7 @@ EYEBALL  DC    CL8'GVBUR70'
 SNDLEN   DC    F'10'
 RECLEN   DC    F'22'
 LINKNAME DC    CL8'GVBUR70'
+NUMMSK   DC    XL12'402020202020202020202021'
 SPACES   DC    CL256' '
          DS    0F
 MDLENQX  ENQ   (GENEVA,LOGNAME,E,,STEP),RNL=NO,MF=L
