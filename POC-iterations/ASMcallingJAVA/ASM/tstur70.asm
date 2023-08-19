@@ -300,7 +300,9 @@ A00130   EQU   *
          CLC   WKTASKS,=H'20'                  To many subtasks..?
          JNH   A00140                          Set lower
          MVC   WKTASKS,=H'20'
+         STM   R14,R1,WKR14R1
          wto 'TSTUR70 : too many tasks -- now set to TASKS=20'
+         LM    R14,R1,WKR14R1
 A00140   EQU   *
          CLC   0(5,R1),=CL5'NCALL'
          JNE   A00150
