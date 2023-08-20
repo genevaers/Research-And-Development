@@ -27,8 +27,15 @@
 *                           IT INVOKES A JAVA CLASS AND METHOD.       *
 *                                                                     *
 *  PARAMETERS             : PGM=TSTUR70                 1 main task   *
+*                                                       1 Java call   *
+*                         : PGM=TSTUR70,PARM='NCALL=m'  1 main task   *
+*                                                       m Java calls  *
 *                           PGM=TSTUR70,PARM='TASKS=n'  n sub tasks   *
 *                           PGM=TSTUR70,PARM='TASKS=0'  It is sub task*
+*                           PGM=TSTUR70,PARM='TASKS=n,NCALL=m'        *
+*                                                       n sub tasks   *
+*                                                       m Java calls  *
+*                                                         each thread *
 *                                                                     *
 ***********************************************************************
 *
@@ -502,11 +509,10 @@ A0010D   EQU   *
 *
          WTO 'TSTUR70 : WAITING FOR SUBTASKS TO COMPLETE'
          LH    R5,WKTASKS           wait for all to complete
-A0010E   EQU   *
          LAY   R1,WKECBLST
-         WAIT  1,ECBLIST=(1)
-         WTO 'TSTUR70 : SUBTASK HAS COMPLETED'
-         BRCT  R5,A0010E
+         WAIT  (R5),ECBLIST=(1)
+*
+         WTO 'TSTUR70 : SUBTASKS HAVE COMPLETED'
 *
          WTO 'TSTUR70 : DETACHING SUBTASKS SHORTLY'
 *
@@ -517,9 +523,9 @@ A0010E   EQU   *
 A0010F   EQU   *
          DETACH (4)
          LA    R4,4(,R4)
-         WTO 'TSTUR70 : SUBTASK is DETACHED'
+         WTO 'TSTUR70 : SUBTASK IS DETACHED'
          BRCT  R5,A0010F
-         WTO 'TSTUR70 : ALL SUBTASKS HAVE COMPLETED'
+         WTO 'TSTUR70 : ALL SUBTASKS ARE DETACHED'
 *
          J     DONE                 Now we're done
 *
