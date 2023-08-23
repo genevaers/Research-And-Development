@@ -66,12 +66,14 @@ class RunSupervisor implements Runnable {
     private Integer lenout;
     private String strout;
     private Integer threadnmbr;
+    private Integer ntrace;
   
-    RunSupervisor( String name, String stringin, Integer lengthout, String stringout) {
+    RunSupervisor( String name, String stringin, Integer lengthout, String stringout, Integer trace) {
        threadName = name;
        strin = stringin;
        lenout = lengthout;
        strout = stringout;
+       ntrace = trace;
  
     System.out.println(threadName + ":Creating");
     }
@@ -127,7 +129,7 @@ class RunSupervisor implements Runnable {
 
                 /* --- Start the workers */
                 for(int i = numberOfThreads; i > 0; i--) {
-                    RunWorker R3 = new RunWorker( "Worker", i, "string1", 0, "string2");
+                    RunWorker R3 = new RunWorker( "Worker", i, "string1", 0, "string2", ntrace);
                     R3.start();
                 }
                 /* --- Wait a sec for workers to start */
@@ -190,13 +192,15 @@ class RunSupervisor implements Runnable {
     private String strout;
     private Integer thrdnbr;
     private String threadIdentifier;
+    private Integer ntrace;
 
- RunWorker( String name, Integer threadNbr, String stringin, Integer lengthout, String stringout) {
+ RunWorker( String name, Integer threadNbr, String stringin, Integer lengthout, String stringout, Integer trace) {
     threadName = name;
     thrdNbr = threadNbr;
     strin = stringin;
     lenout = lengthout;
     strout = stringout;
+    ntrace = trace;
 
     threadIdentifier = String.format("%6s%04d", threadName, threadNbr);
     System.out.println(threadIdentifier + ":Creating");
@@ -245,8 +249,10 @@ class RunSupervisor implements Runnable {
         result = a.showZos2(2, "WAITMR95", thisThrd, "DARTH", lenout_wait);
         waitrc = b.doAtoi(result, 0, 8);
 
-        System.out.println(threadIdentifier + ":WAITMR95 option " + thisThrd + " returned with rc: " + waitrc);
-        System.out.println(threadIdentifier + ":Detailed diagnostics: " + result);
+        if (ntrace > 1) {
+          System.out.println(threadIdentifier + ":WAITMR95 option " + thisThrd + " returned with rc: " + waitrc);
+          System.out.println(threadIdentifier + ":Detailed diagnostics: " + result);
+        }
 
         switch ( waitrc ) {
           // GVBMR95 has completed
@@ -273,7 +279,10 @@ class RunSupervisor implements Runnable {
             } else {
                sentData = null;
             }
-            System.out.println("Class:" + javaClass + ":method:" + methodName + ":sent:" + sentData + ".");
+
+            if (ntrace > 1) {
+              System.out.println("Class:" + javaClass + ":method:" + methodName + ":sent:" + sentData + ".");
+            }
 
             found = false;
             if (found) {
@@ -315,7 +324,9 @@ class RunSupervisor implements Runnable {
                if (!once) {
                   aarg[0] = String.class; // expected argument list which could vary
                   for (i = 0; i < mName.length; i++) {
-                     System.out.println("Special optimization for Class:" + javaClass + " using method:" + mName[i]);
+                     if (ntrace > 1 ) {
+                       System.out.println("Optimized loading for Class:" + javaClass + " using method:" + mName[i]);
+                     }
                      method[i] = javaClassLoader2.obtainClassMethod(javaClass, mName[i], aarg);
                  }
                  once = true;
@@ -329,7 +340,9 @@ class RunSupervisor implements Runnable {
             //javaClassLoader.invokeClassMethod(javaClass, methodName);
             cccc = javaClassLoader2.executeClassMethod(method[j], sentData);    //"STUFF");
             //cccc = javaClassLoader.invokeClassMethod(javaClass, methodName,"STUFF");
-            System.out.println("Back:" + cccc);
+            if (ntrace > 1 ) {
+              System.out.println("Back:" + cccc);
+            }
             
             //result = a.showZos2(3, "POSTMR95", thisThrd, "DARTH VADER HERE", lenout_post);
             // WHAT'S UP WITH LENOUT_POST ?
@@ -372,15 +385,31 @@ class RunSupervisor implements Runnable {
   }
  }
 
-public class GvbJavaDaemon2 {
+public class GvbJavaDaemon3 {
 
    public static void main(String args[]) {
 
       System.out.println("GvbJavaDaemon Started:");
       zOSInfo2 a = new zOSInfo2();
 
+      int nArgs =args.length;
       String strin = "DARTH";
       int   lenout = 1024;
+      Integer trace = 0;
+      int i;
+
+      for (i = 0; i < nArgs; i++) {
+        if (args[i].substring(0,1).equals("-"))
+        {
+          switch( args[i].substring(1,2)) {
+            case "D":
+              trace = 3;
+              break;
+            default:
+              break;
+          }
+        }
+      }
 
       /* --- Do some class loading --------------------- */
       GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
@@ -411,7 +440,7 @@ public class GvbJavaDaemon2 {
       System.out.println(strin + lenout);
 
       /* --- Run thread supervisor ----------------- */
-      RunSupervisor R2 = new RunSupervisor( "Supervisor", "string1", 16, "string2");
+      RunSupervisor R2 = new RunSupervisor( "Supervisor", "string1", 16, "string2", trace);
       R2.start();
    }   
 }

@@ -36,6 +36,9 @@
 *                                                       n sub tasks   *
 *                                                       m Java calls  *
 *                                                         each thread *
+*  Notes: Max 'n' is 20                                               *
+*         Max 'm' is 32767                                            *
+*                                                                     *
 *                                                                     *
 ***********************************************************************
 *
@@ -516,7 +519,7 @@ A0010D   EQU   *
 *
          WTO 'TSTUR70 : DETACHING SUBTASKS SHORTLY'
 *
-         STIMER WAIT,BINTVL=FIVESEC
+***      STIMER WAIT,BINTVL=FIVESEC
 *
          LAY   R4,WKTCBSUB
          LH    R5,WKTASKS           detach them
@@ -658,7 +661,7 @@ NCALLS   DS    0H
          JNE   A000150
          CHI   R2,7                    Too little
          JL    A000150
-         CHI   R2,10                   Too much
+         CHI   R2,12                   Too much
          JH    A000150
          LA    R4,6(,R1)
          LR    R3,R2
@@ -678,7 +681,12 @@ A000155  EQU   *                       Check for numerics
          EXRL  R2,EXEPACK
          CVB   R0,WKDBL1
          STH   R0,WKNCALL
+         NI    WKNCALL,X'7F'      Don't retain negative number
+         C     R0,=F'32767'
+         JNH   A000156
+         wto 'TSTUR70 : NCALL must be less than or equal to 32767'
 *
+A000156  EQU   *
          wto 'TSTUR70 : NCALL number of calls per thread specified'
          J     A000160
 A000150  EQU   *

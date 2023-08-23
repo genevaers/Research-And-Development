@@ -84,9 +84,9 @@ Java_zOSInfo2_showZos2(JNIEnv *env
             pStruct->anchor[4], pStruct->anchor[5], pStruct->anchor[6], pStruct->anchor[7]);
     #endif
 
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("Fid %d\n", fid);
-    /* #endif */
+    #endif
 
    /* --- Get the jparm input, and convert to EBCDIC  ----*/
     msg=(*env)->GetStringUTFChars(env,jParm,0); 
@@ -94,9 +94,9 @@ Java_zOSInfo2_showZos2(JNIEnv *env
     (*env)->ReleaseStringUTFChars(env, jParm, msg);
     strncpy(pStruct->func, msg, 8);    /* Put parm in     */ 
 
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("Fid %d(%s)\n", fid, pStruct->func);
-    /* #endif */
+    #endif
 
    /* --- Get the Jopt input, and convert to EBCDIC  ---- */
     msg=(*env)->GetStringUTFChars(env,jOpt,0); 
@@ -104,11 +104,11 @@ Java_zOSInfo2_showZos2(JNIEnv *env
     (*env)->ReleaseStringUTFChars(env, jOpt, msg);
     strncpy(pStruct->opt, msg, 8);     /* Put options in  */
     
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("Fid %d(%s-%s)\n", fid, pStruct->func, pStruct->opt);
-    /* #endif */
+    #endif
 
-    /* --- Get length of input string (min is 8)      ----*/
+   /* --- Get length of input string (min is 8)      ----*/
     len1=(*env)->GetStringUTFLength(env, stringin);
     if (len1 > 8) {
       pStruct->length1 = len1;
@@ -116,67 +116,67 @@ Java_zOSInfo2_showZos2(JNIEnv *env
       pStruct->length1 = 8;
     }
 
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("Fid %d(%s-%s) pStruct->length1 %d\n", fid, pStruct->func, pStruct->opt,pStruct->length1);
-    /* #endif */
+    #endif
 
-    /* --- Get the stringin, and convert to EBCDIC  ----  */
+   /* --- Get the stringin, and convert to EBCDIC  ----  */
     msg=(*env)->GetStringUTFChars(env, stringin, 0); 
     __atoe((char*) msg);                 
     (*env)->ReleaseStringUTFChars(env, stringin, msg);
 
-    /* --- Get max length of expected output string  ---- */
+   /* --- Get max length of expected output string  ---- */
     len2 = lengthout;
  
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("Fid %d(%s-%s) len1 %d (%d) len2 %d\n", fid, pStruct->func, pStruct->opt, len1, pStruct->length1, len2);
-    /* #endif */
+    #endif
 
-    /* -- Buffer to give converted input data to ASMINF --*/
+   /* -- Buffer to give converted input data to ASMINF --*/
     passarea1 = malloc(pStruct->length1);   /* Get area   */
     memset(passarea1, 0, pStruct->length1); /* Clear area */
     strncpy(passarea1, msg, len1);     /* Put parm in     */
     pStruct->addr1   = passarea1;
 
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("Fid %d passarea1 %0.8s\n", fid, passarea1);
-    /* #endif */
+    #endif
 
-    /* add prefix for return/reason and suffix x'00' */
-    /* add more for Class(32) and Method(32)         */
+   /* add prefix for return/reason and suffix x'00' */
+   /* add more for Class(32) and Method(32)         */
     actual_len2 = len2 + 8 + 8 + 32 + 32 + 1;
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("len2 %d actual_len2 %d\n", len2, actual_len2);
-    /* #endif */
+    #endif
 
     pStruct->length2 = len2; /* this is still the length of the data to be returned after prefix */
-   /* #ifdef GVBDEBUG */
-   printf("Fid %d actual_len2 %d : pStruct->length2 %d\n", fid, actual_len2, pStruct->length2);
-   /* #endif */
+    #ifdef GVBDEBUG
+    printf("Fid %d actual_len2 %d : pStruct->length2 %d\n", fid, actual_len2, pStruct->length2);
+    #endif
 
-    /* --- Place for ASMINF to put the results back ----- */
+   /* --- Place for ASMINF to put the results back ----- */
     passarea2 = malloc(actual_len2);  /* Get area        */
     memset(passarea2, 0, actual_len2);/* Clear area      */
     pStruct->addr2   = passarea2;      /* Use from offset8*/
     pStruct2 = (Pass2Struct*)passarea2;
 
-    /* #ifdef GVBDEBUG */
+    #ifdef GVBDEBUG
     printf("Fid %d passarea2 %s\n", fid, passarea2);
-    /* #endif */
+    #endif
 
    /* --- Load the correct JNI module: 31 or 64 bit  ---- */
 
-   /* #ifdef GVBDEBUG */
-   printf("fid %d passarea1 %0.8s\n", fid, pStruct->addr1);
-   printf("fid %d length1 %d length2 %d addr1 %0.8s addr2 %s\n", fid, pStruct->length1, pStruct->length2, pStruct->addr1, pStruct->addr2 );
-   printf("Calling Assembler codex \n");
-   /* #endif */
+    #ifdef GVBDEBUG
+    printf("fid %d passarea1 %0.8s\n", fid, pStruct->addr1);
+    printf("fid %d length1 %d length2 %d addr1 %0.8s addr2 %s\n", fid, pStruct->length1, pStruct->length2, pStruct->addr1, pStruct->addr2 );
+    printf("Calling Assembler codex \n");
+    #endif
 
     #  ifdef _LP64                             
        rc = ASMINF64(&passarea);
-       /*#ifdef GVBDEBUG*/
+       #ifdef GVBDEBUG
        printf("ASMINF64 returns %d for function %s\n", rc, pStruct->func);
-       /*#endif*/
+       #endif
     #else
        rc = ASMINF(&passarea);
        #ifdef GVBDEBUG
@@ -184,11 +184,11 @@ Java_zOSInfo2_showZos2(JNIEnv *env
        #endif
     #endif
 
-   /* #ifdef GVBDEBUG */
-   printf("Fid %d(%s) rc=%d\n", fid, pStruct->func, rc);
-   /* #endif */
+    #ifdef GVBDEBUG
+    printf("Fid %d(%s) rc=%d\n", fid, pStruct->func, rc);
+    #endif
 
-   switch (fid) {
+    switch (fid) {
       /* system information function */ 
       case 0:
         if (rc == 0 )
@@ -290,22 +290,22 @@ Java_zOSInfo2_showZos2(JNIEnv *env
         printf("Fid %d(%s) returns %d\n", fid, pStruct->func, rc);
         sprintf(passarea2, "%0.8d%8s", rc, pStruct->func);
         break;
-   }
+    }
 
    /* --- Convert area returned by HLASM back to ASCII  - */
     __etoa((char*) passarea2);                        
                                                 
-   free(passarea);
-   free(passarea1);
+    free(passarea);
+    free(passarea1);
    /* free(passarea2); */
 
    /* --- And return it --------------------------------- */
    /* return (*env)->NewStringUTF(env, passarea2); */
 
-   res = (*env)->NewStringUTF(env, passarea2);
+    res = (*env)->NewStringUTF(env, passarea2);
 
-   free(passarea2);
-   
-   return res;     
-                                             
+    free(passarea2);
+
+    return res;
+
 }                                      /* main            */
