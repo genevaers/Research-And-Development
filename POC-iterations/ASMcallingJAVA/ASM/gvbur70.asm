@@ -98,10 +98,10 @@
          ihapsa ,
 *
 PARMLIST DSECT
-*
 PARMADDR DS    A               ADDRESS OF PARAMETER AREA
 RECASND  DS    A               ADDRESS OF SEND      AREA
 KEYAREC  DS    A               ADDRESS OF RECEIVE   AREA
+*
 *
 RSABP    EQU   4
 RSAFP    EQU   8
@@ -112,43 +112,41 @@ RSA1     EQU   24
 *
          COPY  GVBUR70            Call Interface dsect
          COPY  GVBUR70W           Work area and internal dsects
+         COPY  GVBJDSCT           Comms structures for CTT CTR STR
 *
 GVBUR70  RMODE ANY
 GVBUR70  AMODE 31
 GVBUR70  CSECT
-         J     start
+         J     START
 *
-static   loctr
+STATIC   loctr
 CODE     loctr
-         org   *,256
-         USING DYNAREA,R13
+         ORG   *,256
 *
 *        ENTRY LINKAGE
 *
 START    DS    0H
-         STMG  R14,R12,SAVF4SAG64RS14
+         STM   R14,R12,12(R13)
 *
          LLGTR R12,R15                   ESTABLISH ...
          USING GVBUR70,R12               ... ADDRESSABILITY
 *
-         LLGTR R3,R1              LOAD PARM LIST ADDRESS
+         LLGTR R3,R1              PARM LIST ADDRESS
          USING PARMLIST,R3
 *
-         LLGT  R8,PARMADDR        LOAD PARM AREA ADDRESS
+         LLGT  R8,PARMADDR        PARM AREA ADDRESS
          USING UR70STR,R8
 *
-         LLGTR R13,R13
-         LGR   R10,R13            SAVE  CALLER'S  RSA     ADDRESS
+         LR    R10,R13            CALLER'S SVA
 *
-         LLGT  R13,UR70ANCH       LOAD  WORK AREA POINTER ADDRESS
+         LLGT  R13,UR70ANCH       WORK AREA POINTER ADDRESS
          LTR   R13,R13            ALLOCATED ???
          JP    CHAIN              YES - BYPASS ALLOCATION
 *
 ***********************************************************************
 *  ALLOCATE "GVBXLST" WORKAREA IF NOT ALREADY ALLOCATED (PER THREAD)  *
 ***********************************************************************
-         LLGT  R0,=A(DYNLEN)
-         STORAGE OBTAIN,LENGTH=(R0),COND=NO,CHECKZERO=YES
+         STORAGE OBTAIN,LENGTH=DYNLEN,COND=NO,CHECKZERO=YES
          LLGTR R13,R1
          ST    R13,UR70ANCH       SAVE  WORK AREA ADDRESS (POINTER)
          CIJE  R15,14,A0002       If already zeroed, bypass this...
@@ -159,10 +157,11 @@ START    DS    0H
          XR    R15,R15
          MVCL  R0,R14
 *
+         USING DYNAREA,R13
 A0002    EQU   *
          MVC   EYEBALL,WORKEYEB
-         STG   R13,savf4sanext-DYNAREA(0,R10) fwd POINTER IN OLD
-         STG   R10,savf4saprev    SET   BACKWARD POINTER IN NEW
+         ST    R13,8(,R10)                    fwd POINTER IN OLD
+         ST    R10,4(,R13)                    bck POINTER IN NEW
          J     MAINLINE
 *
 ***********************************************************************
@@ -170,8 +169,8 @@ A0002    EQU   *
 *  CHECK FOR CHANGE IN EVENT RECORD ADDRESS                           *
 ***********************************************************************
 CHAIN    DS    0H
-         STG   R13,savf4sanext-DYNAREA(0,R10) fwd POINTER IN OLD
-         STG   R10,savf4saprev    SET   BACKWARD POINTER IN NEW
+         ST    R13,8(,R10)                    fwd POINTER IN OLD
+         ST    R10,4(,R13)                    bck POINTER IN NEW
 *
 ***********************************************************************
 *                                                                     *
@@ -213,7 +212,7 @@ MAIN_140 EQU   *
 *        LOCATE TABLE ENTRY for REQUEST communication: CTRAREA
 *
 MAIN_114 EQU   *
-         LLGT  R5,CTTACTR
+         LLGT  R5,CTTACTR        -> START OF CTR'S
          USING CTRAREA,R5
 *
 *        CHECK FOR FUNCTION
@@ -223,6 +222,7 @@ MAIN_114 EQU   *
          CLC   UR70FUN,=CL8'INIT'
          JE    A0200
 *
+         WTO 'GVBUR70 : INVALID FUNCTION CODE'
          MVC   WKRETC,=F'16'
          J     DONE
 *
@@ -230,6 +230,12 @@ MAIN_114 EQU   *
 *  Call Java                                                          *
 ***********************************************************************
 A0100    EQU   *
+         CLI   CTTACTIV,X'FF'
+         JE    A0101
+         WTO 'GVBUR70 : REQUEST TABLE NOT ACTIVE'
+         DC    H'0'
+*
+A0101    EQU   *
          LLGT  R7,RECASND        LOAD  SEND BUFFER ADDRESS
          LLGT  R9,KEYAREC        LOAD  RECEIVE BUFFER ADDRESS
 *
@@ -238,32 +244,37 @@ A0100    EQU   *
 *
          USING PSA,R0
          L     R0,PSATOLD
+         DROP  R0
          ST    R0,WKATCB
          LH    R6,CTTNUME        NUMBER OF CTR SLOTS AVAILABLE
-         XR    R0,R0             CTR INDEX STARTS AT ZERO
+         LGHI  R0,1              CTR INDEX STARTS AT ONE
 CSLOOP   EQU   *
          XR    R2,R2
          L     R3,WKATCB
          CS    R2,R3,CTRCSWRD
-         JZ    A0104
+         BRC   4,CSLOOP01
+         J     A0104             CTRCSWRD has been set !!
+CSLOOP01 EQU   *
          AGHI  R0,1
          LA    R5,CTRLEN(,R5)
          BRCT  R6,CSLOOP
          J     MAIN_116
-         DROP  R0
 *
 A0102    EQU   *                 R0 = CTR IDX
          LH    R2,WKICTR         CTR INDEX (STARTING AT ZERO)
+CHANGE   BCTR  R2,0
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2             Point to our selected CTR slot
          J     A0106
 *
 A0104    EQU   *
-         STH   R0,WKICTR         R0 = IDX; R5 -> SELECTED CTR SLOT
+         STH   R0,WKICTR         R0 = IDX; R:=SELECTED CTR SLOT
+         ST    R13,CTRUR70W      STORE WORKAREA ADDRESS IN CTR
 *
 A0106    EQU   *
          sam64
          sysstate amode64=YES
+         MVC   CTRREQ,UR70FUN
          LLGT  R0,UR70LSND
          STG   R0,CTRLENOUT      Length of data being sent...
          LLGT  R0,UR70LRCV
@@ -360,20 +371,18 @@ MAIN_224 EQU   *
 *  RETURN TO CALLER (SAFR)                                            *
 ***********************************************************************
 DONE     EQU   *                  RETURN TO CALLER
-         LLGT  R15,WKRETC         LOAD RETURN CODE
+         L     R15,WKRETC         LOAD RETURN CODE
          ST    R15,UR70RETC
 *
 *        RETURN TO CALLER
 *
-         LG    R13,SAVF4SAPREV    CALLER'S SAVE AREA ADDRESS
+         L     R13,4(,R13)        CALLER'S SAVE AREA ADDRESS
+         ST    R15,16(,R13)
 *
-         LLGT  R15,WKRETC
-         STG   R15,SAVF4SAG64RS15-SAVF4SA(,R13)
-*
-         LMG   R14,R12,SAVF4SAG64RS14-SAVF4SA(R13)
+         LM    R14,R12,12(R13)
          BSM   0,R14              RETURN
 *
-static   loctr
+static   LOCTR
          LTORG ,
 *
 CTTEYEB  DC    CL8'GVBCTT'

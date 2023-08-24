@@ -97,7 +97,9 @@ CTRLENOUT DS   D               LENGTH OUTPUT AREA
 CTRMEMIN DS    D               ADDR INPUT AREA
 CTRMEMOUT DS   D               ADDR OUTPUT AREA
 CTRTHRDN DS    H
-         DS    XL14
+         DS    XL2
+CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
+         DS    XL8
 CTRLEN   EQU   *-CTRAREA
 *
 *
@@ -128,7 +130,12 @@ GVBJMAIN CSECT
          USING GVBJMAIN,R12               ... ADDRESSABILITY
 *
          GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
-         LR    R11,R1                    MOVE GETMAINED ADDRESS TO R11
+         LLGTR R11,R1                    MOVE GETMAINED ADDRESS TO R11
+         LGR   R0,R11
+         LGHI  R1,DYNLEN
+         XGR   R14,R14 
+         XGR   R15,R15 
+         MVCL  R0,R14  
          USING DYNAREA,11                ADDRESSABILITY TO DSECT
          STG   R13,SAVER13               SAVE CALLER SAVE AREA ADDRESS
          LAY   R15,SAVEAREA              GET ADDRESS OF OWN SAVE AREA
@@ -169,15 +176,7 @@ MAIN_096 EQU   *
          USING CTRAREA,R5
          LA    R2,99
 MAIN_120 EQU   *
-         XC    CTRECB1,CTRECB1
-         XC    CTRECB2,CTRECB2
-         XC    CTRCSWRD,CTRCSWRD
-         XC    CTRREQ,CTRREQ
-         XC    CTRLENIN,CTRLENIN
-         XC    CTRLENOUT,CTRLENOUT
-         XC    CTRMEMIN,CTRMEMIN
-         XC    CTRMEMOUT,CTRMEMOUT
-         XC    CTRTHRDN,CTRTHRDN
+         XC    0(CTRLEN,R5),0(R5)
          LA    R5,CTRLEN(,R5)
          BRCT  R2,MAIN_120
          DROP  R5 CTRAREA
