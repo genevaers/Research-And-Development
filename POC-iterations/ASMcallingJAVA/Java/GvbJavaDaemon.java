@@ -19,6 +19,25 @@
 //
 import java.lang.reflect.Method;
 
+// Backup statistics class
+class GvbRunInfo {
+  public long ncalls;
+  public long nthread;
+
+    // Constructor
+    public GvbRunInfo(long ncalls, long nthread)
+    {
+        this.ncalls = ncalls;
+        this.nthread = nthread;
+    }
+    public long getnCalls() { return ncalls; }
+    public long getnThread() { return nthread; }
+    public synchronized void addnCalls(long ncalls) { this.ncalls = this.ncalls + ncalls; }
+    public synchronized void subnThread() { this.nthread = this.nthread - 1; }
+    public void setnThread(long nthread) {this.nthread = nthread; }
+}
+
+// Run MR95 (or other target program)
 class RunMR95 implements Runnable {
    private Thread t;
    private String threadName;
@@ -59,6 +78,7 @@ class RunMR95 implements Runnable {
    }
 }
 
+// Run Supervisor which starts 'n' threads
 class RunSupervisor implements Runnable {
     private Thread t;
     private String threadName;
@@ -67,13 +87,15 @@ class RunSupervisor implements Runnable {
     private String strout;
     private Integer threadnmbr;
     private Integer ntrace;
+    private GvbRunInfo runinfo;
   
-    RunSupervisor( String name, String stringin, Integer lengthout, String stringout, Integer trace) {
+    RunSupervisor( String name, String stringin, Integer lengthout, String stringout, Integer trace, GvbRunInfo RunInfo) {
        threadName = name;
        strin = stringin;
        lenout = lengthout;
        strout = stringout;
        ntrace = trace;
+       runinfo = RunInfo;
  
     System.out.println(threadName + ":Creating");
     }
@@ -128,8 +150,9 @@ class RunSupervisor implements Runnable {
 
 
                 /* --- Start the workers */
+                runinfo.setnThread(numberOfThreads);
                 for(int i = numberOfThreads; i > 0; i--) {
-                    RunWorker R3 = new RunWorker( "Worker", i, "string1", 0, "string2", ntrace);
+                    RunWorker R3 = new RunWorker( "Worker", i, "string1", 0, "string2", ntrace, runinfo);
                     R3.start();
                 }
                 /* --- Wait a sec for workers to start */
@@ -167,7 +190,6 @@ class RunSupervisor implements Runnable {
        catch (InterruptedException e) {
           System.out.println(threadName + ":Interrupted.");
        }
-
        System.out.println(threadName + ":Exiting");
     }
     
@@ -180,6 +202,7 @@ class RunSupervisor implements Runnable {
     }
  }
 
+ // Run worker that executes methods dynamically
  class RunWorker implements Runnable {
     @SuppressWarnings({ "rawtypes", "unchecked" })
 
@@ -193,14 +216,16 @@ class RunSupervisor implements Runnable {
     private Integer thrdnbr;
     private String threadIdentifier;
     private Integer ntrace;
+    private GvbRunInfo runinfo;
 
- RunWorker( String name, Integer threadNbr, String stringin, Integer lengthout, String stringout, Integer trace) {
+ RunWorker( String name, Integer threadNbr, String stringin, Integer lengthout, String stringout, Integer trace, GvbRunInfo RunInfo) {
     threadName = name;
     thrdNbr = threadNbr;
     strin = stringin;
     lenout = lengthout;
     strout = stringout;
     ntrace = trace;
+    runinfo = RunInfo;
 
     threadIdentifier = String.format("%6s%04d", threadName, threadNbr);
     System.out.println(threadIdentifier + ":Creating");
@@ -209,11 +234,11 @@ class RunSupervisor implements Runnable {
  public void run() {
     int flag = 0;
     int numberCalls = 0;
-    String cccc;
+    String recvData;
 
     zOSInfo2 a = new zOSInfo2();
     GVBA2I b = new GVBA2I();
-    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();           // Load and execute
+    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();           // Load and execute on the fly
     GVBCLASSLOADER2 javaClassLoader2 = new GVBCLASSLOADER2();        // Separate load and execute functions
 
     Class aarg[] = new Class[1];
@@ -221,15 +246,12 @@ class RunSupervisor implements Runnable {
     String[] mName = {"Method1","Method2","Method3","Method4","Method5","Method6","Method7","Method8","Method9","Method0"};
     boolean found, added, once = false;
 
-
     javaClassLoader.invokeClassMethod("MyClass", "MethodA","STUFF");
 
     threadIdentifier = String.format("%6s%04d", threadName, thrdNbr);
     System.out.println(threadIdentifier + ":Running");
  
     do {
-        //System.out.println(threadIdentifier + ":is thread number " + thrdNbr);
-
         String result;
         int waitrc = 0;
         int postrc = 0;
@@ -244,7 +266,6 @@ class RunSupervisor implements Runnable {
         int sentLen;
         
         String thisThrd = String.format("%04d", thrdNbr);
-        /*System.out.println("Thread identified: " + thisThrd);*/
 
         result = a.showZos2(2, "WAITMR95", thisThrd, "DARTH", lenout_wait);
         waitrc = b.doAtoi(result, 0, 8);
@@ -263,16 +284,18 @@ class RunSupervisor implements Runnable {
 
           // a request from GVBMR95
           case 4:
-            //javaClass = result.substring(16, 23);
-            //methodName = result.substring(24, 31);
             sentLen = result.length();
             if (sentLen < 80) { // 80 bytes is 16 char return+reason code plus 32 char each for Class|Method
                System.out.println("Data received is too short at length: " + sentLen);
             }
+
+            /* obtain class and method names */
             workName = result.substring(16, 47);
             javaClass = workName.trim();
             workName = result.substring(48, 79);
             methodName = workName.trim();
+
+            /* sensible format of request */
             if (sentLen > 80) {
                workName = result.substring(80, sentLen);
                sentData = workName.trim();
@@ -284,21 +307,17 @@ class RunSupervisor implements Runnable {
               System.out.println("Class:" + javaClass + ":method:" + methodName + ":sent:" + sentData + ".");
             }
 
+            /* search for and/or populate array of dynamically loaded methods for efficiency */
             found = false;
             if (found) {
             i = 0;
             do {
-                //force method name
-                //methodName = "Method1";
-                //System.out.println(mName[i] + ":" + methodName + ".");
                 if (methodName.equals(mName[i])){
-                    //System.out.println("Found method " + methodName + " at position: " + i);
                     found = true;
                     j = i;
                 }
                 ++i;
             } while (!found && i < mName.length);
-
             if (!found) {
                 added = false;
                 i = 0;
@@ -334,23 +353,16 @@ class RunSupervisor implements Runnable {
                j = 0;
             }
 
-            //System.out.println(threadIdentifier + ":GVBMR95 has sent us a request");
+            /* Process the request */
             numberCalls = numberCalls + 1;
-
-            //javaClassLoader.invokeClassMethod(javaClass, methodName);
-            cccc = javaClassLoader2.executeClassMethod(method[j], sentData);    //"STUFF");
-            //cccc = javaClassLoader.invokeClassMethod(javaClass, methodName,"STUFF");
+            recvData = javaClassLoader2.executeClassMethod(method[j], sentData);
+            //recvData = javaClassLoader.invokeClassMethod(javaClass, methodName,"STUFF");
             if (ntrace > 1 ) {
-              System.out.println("Back:" + cccc);
+              System.out.println("Back:" + recvData);
             }
             
-            //result = a.showZos2(3, "POSTMR95", thisThrd, "DARTH VADER HERE", lenout_post);
-            // WHAT'S UP WITH LENOUT_POST ?
-            result = a.showZos2(3, "POSTMR95", thisThrd, cccc, lenout_post);
-
+            result = a.showZos2(3, "POSTMR95", thisThrd, recvData, lenout_post);
             postrc = b.doAtoi(result, 0, 8);
-            //System.out.println(threadIdentifier + ":POSTMR95 option " + thisThrd + " returned with rc: " + postrc);
-            //System.out.println(threadIdentifier + ":Detailed diagnostics: " + result);
             break;
           
           default:
@@ -358,11 +370,6 @@ class RunSupervisor implements Runnable {
             flag = 1;
             break;
         }
-
-          // Let the thread sleep for a while. 
-          // Thread.sleep(1);
-          // } catch (InterruptedException e) {
-          // System.out.println(threadIdentifier + ":Interrupted.");
     } while (flag == 0);
     System.out.println(threadIdentifier + ":About to exit");
     
@@ -373,13 +380,20 @@ class RunSupervisor implements Runnable {
     } 
 
     System.out.println(threadIdentifier + ":Exiting. Number of calls: " + numberCalls);
+    runinfo.addnCalls(numberCalls); //serialized addition
+    runinfo.subnThread();
+    long nthread = runinfo.getnThread();
+    if (nthread == 0) { /* last one */
+      long ncalls = runinfo.getnCalls();
+      System.out.println("GvbJavaDaemon exiting after servicing " + ncalls + " method calls");
+   }
  }
  
  public void start () {
     threadIdentifier = String.format("%6s%04d", threadName, thrdNbr);
     System.out.println(threadIdentifier + ":Starting" );
     if (t == null) {
-       t = new Thread (this, threadIdentifier); /* was threadName */
+       t = new Thread (this, threadIdentifier);
        t.start ();
     }
   }
@@ -391,6 +405,7 @@ public class GvbJavaDaemon {
 
       System.out.println("GvbJavaDaemon Started:");
       zOSInfo2 a = new zOSInfo2();
+      GvbRunInfo runinfo = new GvbRunInfo(0,0);
 
       int nArgs =args.length;
       String strin = "DARTH";
@@ -410,6 +425,7 @@ public class GvbJavaDaemon {
           }
         }
       }
+      System.out.println("GvbJavaDaemon trace level: " + trace);
 
       /* --- Do some class loading --------------------- */
       GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
@@ -440,7 +456,7 @@ public class GvbJavaDaemon {
       System.out.println(strin + lenout);
 
       /* --- Run thread supervisor ----------------- */
-      RunSupervisor R2 = new RunSupervisor( "Supervisor", "string1", 16, "string2", trace);
+      RunSupervisor R2 = new RunSupervisor( "Supervisor", "string1", 16, "string2", trace, runinfo);
       R2.start();
    }   
 }
