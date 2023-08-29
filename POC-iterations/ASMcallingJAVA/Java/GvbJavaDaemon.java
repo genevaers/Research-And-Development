@@ -385,7 +385,7 @@ class RunSupervisor implements Runnable {
   }
  }
 
-public class GvbJavaDaemon2 {
+public class GvbJavaDaemon {
 
    public static void main(String args[]) {
 
