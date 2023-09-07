@@ -536,13 +536,13 @@ A0010F   EQU   *
 A0010A   EQU   *
          WTO 'TSTUR70 : ABOUT TO CALL JAVA METHOD'
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(43),=CL43'TSTUR70: CALLING MyClass Method1 XXXX +
-               TIMES'
+         MVC   WKPRINT(45),=CL45'TSTUR70: CALLING MyClass Method1 XXXXX+
+               X TIMES'
          LH    R15,WKNCALL
          CVD   R15,WKDBL3
-         MVC   WKPRINT+33(4),NUMMSK+8
+         MVC   WKPRINT+33(6),NUMMSK+6
          MVI   WKPRINT+33,C' '
-         ED    WKPRINT+33(4),WKDBL3+6
+         ED    WKPRINT+33(6),WKDBL3+5
          JAS   R10,MYPUT
 *
          MVC   UR70FUN,=CL8'CALL'

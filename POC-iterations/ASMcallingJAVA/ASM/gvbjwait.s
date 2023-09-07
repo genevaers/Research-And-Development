@@ -57,11 +57,11 @@ WKTOKNCTT DS   A                  A(CTT)
          DS    A
          DS    A
          DS    A
-WKECBLST DS    A                  ADDRESS OF ECB LIST TO WAIT ON
-WKECB1   DS    F
-WKECB2   DS    F
-WKECB3   DS    F
-WKECB4   DS    F
+WKECBLST DS   0XL16               ECB ADDR LIST TO WAIT ON
+WKAECB1  DS    F
+WKAECB2  DS    F
+WKAECB3  DS    F
+WKAECB4  DS    F
 WKECBNUM DS    H                  Number in list
 WKECBLSZ DS    H
 WKENTIDX DS    A
@@ -203,26 +203,7 @@ MAIN_114 EQU   *
          LLGT  R5,CTTACTR * * *<
          USING CTRAREA,R5
 *
-* OBTAIN ECBLIST ARRAY
-*
-         LH    R0,CTTNUME        Number request entry ECB's
-         AGHI  R0,2                plus TERM and GO ECB's
-         STH   R0,WKECBNUM
-*
-         LA    R0,4              LENGTH OF ECB ADDRESS
-         LLGTR R0,R0
-         MH    R0,WKECBNUM       TIMES NUMBER LIST ELEMENTS NEEDED
-         STH   R0,WKECBLSZ
-         GETMAIN RU,LV=(0),LOC=(ANY)
-         ST    R1,WKECBLST       CONNECT TO ECBLIST
-*
-         LR    R0,R1             CLEAR STORAGE
-         LA    R1,4              ELEMENT SIZE IN LIST
-         LLGTR R1,R1
-         MH    R1,WKECBNUM       TIMES NUMBER LIST ELEMENTS NEEDED
-         XR    R14,R14
-         XR    R15,R15
-         MVCL  R0,R14
+         XC    WKECBLST,WKECBLST
 *
 * DETERMINE WHICH ECB's to WAIT ON
 *
@@ -257,7 +238,7 @@ MAIN_116 EQU   *
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2
 *
-         L     R1,WKECBLST       ASSIGN ECBLIST
+         LA    R1,WKECBLST       ASSIGN ECBLIST
          LA    R0,CTRECB1
          ST    R0,0(,R1)
          OI    0(R1),X'80'
@@ -265,7 +246,7 @@ MAIN_116 EQU   *
 *
 A0130    EQU   *
          WTO 'GVBJWAIT: WAITING FOR TERM'
-         L     R1,WKECBLST       ASSIGN ECBLIST
+         LA    R1,WKECBLST       ASSIGN ECBLIST
          LA    R0,CTTTECB
          ST    R0,0(,R1)
          OI    0(R1),X'80'
@@ -273,7 +254,7 @@ A0130    EQU   *
 *
 A0140    EQU   *
          WTO 'GVBJWAIT: WAITING FOR GO95 OR TERM'
-         L     R1,WKECBLST       ASSIGN ECBLIST
+         LA    R1,WKECBLST       ASSIGN ECBLIST
          LA    R0,CTTTECB
          ST    R0,0(,R1)
          LA    R0,CTTGECB
@@ -295,7 +276,7 @@ A0170    EQU   *
 *
 A0180    EQU   *
 *        WTO 'GVBJWAIT: ABOUT TO WAIT'
-         LLGT  R1,WKECBLST
+         LA    R1,WKECBLST
          WAIT  1,ECBLIST=(1)
 *
 *        WTO 'GVBJWAIT: BACK FROM WAIT'
@@ -371,9 +352,6 @@ A0027    EQU   *
          MVC   WKRETC,=F'4'              == REQUEST FROM MR95
 *
 MAIN_200 EQU   *
-         LH    R0,WKECBLSZ
-         LLGT  R1,WKECBLST
-         FREEMAIN RU,LV=(0),A=(1)
          DROP  R5 CTRAREA
          DROP  R4 CTTAREA
 *
