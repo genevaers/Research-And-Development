@@ -72,9 +72,9 @@ Java_zOSInfo2_showZos2(JNIEnv *env
 
     fid = jFid;
 
-   /* -- Setup 80 Byte Area for control block             */
-    passarea = malloc(80);             /* Get area        */
-    memset(passarea, 0, 80);           /* Clear area      */
+   /* ------ Set up control block ------                    */
+    passarea = malloc(sizeof(PassStruct));   /* Get area    */
+    memset(passarea, 0, sizeof(PassStruct)); /* Clear area  */
     pStruct = (PassStruct*)passarea;
     memcpy(pStruct->anchor, TheAnchor, 8);
     
