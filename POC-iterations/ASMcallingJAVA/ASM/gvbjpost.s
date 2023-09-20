@@ -37,11 +37,11 @@
 *
 DYNAREA  DSECT
 *
-SAVEAREA DC    18F'0'
+SAVEAREA DS    18FD
 SAVER13  DS    D
 *
          DS    0F
-OUTDCB   DS    XL(OUTFILEL)    REENTRANT DCB AND DCBE AREAS
+OUTDCB   DS    A
 *
 WKPRINT  DS    XL131           PRINT LINE
          DS    XL1
@@ -114,6 +114,7 @@ PAADDR1  DS    D
 PAADDR2  DS    D
 PARETC   DS    D
 PAANCHR  DS    D
+PAATMEM  DS    D
 PARMLEN  EQU   *-PARMSTR
 *
 *
@@ -128,46 +129,55 @@ GVBJPOST CSECT
          LLGTR R12,R15                   ESTABLISH ...
          USING GVBJPOST,R12              ... ADDRESSABILITY
 *
-         sam64
-         sysstate amode64=YES
          LGR   R9,R1                     => Parmstr
          USING PARMSTR,R9
          LGH   R2,PAOPT+4                Directions to ECB
          LG    R4,PAANCHR                Maybe we have this already ?
-         sysstate amode64=NO
-         sam31
 *
-         GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
-         LLGTR R11,R1                    MOVE GETMAINED ADDRESS TO R11
-         LGR   R0,R11
+         LG    R0,PAATMEM                CLEAR MEMORY
          LGHI  R1,DYNLEN
-         XGR   R14,R14 
-         XGR   R15,R15 
-         MVCL  R0,R14  
-         USING DYNAREA,11                ADDRESSABILITY TO DSECT
-         STG   R13,SAVER13               SAVE CALLER SAVE AREA ADDRESS
-         LAY   R15,SAVEAREA              GET ADDRESS OF OWN SAVE AREA
-         STG   R15,SAVF4SANEXT-SAVF4SA(,R13) STORE IN CALLER SAVE AREA
-         LLGTR R13,R15                   GET ADDRESS OF OWN SAVE AREA
+         XGR   R14,R14
+         XGR   R15,R15
+         MVCL  R0,R14
+         LG    R11,PAATMEM
+         USING DYNAREA,R11
+         STG   R13,SAVER13               CHAIN BACK
+         LAY   R15,SAVEAREA
+         STG   R15,SAVF4SANEXT-SAVF4SA(,R13) CHAIN FORWARD
+         LGR   R13,R11                   NEW SVA
+         LG    R0,PAATMEM 
+         AGHI  R0,DYNLEN                 PUSH
+         STG   R0,PAATMEM
+*
          ST    R2,WKENTIDX
 *
 *      OPEN MESSAGE FILE
          J     MAIN_096
-         LA    R14,OUTFILE               COPY MODEL   DCB
-D1       USING IHADCB,OUTDCB
-         MVC   OUTDCB(OUTFILEL),0(R14)
-         LAY   R0,OUTDCB                 SET  DCBE ADDRESS IN  DCB
-         AGHI  R0,OUTFILE0
-         STY   R0,D1.DCBDCBE
+         sysstate amode64=NO
+         sam31
 *
-         LAY   R2,OUTDCB
+         GETMAIN R,LV=OUTFILEL,LOC=24
+         ST    R1,OUTDCB
+*
+         LA    R14,OUTFILE               COPY MODEL   DCB
+         LLGT  R2,OUTDCB
+         MVC   0(OUTFILEL,R2),0(R14)
+         USING IHADCB,R2
+         LR    R0,R2                     SET  DCBE ADDRESS IN  DCB
+         AGHI  R0,OUTFILE0
+         STY   R0,DCBDCBE
+*
          MVC   WKREENT(8),OPENPARM
          OPEN  ((R2),(EXTEND)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
-         JO    MAIN_096                  YES - BYPASS ABEND
+         JO    MAIN_095                  YES - BYPASS ABEND
          WTO 'GVBJPOST: DDPRINT OPEN FAILED'
          MVC   WKRETC,=F'16'
+         sam64
          J     DONEDONE
+MAIN_095 EQU   *
+         sam64
+         sysstate amode64=YES
 *
 ***********************************************************************
 *  FIND GLOBAL NAME/TOKEN AREA                                        *
@@ -187,7 +197,6 @@ MAIN_096 EQU   *
 *
 MAIN_140 EQU   *
          LLGT  R4,WKTOKNCTT
-*        wto 'gvbjpost: had to use token services'
 MAIN_142 EQU   *
          USING CTTAREA,R4
          CLC   CTTEYE,CTTEYEB
@@ -197,9 +206,9 @@ MAIN_142 EQU   *
          J     DONE
 *
 MAIN_114 EQU   *
-** *     WTO 'GVBJPOST: COMMUNICATIONS TENSOR TABLE LOCATED'
-*
          J     MAIN_116
+         sysstate amode64=NO
+         sam31
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(10),=CL10'GVBJPOST: '
          MVC   WKPRINT+10(28),=CL28'POSTING ECB with directions '
@@ -209,9 +218,11 @@ MAIN_114 EQU   *
          LAY   R15,OPTTABLE
          AR    R15,R1
          MVC   WKPRINT+38(4),0(R15)
-         LA    R2,OUTDCB
+         LLGT  R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
+         sam64
+         sysstate amode64=YES
 *
 ***      CLI   CTTACTIV,X'FF' !!!THIS MUST APPLY TO INDIVIDUAL WORKERS
 ***      JNE   A0160
@@ -227,8 +238,6 @@ MAIN_116 EQU   *
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2             Point to individual CTR
 *
-         sam64
-         sysstate amode64=YES
          LG    R14,CTRMEMIN
          LG    R1,PAADDR1
          CLC   PALEN1,CTRLENIN
@@ -240,27 +249,20 @@ A0026    EQU   *
 A0027    EQU   *
          AGHI  R15,-1
          EXRL  R15,MVCR14R1
-*(*)*    dc h'0'
-         sysstate amode64=NO
-         sam31
-*
          POST  CTRECB2           POST reply ECB on which MR95 waits
-*        WTO 'GVBJPOST: REPLY POSTED'
          J     A0180
 *
-A0130    EQU   *                  Achknowledge the GO ECB
+A0130    EQU   *                 Acknowledge the GO ECB
          LGH   R2,CTTNUME
          LLGT  R5,CTTACTR
-*        dc h'0'
 A0132    EQU   *
-** *     wto 'GVBJPOST: posted worker to terminate'
          POST  CTRECB1
          LA    R5,CTRLEN(,R5)
          BRCT  R2,A0132
          wto 'GVBJPOST: POSTED ALL WORKERS TO TERMINATE'
          J     A0180
 *
-A0140    EQU   *                  Achknowledge the GO ECB
+A0140    EQU   *                 Acknowledge the GO ECB
          POST  CTTGECB2
          wto 'GVBJPOST: GO ACKNOWLEDGED'
          J     A0180
@@ -274,12 +276,16 @@ A0180    EQU   *
 *
 *
          J     A0182
+         sysstate amode64=NO
+         sam31
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(10),=CL10'GVBJPOST: '
          MVC   WKPRINT+10(09),=CL9'COMPLETED'
-         LA    R2,OUTDCB
+         LLGT  R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
+         sam64
+         sysstate amode64=YES
 A0182    EQU   *
          XC    WKRETC,WKRETC
 *
@@ -287,15 +293,23 @@ A0182    EQU   *
 *
 DONE     EQU   *                         RETURN TO CALLER
          J     DONEDONE
-         LAY   R2,OUTDCB
+         sysstate amode64=NO
+         sam31
+         LLGT  R2,OUTDCB
          MVC   WKREENT(8),OPENPARM
          CLOSE ((R2)),MODE=31,MF=(E,WKREENT)
+         FREEMAIN R,LV=OUTFILEL,A=(2)
+         sam64
+         sysstate amode64=YES
 *
 DONEDONE EQU   *                         RETURN TO CALLER
-         LG    R13,SAVER13               CALLER'S SAVE AREA ADDRESS
-         L     R15,WKRETC
+         LLGF  R15,WKRETC
+         LG    R13,SAVER13
          STG   R15,SAVF4SAG64RS15-SAVF4SA(,R13)
-         FREEMAIN R,LV=DYNLEN,A=(11)     FREE DYNAMIC STORAGE
+         LG    R0,PAATMEM
+         AGHI  R0,-DYNLEN                POP
+         STG   R0,PAATMEM
+*
          LMG   R14,R12,SAVF4SAG64RS14-SAVF4SA(R13)
          BR    R14                       RETURN TO CALLER
 *
@@ -303,10 +317,6 @@ DONEDONE EQU   *                         RETURN TO CALLER
 MVCR14R1 MVC   0(0,R14),0(R1)     * * * * E X E C U T E D * * * *
          DS    0D
 CLCR1R14 CLC   0(0,R1),0(R14)     * * * * E X E C U T E D * * * *
-*
-*
-*        STATICS
-*
 *
 *        CONSTANTS
 *

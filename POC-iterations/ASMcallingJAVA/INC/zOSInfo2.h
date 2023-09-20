@@ -46,6 +46,7 @@ typedef struct PassStruct
     void*      addr2;
     long       retcd;
     char       anchor[8];
+    void*      thrdmem;
 } PassStruct;
 
 typedef struct Pass1Struct

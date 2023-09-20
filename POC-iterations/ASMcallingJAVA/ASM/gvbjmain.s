@@ -41,7 +41,7 @@ SAVEAREA DC    18F'0'
 SAVER13  DS    D
 *
          DS    0F
-OUTDCB   DS    XL(OUTFILEL)    REENTRANT DCB AND DCBE AREAS
+OUTDCB   DS    A
 *
 WKPRINT  DS    XL131           PRINT LINE
          DS    XL1
@@ -114,6 +114,7 @@ PAADDR1  DS    D
 PAADDR2  DS    D
 PARETC   DS    D
 PAANCHR  DS    D
+PAATMEM  DS    D
 PARMLEN  EQU   *-PARMSTR
 *
 *
@@ -125,74 +126,89 @@ GVBJMAIN CSECT
 *        ENTRY LINKAGE
 *
          STMG  R14,R12,SAVF4SAG64RS14-SAVF4SA(R13)
-         LGR   R9,R1                     Parameter structure
          LLGTR R12,R15                   ESTABLISH ...
          USING GVBJMAIN,R12               ... ADDRESSABILITY
+         LGR   R9,R1                     Parameter structure
+         USING PARMSTR,R9
 *
-         GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
-         LLGTR R11,R1                    MOVE GETMAINED ADDRESS TO R11
-         LGR   R0,R11
+         LG    R0,PAATMEM                CLEAR MEMORY
          LGHI  R1,DYNLEN
-         XGR   R14,R14 
-         XGR   R15,R15 
-         MVCL  R0,R14  
-         USING DYNAREA,11                ADDRESSABILITY TO DSECT
-         STG   R13,SAVER13               SAVE CALLER SAVE AREA ADDRESS
-         LAY   R15,SAVEAREA              GET ADDRESS OF OWN SAVE AREA
-         STG   R15,SAVF4SANEXT-SAVF4SA(,R13) STORE IN CALLER SAVE AREA
-         LLGTR R13,R15                   GET ADDRESS OF OWN SAVE AREA
+         XGR   R14,R14
+         XGR   R15,R15
+         MVCL  R0,R14
+         LG    R11,PAATMEM
+         USING DYNAREA,R11
+         STG   R13,SAVER13               CHAIN BACK
+         LAY   R15,SAVEAREA
+         STG   R15,SAVF4SANEXT-SAVF4SA(,R13) CHAIN FORWARD
+         LGR   R13,R11                   NEW SVA
+         LG    R0,PAATMEM 
+         AGHI  R0,DYNLEN                 PUSH
+         STG   R0,PAATMEM
 *
          XC    WKRETC,WKRETC
 *
 *      OPEN MESSAGE FILE
          J     MAIN_096
-         LA    R14,OUTFILE               COPY MODEL   DCB
-D1       USING IHADCB,OUTDCB
-         MVC   OUTDCB(OUTFILEL),0(R14)
-         LAY   R0,OUTDCB                 SET  DCBE ADDRESS IN  DCB
-         AGHI  R0,OUTFILE0
-         STY   R0,D1.DCBDCBE
+         sysstate amode64=NO
+         sam31
 *
-         LAY   R2,OUTDCB
+         GETMAIN R,LV=OUTFILEL,LOC=24
+         ST    R1,OUTDCB
+*
+         LA    R14,OUTFILE               COPY MODEL   DCB
+         LLGT  R2,OUTDCB
+         MVC   0(OUTFILEL,R2),0(R14)
+         USING IHADCB,R2
+         LR    R0,R2                     SET  DCBE ADDRESS IN  DCB
+         AGHI  R0,OUTFILE0
+         STY   R0,DCBDCBE
+*
          MVC   WKREENT(8),OPENPARM
          OPEN  ((R2),(EXTEND)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
-         JO    MAIN_096                  YES - BYPASS ABEND
+         JO    MAIN_095                  YES - BYPASS ABEND
          WTO 'GVBJMAIN: DDPRINT OPEN FAILED'
          MVC   WKRETC,=F'16'
+         sam64
          J     DONEDONE
+MAIN_095 EQU   *
+         sam64
+         sysstate amode64=YES
 *
 ***********************************************************************
 * INITIALIZE CTT AREA                                                 *
 ***********************************************************************
-*
-*
 MAIN_096 EQU   *
          LGHI  R0,CTRLEN
          MH    R0,=H'99'
-         GETMAIN RU,LV=(0),LOC=(ANY)
-         LR    R5,R1
-         LR    R8,R1
-         USING CTRAREA,R5
-         LA    R2,99
-MAIN_120 EQU   *
-         XC    0(CTRLEN,R5),0(R5)
-         LA    R5,CTRLEN(,R5)
-         BRCT  R2,MAIN_120
-         DROP  R5 CTRAREA
+         LGR   R2,R0
+         STORAGE OBTAIN,LENGTH=(0),LOC=(ANY),CHECKZERO=YES
+         LGR   R5,R1
+         CIJE  R15,14,MAIN_097
+         LGR   R0,R1
+         LGR   R1,R2
+         XGR   R14,R14
+         XGR   R15,R15
+         MVCL  R0,R14
 *
+MAIN_097 EQU   *
          LGHI  R0,CTTLEN
-         GETMAIN RU,LV=(0),LOC=(ANY)
+         STORAGE OBTAIN,LENGTH=(0),LOC=(ANY),CHECKZERO=YES
          ST    R1,WKTOKNCTT
-         LLGTR R4,R1
+         LGR   R4,R1
          USING CTTAREA,R4
+         CIJE  R15,14,MAIN_098
+         LGR   R0,R1
+         LGHI  R1,CTTLEN
+         XGR   R14,R14
+         XGR   R15,R15
+         MVCL  R0,R14
+*
+MAIN_098 EQU   *
          MVC   CTTEYE,CTTEYEB
-         ST    R8,CTTACTR
+         ST    R5,CTTACTR
          MVC   CTTNUME,=H'99'
-         XC    CTTACTIV(2),CTTACTIV
-         XC    CTTTECB,CTTTECB
-         XC    CTTGECB,CTTGECB
-         XC    CTTGECB2,CTTGECB2
 *
 ***********************************************************************
 *  CREATE GLOBAL NAME/TOKEN AREA                                      *
@@ -200,39 +216,41 @@ MAIN_120 EQU   *
          XC    WKTOKNRC,WKTOKNRC
          MVC   WKTOKNAM+0(8),GENEVA
          MVC   WKTOKNAM+8(8),TKNNAME
-         CALL  IEANTCR,(TOKNLVL2,WKTOKNAM,WKTOKN,TOKNPERS,WKTOKNRC),   +
+         CALL  IEAN4CR,(TOKNLVL2,WKTOKNAM,WKTOKN,TOKNPERS,WKTOKNRC),   +
                MF=(E,WKREENT)
          LTGF  R15,WKTOKNRC       SUCCESSFUL  ???
          JZ    MAIN_140
          WTO 'GVBJMAIN: COMMUNICATIONS TENSOR TABLE NOT ESTABLISHED'
          MVC   WKRETC,=F'20'
          J     DONE
-***
 *
 MAIN_140 EQU   *
-         sam64
-         sysstate amode64=YES
          USING PARMSTR,R9
          STG   R4,PAANCHR                Address of GVBJXXX
-         sysstate amode64=NO
-         sam31
          DROP  R4 CTTAREA
          WTO 'GVBJMAIN: COMMUNICATIONS TENSOR TABLE ESTABLISHED'
-*
 *
 *        RETURN TO CALLER
 *
 DONE     EQU   *                         RETURN TO CALLER
          J     DONEDONE
-         LAY   R2,OUTDCB
+         sysstate amode64=NO
+         sam31
+         LLGT  R2,OUTDCB
          MVC   WKREENT(8),OPENPARM
          CLOSE ((R2)),MODE=31,MF=(E,WKREENT)
+         FREEMAIN R,LV=OUTFILEL,A=(2)
+         sam64
+         sysstate amode64=YES
 *
 DONEDONE EQU   *                         RETURN TO CALLER
-         LG    13,SAVER13                CALLER'S SAVE AREA ADDRESS
-         L     R15,WKRETC
+         LLGF  R15,WKRETC
+         LG    R13,SAVER13
          STG   R15,SAVF4SAG64RS15-SAVF4SA(,R13)
-         FREEMAIN R,LV=DYNLEN,A=(11)     FREE DYNAMIC STORAGE
+         LG    R0,PAATMEM
+         AGHI  R0,-DYNLEN                POP
+         STG   R0,PAATMEM
+*
          LMG   R14,R12,SAVF4SAG64RS14-SAVF4SA(R13)
          BR    R14                       RETURN TO CALLER
 *
@@ -240,10 +258,6 @@ DONEDONE EQU   *                         RETURN TO CALLER
 MVCR14R1 MVC   0(0,R14),0(R1)     * * * * E X E C U T E D * * * *
          DS    0D
 CLCR1R14 CLC   0(0,R1),0(R14)     * * * * E X E C U T E D * * * *
-*
-*
-*        STATICS
-*
 *
 *        CONSTANTS
 *

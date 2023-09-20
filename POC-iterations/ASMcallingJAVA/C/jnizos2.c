@@ -51,6 +51,7 @@ Java_zOSInfo2_showZos2(JNIEnv *env
 
     long ASMINF(char **);
     long ASMINF64(char **);
+    long GVBJMEM(char **);
 
    /* --- Statics ----------------------------------------*/
 
@@ -170,6 +171,13 @@ Java_zOSInfo2_showZos2(JNIEnv *env
     printf("fid %d passarea1 %0.8s\n", fid, pStruct->addr1);
     printf("fid %d length1 %d length2 %d addr1 %0.8s addr2 %s\n", fid, pStruct->length1, pStruct->length2, pStruct->addr1, pStruct->addr2 );
     printf("Calling Assembler codex \n");
+    #endif
+
+    #ifdef _LP64                             
+       rc = GVBJMEM(&passarea);
+       #ifdef GVBDEBUG
+       printf("GVBJMEM returns %d and thrdmem %d\n", rc, pStruct->thrdmem);
+       #endif
     #endif
 
     #  ifdef _LP64                             
