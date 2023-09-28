@@ -29,7 +29,7 @@
 GVBJMEM  CELQPRLG PARMWRDS=1,BASEREG=R10,EXPORT=YES,DSASIZE=160+WORKLEN
          LG    R9,0(R1)                R9 -> Input area                         
          USING PARMSTR,R9
-         LAY   R8,MYWORK-MYDSA(,R4)
+         LAY   R8,MYWORK-THEDSA(,R4)
          USING WORKAREA,R8
 *
 * -----------------------------------------------------------                   
@@ -118,22 +118,22 @@ WKTOKMEM DS    A                  A(Thread memory)
          DS    A
 WORKLEN  EQU   *-WORKAREA
 *
-PARMSTR  DSECT
-PAFUN    DS    CL8
-PAOPT    DS    CL8
-PACLASS  DS    CL32           
-PAMETHOD DS    CL32
-PALEN1   DS    D
-PALEN2   DS    D
-PAADDR1  DS    D
-PAADDR2  DS    D 
-PARETC   DS    D
-PAANCHR  DS    D
-PAATMEM  DS    D
+PARMSTR  DSECT                         Call control block
+PAFUN    DS    CL8                     Function code
+PAOPT    DS    CL8                     Option(s)
+PACLASS  DS    CL32                    Java class
+PAMETHOD DS    CL32                    Java method
+PALEN1   DS    D                       Length of data sent from ASM
+PALEN2   DS    D                       Length of data received by ASM
+PAADDR1  DS    D                       Address of data sent
+PAADDR2  DS    D                       Address of data received
+PARETC   DS    D                       Return code
+PAANCHR  DS    D                       Communications Tensor Table addr
+PAATMEM  DS    D                       Thread local 31 bit storage
 PARMLEN  EQU   *-PARMSTR
 *
 *
-MYDSA    CEEDSA SECTYPE=XPLINK         Dynamic Save Area
+THEDSA   CEEDSA SECTYPE=XPLINK         Dynamic Save Area
 MYWORK   DS    XL(WORKLEN)
          CEECAA ,
 *

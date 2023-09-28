@@ -37,11 +37,11 @@
 *
 DYNAREA  DSECT
 *
-SAVEAREA DC    18F'0'
+SAVEAREA DS  18FD              64 bit SAVE AREA
 SAVER13  DS    D
 *
          DS    0F
-OUTDCB   DS    A
+OUTDCB   DS    A               Address of 24 bit getmained DCB
 *
 WKPRINT  DS    XL131           PRINT LINE
          DS    XL1
@@ -103,18 +103,18 @@ CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
 CTRLEN   EQU   *-CTRAREA
 *
 *
-PARMSTR  DSECT
-PAFUN    DS    CL8
-PAOPT    DS    CL8
-PACLASS  DS    CL32           
-PAMETHOD DS    CL32
-PALEN1   DS    D
-PALEN2   DS    D
-PAADDR1  DS    D
-PAADDR2  DS    D
-PARETC   DS    D
-PAANCHR  DS    D
-PAATMEM  DS    D
+PARMSTR  DSECT                         Call control block
+PAFUN    DS    CL8                     Function code
+PAOPT    DS    CL8                     Option(s)
+PACLASS  DS    CL32                    Java class
+PAMETHOD DS    CL32                    Java method
+PALEN1   DS    D                       Length of data sent from ASM
+PALEN2   DS    D                       Length of data received by ASM
+PAADDR1  DS    D                       Address of data sent
+PAADDR2  DS    D                       Address of data received
+PARETC   DS    D                       Return code
+PAANCHR  DS    D                       Communications Tensor Table addr
+PAATMEM  DS    D                       Thread local 31 bit storage
 PARMLEN  EQU   *-PARMSTR
 *
 *

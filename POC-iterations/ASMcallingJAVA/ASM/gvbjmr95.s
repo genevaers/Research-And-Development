@@ -37,13 +37,13 @@
 *
 DYNAREA  DSECT
 *
-SAVEAREA DS  18FD              SAVE AREA for calls in 31 BIT mode
+SAVEAREA DS  18FD              64 bit SAVE AREA
 SAVER13  DS    D
 SAVER9   DS    D
 *
          DS    0F
-OUTDCB   DS    A
-INDCB    DS    A
+OUTDCB   DS    A               Address of 24 bit getmained DCB (output)
+INDCB    DS    A               Address of 24 bit getmained DCB (input)
 *
 WKCARD   DS   3CL80            PARM CARD
 WKPRINT  DS    XL131           PRINT LINE
@@ -110,18 +110,18 @@ CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
 CTRLEN   EQU   *-CTRAREA
 *
 *
-PARMSTR  DSECT
-PAFUN    DS    CL8
-PAOPT    DS    CL8
-PACLASS  DS    CL32           
-PAMETHOD DS    CL32
-PALEN1   DS    D
-PALEN2   DS    D
-PAADDR1  DS    D
-PAADDR2  DS    D
-PARETC   DS    D
-PAANCHR  DS    D
-PAATMEM  DS    D
+PARMSTR  DSECT                         Call control block
+PAFUN    DS    CL8                     Function code
+PAOPT    DS    CL8                     Option(s)
+PACLASS  DS    CL32                    Java class
+PAMETHOD DS    CL32                    Java method
+PALEN1   DS    D                       Length of data sent from ASM
+PALEN2   DS    D                       Length of data received by ASM
+PAADDR1  DS    D                       Address of data sent
+PAADDR2  DS    D                       Address of data received
+PARETC   DS    D                       Return code
+PAANCHR  DS    D                       Communications Tensor Table addr
+PAATMEM  DS    D                       Thread local 31 bit storage
 PARMLEN  EQU   *-PARMSTR
 *
 *
@@ -309,7 +309,9 @@ MAIN_140 EQU   *
          MVC   WKRETC,=F'12'
          J     DONE
 *
-MAIN_114 EQU   *                  LOAD AND EXECUTE GVBMR95 OR SOMETHING
+*        LOAD AND EXECUTE GVBMR95, OR OTHER SPECIFIED MODULE
+*
+MAIN_114 EQU   *
          LOAD  EPLOC=WKDDEXEC
          OILH  R0,MODE31
          ST    R0,GVBMR95E
@@ -320,6 +322,9 @@ MAIN_114 EQU   *                  LOAD AND EXECUTE GVBMR95 OR SOMETHING
          LAY   R1,WKEPARMA
          L     R15,GVBMR95E         This may not store 64 bit registers
          BASR  R14,R15                                 only 31 bit !!!!
+*
+*        ALLOW A FEW SECONDS FOR IN FLIGHT COMMANDS TO COMPLETE AND THE
+*        GvbJavaDaemon TO TIDY UP EACH WORKER THREAD.
 *
          STIMER WAIT,BINTVL=FIVESEC
 *
