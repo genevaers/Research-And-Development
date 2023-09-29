@@ -153,7 +153,7 @@ export IBM_JAVA_OPTIONS="$IJO "
 //*******************************************************************
 //*
 //DDEXEC   DD *
-PGM=TSTUR70
+PGM=TSTUR70,PARM='TASKS=20,NCALL=32767'
 /*
 //*
 //SYSIN    DD DUMMY

@@ -37,12 +37,13 @@
 *
 DYNAREA  DSECT
 *
-SAVEAREA DC    18F'0'          SAVE AREA for calls in 31 BIT mode
+SAVEAREA DS  18FD              64 bit SAVE AREA
 SAVER13  DS    D
+SAVER9   DS    D
 *
          DS    0F
-OUTDCB   DS    XL(OUTFILEL)    REENTRANT DCB AND DCBE AREAS
-INDCB    DS    XL(INFILEL)     REENTRANT DCB AND DCBE AREAS
+OUTDCB   DS    A               Address of 24 bit getmained DCB (output)
+INDCB    DS    A               Address of 24 bit getmained DCB (input)
 *
 WKCARD   DS   3CL80            PARM CARD
 WKPRINT  DS    XL131           PRINT LINE
@@ -109,17 +110,18 @@ CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
 CTRLEN   EQU   *-CTRAREA
 *
 *
-PARMSTR  DSECT
-PAFUN    DS    CL8
-PAOPT    DS    CL8
-PACLASS  DS    CL32           
-PAMETHOD DS    CL32
-PALEN1   DS    D
-PALEN2   DS    D
-PAADDR1  DS    D
-PAADDR2  DS    D
-PARETC   DS    D
-PAANCHR  DS    D
+PARMSTR  DSECT                         Call control block
+PAFUN    DS    CL8                     Function code
+PAOPT    DS    CL8                     Option(s)
+PACLASS  DS    CL32                    Java class
+PAMETHOD DS    CL32                    Java method
+PALEN1   DS    D                       Length of data sent from ASM
+PALEN2   DS    D                       Length of data received by ASM
+PAADDR1  DS    D                       Address of data sent
+PAADDR2  DS    D                       Address of data received
+PARETC   DS    D                       Return code
+PAANCHR  DS    D                       Communications Tensor Table addr
+PAATMEM  DS    D                       Thread local 31 bit storage
 PARMLEN  EQU   *-PARMSTR
 *
 *
@@ -133,31 +135,44 @@ GVBJMR95 CSECT
          STMG  R14,R12,SAVF4SAG64RS14-SAVF4SA(R13)
          LLGTR R12,R15                   ESTABLISH ...
          USING GVBJMR95,R12              ... ADDRESSABILITY
+*
          LGR   R9,R1                     => Parmstr
          USING PARMSTR,R9
 *
-         GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
-         LLGTR R11,R1                    MOVE GETMAINED ADDRESS TO R11
-         LGR   R0,R11
+         LG    R0,PAATMEM                CLEAR MEMORY
          LGHI  R1,DYNLEN
-         XGR   R14,R14 
-         XGR   R15,R15 
-         MVCL  R0,R14  
-         USING DYNAREA,11                ADDRESSABILITY TO DSECT
-         STG   R13,SAVER13               SAVE CALLER SAVE AREA ADDRESS
-         LAY   R15,SAVEAREA              GET ADDRESS OF OWN SAVE AREA
-         STG   R15,SAVF4SANEXT-SAVF4SA(,R13) STORE IN CALLER SAVE AREA
-         LLGTR R13,R15                   GET ADDRESS OF OWN SAVE AREA
+         XGR   R14,R14
+         XGR   R15,R15
+         MVCL  R0,R14
+         LG    R11,PAATMEM
+         USING DYNAREA,R11
+         STG   R13,SAVER13               CHAIN BACK
+         LAY   R15,SAVEAREA
+         STG   R15,SAVF4SANEXT-SAVF4SA(,R13) CHAIN FORWARD
+         LGR   R13,R11                   NEW SVA
+         LG    R0,PAATMEM 
+         AGHI  R0,DYNLEN                 PUSH
+         STG   R0,PAATMEM
+*
+         STG   R9,SAVER9                 keep: in order to be careful
+*
+         sysstate amode64=NO
+         sam31
+*
+         GETMAIN R,LV=INFILEL,LOC=24
+         ST    R1,INDCB
+         GETMAIN R,LV=OUTFILEL,LOC=24
+         ST    R1,OUTDCB
 *
 *      OPEN DDPARM FILE
          LA    R14,INFILE                COPY MODEL   DCB
-D0       USING IHADCB,INDCB
-         MVC   INDCB(INFILEL),0(R14)
-         LAY   R0,INDCB                  SET  DCBE ADDRESS IN  DCB
+         LLGT  R2,INDCB
+         MVC   0(INFILEL,R2),0(R14)
+         USING IHADCB,R2
+         LR    R0,R2                     SET  DCBE ADDRESS IN  DCB
          AGHI  R0,INFILE0
-         STY   R0,D0.DCBDCBE
+         STY   R0,DCBDCBE
 *
-         LAY   R2,INDCB
          MVC   WKREENT(8),OPENPARM
          OPEN  ((R2),(INPUT)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
@@ -169,17 +184,18 @@ MAIN_090 EQU   *
          LA    R4,3
          LA    R5,WKCARD
 MAIN_091 EQU   *
-         LA    R2,INDCB
+         LLGT  R2,INDCB
          LA    R0,WKCARD
          GET   (R2),(R5)
          LA    R5,80(,R5)
          BCT   R4,MAIN_091
 MAIN_092 EQU   *
-         LAY   R2,INDCB
+         LLGT  R2,INDCB
          MVC   WKREENT(8),OPENPARM
          CLOSE ((R2)),MODE=31,MF=(E,WKREENT)
          wto 'GVBJMR95: DDEXEC cards read'
-
+         DROP  R2 IHADCB
+*
          CLC   WKCARD(4),=CL4'PGM='
          JE    MAIN_093
          WTO  'GVBJMR95: EXEC CARD NOT FOUND FOR DDEXEC' 
@@ -245,15 +261,14 @@ MAIN_098 EQU   *
 *         MVC   WKDDEXEC,WKCARD+4
 *
 *      OPEN MESSAGE FILE
-*         J     MAIN_099
          LA    R14,OUTFILE               COPY MODEL   DCB
-D1       USING IHADCB,OUTDCB
-         MVC   OUTDCB(OUTFILEL),0(R14)
-         LAY   R0,OUTDCB                 SET  DCBE ADDRESS IN  DCB
+         LLGT  R2,OUTDCB
+         MVC   0(OUTFILEL,R2),0(R14)
+         USING IHADCB,R2
+         LR    R0,R2                     SET  DCBE ADDRESS IN  DCB
          AGHI  R0,OUTFILE0
-         STY   R0,D1.DCBDCBE
+         STY   R0,DCBDCBE
 *
-         LAY   R2,OUTDCB
          MVC   WKREENT(8),OPENPARM
          OPEN  ((R2),(EXTEND)),MODE=31,MF=(E,WKREENT)
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
@@ -270,7 +285,7 @@ MAIN_099 EQU   *
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(10),=CL10'GVBJMR95: '
          MVC   WKPRINT+10(80),WKCARD
-         LA    R2,OUTDCB
+         LLGT  R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
 ***********************************************************************
@@ -294,14 +309,9 @@ MAIN_140 EQU   *
          MVC   WKRETC,=F'12'
          J     DONE
 *
-*        ALLOCATE TABLE for REQUEST communication: CTRAREA
+*        LOAD AND EXECUTE GVBMR95, OR OTHER SPECIFIED MODULE
 *
 MAIN_114 EQU   *
-** *     WTO 'GVBJMR95: COMMUNICATIONS TENSOR TABLE LOCATED'
-*
-*        LOAD AND EXECUTE GVBMR95
-*
-*         LOAD  EP=GVBMR95E
          LOAD  EPLOC=WKDDEXEC
          OILH  R0,MODE31
          ST    R0,GVBMR95E
@@ -310,17 +320,19 @@ MAIN_114 EQU   *
          LAY   R1,WKDDPRML
          ST    R1,WKEPARMA
          LAY   R1,WKEPARMA
-         L     R15,GVBMR95E
-         BASR  R14,R15
+         L     R15,GVBMR95E         This may not store 64 bit registers
+         BASR  R14,R15                                 only 31 bit !!!!
+*
+*        ALLOW A FEW SECONDS FOR IN FLIGHT COMMANDS TO COMPLETE AND THE
+*        GvbJavaDaemon TO TIDY UP EACH WORKER THREAD.
 *
          STIMER WAIT,BINTVL=FIVESEC
 *
 MAIN_200 EQU   *
-*         J     MAIN_201
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(10),=CL10'GVBJMR95: '
          MVC   WKPRINT+10(19),=CL19'POSTING TERMINATION'
-         LA    R2,OUTDCB
+         LLGT  R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
 MAIN_201 EQU   *
@@ -328,11 +340,10 @@ MAIN_201 EQU   *
          POST  CTTTECB                   TERMINATION ECB
          DROP  R4 CTTAREA
 *
-*         J     MAIN_204
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(28),=CL28'GVBJMR95: GVBMR95 EXECUTION '
          MVC   WKPRINT+28(09),=CL9'COMPLETED'
-         LA    R2,OUTDCB
+         LLGT  R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
          J     MAIN_204
@@ -343,16 +354,29 @@ MAIN_204 EQU   *
 *        RETURN TO CALLER
 *
 DONE     EQU   *                         RETURN TO CALLER
-*         J     DONEDONE
-         LAY   R2,OUTDCB
+         LLGT  R2,OUTDCB
          MVC   WKREENT(8),OPENPARM
          CLOSE ((R2)),MODE=31,MF=(E,WKREENT)
 *
 DONEDONE EQU   *                         RETURN TO CALLER
-         LG    R13,SAVER13               CALLER'S SAVE AREA ADDRESS
-         L     R15,WKRETC
+         LLGT  R2,INDCB
+         FREEMAIN R,LV=INFILEL,A=(2)
+         LLGT  R2,OUTDCB
+         FREEMAIN R,LV=OUTFILEL,A=(2)
+*
+         sam64
+         sysstate amode64=YES
+*
+         LG    R9,SAVER9                        Restore our only 64 bit
+*                              register out of the abundance of caution
+*
+         LLGF  R15,WKRETC
+         LG    R13,SAVER13
          STG   R15,SAVF4SAG64RS15-SAVF4SA(,R13)
-         FREEMAIN R,LV=DYNLEN,A=(11)     FREE DYNAMIC STORAGE
+         LG    R0,PAATMEM
+         AGHI  R0,-DYNLEN                POP
+         STG   R0,PAATMEM
+*
          LMG   R14,R12,SAVF4SAG64RS14-SAVF4SA(R13)
          BR    R14                       RETURN TO CALLER
 *
@@ -360,10 +384,6 @@ DONEDONE EQU   *                         RETURN TO CALLER
 MVCR14R1 MVC   0(0,R14),0(R1)     * * * * E X E C U T E D * * * *
          DS    0D
 CLCR1R14 CLC   0(0,R1),0(R14)     * * * * E X E C U T E D * * * *
-*
-*
-*        STATICS
-*
 *
 *        CONSTANTS
 *
