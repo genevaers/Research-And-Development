@@ -48,8 +48,10 @@ public class GVBCLASSLOADER extends ClassLoader {
 
             bbbb = aaaa.toString();
         } catch (ClassNotFoundException e) {
+            bbbb = "ClassNotFound";
             e.printStackTrace();
         } catch (Exception e) {
+            bbbb = "LoaderException";
             e.printStackTrace();
         }
         return bbbb;
