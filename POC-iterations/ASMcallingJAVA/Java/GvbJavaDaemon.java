@@ -242,9 +242,6 @@ class RunSupervisor implements Runnable {
     GVBCLASSLOADER2 javaClassLoader2 = new GVBCLASSLOADER2();        // Separate load and execute functions
 
     Class aarg[] = new Class[1];
-    Method[] method = {null,null,null,null,null,null,null,null,null,null};
-    String[] mName = {"Method1","Method2","Method3","Method4","Method5","Method6","Method7","Method8","Method9","Method0"};
-    boolean found, added, once = false;
 
     javaClassLoader.invokeClassMethod("MyClass", "MethodA","STUFF");
 
@@ -306,57 +303,11 @@ class RunSupervisor implements Runnable {
             if (ntrace > 1) {
               System.out.println("Class:" + javaClass + ":method:" + methodName + ":sent:" + sentData + ".");
             }
-
-            /* search for and/or populate array of dynamically loaded methods for efficiency */
-            found = false;
-            if (found) {
-            i = 0;
-            do {
-                if (methodName.equals(mName[i])){
-                    found = true;
-                    j = i;
-                }
-                ++i;
-            } while (!found && i < mName.length);
-            if (!found) {
-                added = false;
-                i = 0;
-                do {
-                    if (mName[i] == null ){
-                        System.out.println("Adding " + methodName + " to position: " + i + " containing: " + mName[i]);
-                        mName[i] = methodName; // Class and method are variables anyway
-                        aarg[0] = String.class; // expected argument list which could vary
-                        method[i] = javaClassLoader2.obtainClassMethod(javaClass, methodName, aarg);
-                        added = true;
-                        j = i;
-                    }
-                    i++;
-                } while (!added && i < mName.length);
-                for (i = 0; i < mName.length; i++) {
-                  if (mName[i] != null ){
-                      System.out.println("Method: " + mName[i] + " : " + i);
-                  }
-               }
-              }
-            }
-            else {
-               if (!once) {
-                  aarg[0] = String.class; // expected argument list which could vary
-                  for (i = 0; i < mName.length; i++) {
-                     if (ntrace > 1 ) {
-                       System.out.println("Optimized loading for Class:" + javaClass + " using method:" + mName[i]);
-                     }
-                     method[i] = javaClassLoader2.obtainClassMethod(javaClass, mName[i], aarg);
-                 }
-                 once = true;
-               }
-               j = 0;
-            }
-
+            
             /* Process the request */
             numberCalls = numberCalls + 1;
-            recvData = javaClassLoader2.executeClassMethod(method[j], sentData);
-            //recvData = javaClassLoader.invokeClassMethod(javaClass, methodName,"STUFF");
+            //recvData = javaClassLoader2.executeClassMethod(method[j], sentData);
+            recvData = javaClassLoader.invokeClassMethod(javaClass, methodName, sentData);
             if (ntrace > 1 ) {
               System.out.println("Back:" + recvData);
             }
