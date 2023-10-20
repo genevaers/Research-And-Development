@@ -307,7 +307,7 @@ class RunSupervisor implements Runnable {
             /* Process the request */
             numberCalls = numberCalls + 1;
             //recvData = javaClassLoader2.executeClassMethod(method[j], sentData);
-            recvData = javaClassLoader.invokeClassMethod(javaClass, methodName,"STUFF");
+            recvData = javaClassLoader.invokeClassMethod(javaClass, methodName, sentData);
             if (ntrace > 1 ) {
               System.out.println("Back:" + recvData);
             }
