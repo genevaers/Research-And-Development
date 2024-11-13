@@ -1,0 +1,169 @@
+.SUFFIXES:
+
+JNIDIR      =  ..
+DEL         = rm -f 
+MKDIR       = mkdir
+RMDIR       = rmdir
+MV          = mv
+CP          = cp
+
+#-------------------------------
+# Uncomment the following line
+# for a debug build.
+# BUILD_DEBUG=1
+
+.IF $(JNIINC) == $(NULL)
+JNIINC      = ./INC
+.END
+
+.IF $(JNISAM) == $(NULL)
+JNISAM      = .
+.END
+
+.IF $(JNIOBJ) == $(NULL)
+JNIOBJ     = $(JNISAM)/obj
+.END
+
+.IF $(JNILST) == $(NULL)
+JNILST     = $(JNISAM)/build
+.END
+
+JNIBIN = $(JNILST)
+
+.IF $(JNILIB) == $(NULL)
+JNILIB      = $(JNISAM)/lib
+.END
+
+USRLIB = //PRIVATE.MACLIB
+SYSLMOD = //PRIVATE.LOADLIB
+#SYSLMOD = $(JNIBIN)
+
+DEFS = -D_ISOC99_SOURCE -D_CRT_SECURE_NO_DEPRECATE \
+       -D_USE_32BIT_TIME_T -D_CRT_NON_CONFORMING_SWPRINTFS -D_OPEN_THREADS \
+       -D_ALL_SOURCE=1 -DFD_SETSIZE=2048 -U_NO_PROTO -DOPT_ZOS -DOPT_VAR_MACS
+
+# COMMON_C_FLAGS =           /nologo /c /Zl /W3 /FR"$(*:"=).sbr"
+
+ASM_FLAGS   = -c -Wa,"LINECOUNT(54),LIST,RENT,SYSPARM(MVS,31BIT,POSIX),USING(NOLIMIT,MAP,WARN(7)),XREF(SHORT),ESD,RLD,GOFF"
+ASM_DEFS    =
+#ASM_VARS   = _C89_SSUFFIX="s" _C89_WORK_SPACE="(64000,(60,60))" _xx_="Test";
+
+# C_FLAGS   = $(opt) /c /nologo /D_CRT_SECURE_NO_DEPRECATE
+C_FLAGS     = $(opt) -c -V -Wc,"TARGET(LE,zOSV1R13),GONUM,NOMAR,NOSEQ,NOSHOW,SSCOMM,NOSHOWINC,LANG(LONGLONG,EXTENDED),XPLINK" -D_CRT_SECURE_NO_DEPRECATE $(DEFS) $(ADDFLAGS) -I"$(JNIINC)"
+
+C_DLLFLAGS  = -c -V -Wc,"LP64,EXPORTALL,CSECT($@)" -I"$(JNIINC)" $(DEFS)
+CDFLAGS     = -Zi -MDd -Fd"$(*:"=).pdb_"
+CRFLAGS     =
+AFLAGS      = $(ASM_FLAGS) $(ASM_DEFS)
+
+.IF $(BUILD_DEBUG)
+CFLAGS      = $(C_FLAGS) $(CDFLAGS)
+.ELSE
+CFLAGS      = $(C_FLAGS) $(CRFLAGS)
+.END
+
+SFLAGS      = -c -Wc,SSCOMM,"LANG(LONGLONG,EXTENDED)" -D_CRT_SECURE_NO_DEPRECATE $(DEFS) -I"$(JNIINC)"
+
+# LIBS        = "$(JNILIB)/jni32.lib"
+# LIBS        = //PRIVATE.BTCHOBJ
+
+L_FLAGS     = -V -W l,p,map
+DLL_FLAGS   = -V -W l,lp64,dll,map
+USRSEC_DLL_FLAGS   = -V -W l,dll,map,"AC=1"
+LDFLAGS     =
+LRFLAGS     =
+
+.IF $(BUILD_DEBUG)
+LFLAGS      = $(L_FLAGS) $(LDFLAGS)
+.ELSE
+LFLAGS      = $(L_FLAGS) $(LRFLAGS)
+.END
+
+directories = "$(JNILIB)" "$(JNIOBJ)" "$(JNILST)"
+
+jniasm_dll  = "$(JNILIB)/jniasm"
+
+targets_dll = $(jniasm_dll)
+
+lib_objects = "$(JNIOBJ)/jniasm"
+
+
+# Target module object lists
+
+jniasm_objects =    $(JNIOBJ)/jnizos2.o     \
+                    $(JNIOBJ)/asminf2.o     \
+                    $(JNIOBJ)/asminf264.o	\
+					$(JNIOBJ)/gvbjwait.o	\
+					$(JNIOBJ)/gvbjpost.o	\
+					$(JNIOBJ)/gvbjmain.o	\
+					$(JNIOBJ)/gvbjmr95.o
+ 
+sources =           ./C/jnizos2.c
+ 
+asm_sources =       ./ASM/asminf2.s   \
+                    ./ASM/asminf264.s \
+					./ASM/gvbjwait.s  \
+					./ASM/gvbjpost.s  \
+					./ASM/gvbjmain.s  \
+					./ASM/gvbjmr95.s
+ 
+# asm_macros =        jniequ.mac
+
+asm_macrodir =      $(JNIINC)/asm
+
+#-------------------------------
+# Target 'all'
+
+.PHONY : all
+
+all:   $(directories) BUILD_OBJ $(targets_dll)
+
+MKDIR: $(directories)
+
+$(directories):
+	-$(MKDIR) $@
+
+TEST:
+	echo ${asm_sources:${@D}.asm=$(JNIOBJ).o}
+	echo $(@D)
+ 
+BUILD_OBJ: $(sources:.c=.o) $(asm_sources:.s=.o)
+
+BUILD_C:  $(sources:.c=.o)
+
+BUILD_ASM: $(asm_sources:.s=.o)
+
+$(jniasm_dll):	$(jniasm_objects)
+	$(LD) $(DLL_FLAGS) -o'$(SYSLMOD)($(@F))' $^ $(LIBS) >$(JNILST)/$(@F).map 2>$(JNILST)/$(@F).lerr
+
+
+$(asm_sources:$(<D).s=$(JNIOBJ).o): $(asm_sources:.s=.o)
+
+$(sources:$(<D).c=$(JNIOBJ).o): $(sources:.c=.o)
+
+$(sources:.c=.o): $(sources)
+	-$(CC) $(C_DLLFLAGS) -o$@ $(@:.o=.c) >$(JNILST)/$(@F:.o=.lst) 2>$(JNILST)/$(@F:.o=.err)
+	-$(CP) $@ $(JNIOBJ)/$(@F)
+
+COPY_MACROS:
+	@for h in $(asm_macros); do \
+             $(CP) -ACTv $(asm_macrodir)/$$h '$(USRLIB)';\
+       done
+
+$(asm_sources:.s=.o): $(asm_sources) COPY_MACROS
+	-$(CC) $(AFLAGS) -o$@ $(@:.o=.s) >$(JNILST)/$(@F:.o=.lst) 2>$(JNILST)/$(@F:.o=.err)
+	-$(CP) $@ $(JNIOBJ)/$(@F)
+
+SINGLE: 
+	-$(DEL) $(JNIOBJ)/$(SRC:b:+".o")
+	-$(CC) $(SFLAGS) -o$(SRC:.c=.o) $(SRC)
+	-$(CP) $(SRC:.c=.o) $(JNIOBJ)/$(SRC:b:+".o")
+
+clean:
+	-$(DEL) $(JNIOBJ)/*.o $(JNILST)/*.lst $(JNILST)/*.err $(JNILST)/*.map $(JNILST)/*.lerr
+	-$(DEL) $(targets_dll)
+	-$(DEL) $(sources:.c=.o) $(asm_sources:.s=.o)
+.IF $(BUILD_DEBUG)
+	-$(DEL) $(CSIOBJ)/*.pdb_
+.END
+	-$(RMDIR) $(directories)
