@@ -1,5 +1,7 @@
 # POC-Iterations
 
+Many of the below POCs are only held in the archive project branch to avoid having to clean vulnerable dependent code.
+
 ## JZOS SPARK Test
 
 This POC investigates integration of Spark with SAFR (GenevaERS) and was conducted in 2015.
