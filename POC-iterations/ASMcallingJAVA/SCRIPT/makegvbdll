@@ -34,8 +34,8 @@ JNIBIN = $(JNILST)
 JNILIB      = $(JNISAM)/lib
 .END
 
-USRLIB = //PRIVATE.MACLIB
-SYSLMOD = //PRIVATE.LOADLIB
+USRLIB = //GVBDEMOJ.MACLIB
+SYSLMOD = //GVBDEMOJ.LOADLIB
 #SYSLMOD = $(JNIBIN)
 
 DEFS = -D_ISOC99_SOURCE -D_CRT_SECURE_NO_DEPRECATE \
@@ -81,31 +81,32 @@ LFLAGS      = $(L_FLAGS) $(LRFLAGS)
 
 directories = "$(JNILIB)" "$(JNIOBJ)" "$(JNILST)"
 
-jniasm_dll  = "$(JNILIB)/jniasm"
+# Can be debug version using gvbjdlld
+jniasm_dll  = "$(JNILIB)/gvbjdll"
 
 targets_dll = $(jniasm_dll)
 
-lib_objects = "$(JNIOBJ)/jniasm"
+lib_objects = "$(JNIOBJ)/gvbjdll"
 
 
 # Target module object lists
 
-jniasm_objects =    $(JNIOBJ)/jnizos2.o     \
-                    $(JNIOBJ)/asminf2.o     \
-                    $(JNIOBJ)/asminf264.o	\
+jniasm_objects =    $(JNIOBJ)/jnizos.o		\
+                    $(JNIOBJ)/asminf64.o	\
 					$(JNIOBJ)/gvbjwait.o	\
 					$(JNIOBJ)/gvbjpost.o	\
 					$(JNIOBJ)/gvbjmain.o	\
-					$(JNIOBJ)/gvbjmr95.o
+					$(JNIOBJ)/gvbjmr95.o	\
+					$(JNIOBJ)/gvbjmem.o
  
-sources =           ./C/jnizos2.c
+sources =           ./C/jnizos.c
  
-asm_sources =       ./ASM/asminf2.s   \
-                    ./ASM/asminf264.s \
-					./ASM/gvbjwait.s  \
-					./ASM/gvbjpost.s  \
-					./ASM/gvbjmain.s  \
-					./ASM/gvbjmr95.s
+asm_sources =       ./ASM/asminf64.s	\
+					./ASM/gvbjwait.s	\
+					./ASM/gvbjpost.s	\
+					./ASM/gvbjmain.s	\
+					./ASM/gvbjmr95.s	\
+					./ASM/gvbjmem.s
  
 # asm_macros =        jniequ.mac
 
