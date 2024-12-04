@@ -73,7 +73,7 @@ class RunMR95 implements Runnable {
       byte[] retHeader = null;
       String header = null;
 
-      zOSInfo6 a = new zOSInfo6();
+      zOSInfo a = new zOSInfo();
       GVBA2I b = new GVBA2I();
 
       /* --- Invoke Start GVBMR95 ---------------------- */
@@ -128,7 +128,7 @@ class RunSupervisor implements Runnable {
     public void run() {
        System.out.println(threadName + ":Running");
 
-       zOSInfo6 a = new zOSInfo6();
+       zOSInfo a = new zOSInfo();
        GVBA2I b = new GVBA2I();
 
        int flag = 0;
@@ -314,7 +314,7 @@ class RunSupervisor implements Runnable {
     byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason
     byte[] arrayReason = null;
 
-    zOSInfo6 a = new zOSInfo6();
+    zOSInfo a = new zOSInfo();
     GVBA2I b = new GVBA2I();
     BinaryUnsignedIntField bui = new BinaryUnsignedIntField( 0 );
     
@@ -528,7 +528,7 @@ public class GvbJavaDaemon {
       String gvbdebug = System.getenv("GVBDEBUG");
 
       System.out.println("GvbJavaDaemon Started. Environment variable GVBDEBUG: " + gvbdebug);
-      zOSInfo6 a = new zOSInfo6();
+      zOSInfo a = new zOSInfo();
       GVBA2I b = new GVBA2I();
       GvbRunInfo runinfo = new GvbRunInfo(0,0);
 
