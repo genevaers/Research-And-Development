@@ -97,7 +97,7 @@ CTRLENOUT DS   D               LENGTH OUTPUT AREA
 CTRMEMIN DS    D               ADDR INPUT AREA
 CTRMEMOUT DS   D               ADDR OUTPUT AREA
 CTRTHRDN DS    H
-CTRRETC  DS    XL2             Provides exit return code to GVBMR95
+CTRRJETC DS    H               Provides exit return code to GVBMR95
 CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
          DS    XL8
 CTRLEN   EQU   *-CTRAREA
@@ -251,7 +251,7 @@ A0026    EQU   *
          LG    R15,CTRLENIN              LENGTH
 A0027    EQU   *
          LG    R0,PARETC
-         STH   R0,CTRRETC
+         STH   R0,CTRJRETC
          AGHI  R15,-1
          EXRL  R15,MVCR14R1
          POST  CTRECB2           POST reply ECB on which MR95 waits

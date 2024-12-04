@@ -29,16 +29,20 @@
 *        GVBUR70 CALL INTERFACE
 *
 UR70STR  DSECT
-UR70FUN  DS    CL8
-UR70OPNT DS   0H
-UR70OPT  DS    CL8
-UR70CLSS DS    CL32
-UR70METH DS    CL32
-UR70LSND DS    F
-UR70LRCV DS    F
-UR70LRET DS    F
-UR70RETC DS    F
-UR70ANCH DS    A
-         DS    A
+UR70FUN  DS    CL8               Function
+UR70OPNT DS   0H                 Number of Java threads requested
+UR70OPT  DS    CL8               Options
+UR70CLSS DS    CL32              Java class requested
+UR70METH DS    CL32              Java method requested
+UR70LSND DS    F                 Length of data sent to Java (send)
+UR70LRCV DS    F                 Length of data expected from Java
+UR70LRET DS    F                 Actual length received from Java
+UR70RETC DS    F                 Return code from GVBUR70
+UR70ANCH DS    A                 Anchor initialize zero but don't touch
+UR70JRET DS    F                 Return code from Java method
+UR70FLG1 DS    X                 Flag 1
+UR70FLG2 DS    X                 Flag 2
+         DS    H
+         DS    F
 UR70LEN  EQU   *-UR70STR
 *
