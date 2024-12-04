@@ -1,5 +1,5 @@
 /*
- * Copyright Contributors to the GenevaERS Project. SPDX-License-Identifier: Apache-2.0 (c) Copyright IBM Corporation 2023.
+ * Copyright Contributors to the GenevaERS Project. SPDX-License-Identifier: Apache-2.0 (c) Copyright IBM Corporation 2024.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,52 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ * 
+ * Example Class with simple methods
  */
-/**
- * Example Class with Methods
- *
- */
+
+import java.util.Arrays;
+
 public class MyClass {
-    public String MethodA(String input) {
+    public byte[] MethodX(byte[] b) {
+        System.out.println("MethodX executed from class MyClass with input:");
+        System.out.println("Length: " + b.length);
+        for (int i = 0; i < b.length; i++)
+        {
+            System.out.print(String.format("%02X", b[i]));
+        }
+        System.out.println();
+        System.out.println();
+
+        byte[] ret = Arrays.copyOfRange(b, 1, b.length);
+        for (int i = 0; i < ret.length; i++)
+        {
+            ret[i] = (byte) (ret[i] + 16);
+        }
+        return ret;
+     }
+
+     public ReturnData MethodY(byte[] b) {
+        System.out.println("MethodY executed from class MyClass with input:");
+        System.out.println("Length: " + b.length);
+        for (int i = 0; i < b.length; i++)
+        {
+            System.out.print(String.format("%02X", b[i]));
+        }
+        System.out.println();
+        System.out.println();
+
+        for (int i = 0; i < b.length; i++)
+        {
+            b[i] = (byte) (b[i] + 1);
+        }
+
+        int rc = 8;
+        ReturnData  returnData = new ReturnData(rc, b);
+        return returnData;
+     }
+ 
+     public String MethodA(String input) {
        String output = "MethodA: " + input;
        System.out.println("MethodA executed from class MyClass with input:" + input);
        return output;
@@ -37,53 +76,63 @@ public class MyClass {
         return output;
     }
 
-    public String Method1(String input) {
-        String output = "Method1:" + input;
-        return output;
+    public byte[] Method1(byte[] input) {
+        System.out.println("Method1 executed from MyClass");
+        input[0] = (byte) 0XF1;
+        return input;
     }
 
-    public String Method2(String input) {
-        String output = "Method2:" + input;
-        return output;
+    public byte[] Method2(byte[] input) {
+        System.out.println("Method2 executed from MyClass");
+        input[0] = (byte) 0XF2;
+        return input;
     }
 
-    public String Method3(String input) {
-        String output = "Method3:" + input;
-        return output;
+    public byte[] Method3(byte[] input) {
+        System.out.println("Method3 executed from MyClass");
+        input[0] = (byte) 0XF3;
+        return input;
     }
 
-    public String Method4(String input) {
-        String output = "Method4:" + input;
-        return output;
+    public byte[] Method4(byte[] input) {
+        System.out.println("Method4 executed from MyClass");
+        input[0] = (byte) 0XF4;
+        return input;
     }
 
-    public String Method5(String input) {
-        String output = "Method5:" + input;
-        return output;
+    public byte[] Method5(byte[] input) {
+        System.out.println("Method5 executed from MyClass");
+        input[0] = (byte) 0XF5;
+        return input;
     }
 
-    public String Method6(String input) {
-        String output = "Method6:" + input;
-        return output;
+    public byte[] Method6(byte[] input) {
+        System.out.println("Method6 executed from MyClass");
+        input[0] = (byte) 0XF6;
+        return input;
     }
 
-    public String Method7(String input) {
-        String output = "Method7:" + input;
-        return output;
+    public byte[] Method7(byte[] input) {
+        System.out.println("Method7 executed from MyClass");
+        input[0] = (byte) 0XF7;
+        return input;
     }
 
-    public String Method8(String input) {
-        String output = "Method8:" + input;
-        return output;
+    public byte[] Method8(byte[] input) {
+        System.out.println("Method8 executed from MyClass");
+        input[0] = (byte) 0XF8;
+        return input;
     }
 
-    public String Method9(String input) {
-        String output = "Method9:" + input;
-        return output;
+    public byte[] Method9(byte[] input) {
+        System.out.println("Method9 executed from MyClass");
+        input[0] = (byte) 0XF9;
+        return input;
     }
 
-    public String Method0(String input) {
-        String output = "Method0:" + input;
-        return output;
+    public byte[] Method0(byte[] input) {
+        System.out.println("Method0 executed from MyClass");
+        input[0] = (byte) 0XC1;
+        return input;
     }
 }
