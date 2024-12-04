@@ -1,4 +1,4 @@
-         TITLE    'TELL JAVA ENVIRONMENT HOW MANY THREADS AND PROCEED'
+         TITLE    'TELL JAVA HOW MANY THREADS FOR MR95 AND PROCEED'
 ***********************************************************************
 *
 * (c) Copyright IBM Corporation 2023.
@@ -41,7 +41,6 @@
 *         UNPK  errdata(3),DBLWORK
 *
 ***********************************************************************
-*
          IHASAVER DSECT=YES,SAVER=YES,SAVF4SA=YES,SAVF5SA=YES,TITLE=NO
 *
          YREGS
@@ -100,7 +99,7 @@ GVBJGO95 CSECT
          LH    R0,PAOPT                  NUMBER OF THREADS
 *        dc h'0'
          LR    R9,R0
-         wto 'GVBJGO95: entered'
+*        wto 'GVBJGO95: entered'
 *
          GETMAIN R,LV=DYNLEN             GET DYNAMIC STORAGE
          LR    R11,R1                    MOVE GETMAINED ADDRESS TO R11
@@ -137,11 +136,10 @@ MAIN_140 EQU   *
 MAIN_114 EQU   *
          WTO 'GVBJGO95: COMMUNICATIONS TENSOR TABLE LOCATED'
          STH   R9,CTTNUME                FROM NBR MR95 THREADS
-*        DC    H'0'
          L     R5,CTTACTR
          USING CTRAREA,R5
          LH    R2,CTTNUME
-         WTO 'GVBJGO95: SETTING UP CTR'
+*        WTO 'GVBJGO95: SETTING UP CTR'
 *
          XR    R1,R1                     THREAD COUNTER
 MAIN_120 EQU   *
@@ -156,16 +154,16 @@ MAIN_120 EQU   *
          LA    R5,CTRLEN(,R5)
          BRCT  R2,MAIN_120
          DROP  R5 CTRAREA
-         WTO 'GVBJGO95: CTR COMPLETED'
+*        WTO 'GVBJGO95: CTR COMPLETED'
 *
          POST  CTTGECB                   POST THE GO ECB
-         WTO 'GVBJGO95: POSTED FOR GO: NUMBER THREADS SET'
+*        WTO 'GVBJGO95: POSTED FOR GO: NUMBER THREADS SET'
 *
          WAIT  ECB=CTTGECB2              Wait for acknowledgement
          XC    CTTGECB2,CTTGECB2
-         WTO 'GVBJGO95: ACKNOWLEDGEMENT RECEIVED AND GECB2 RESET'
+*        WTO 'GVBJGO95: ACKNOWLEDGEMENT RECEIVED AND GECB2 RESET'
          MVI   CTTACTIV,X'FF'
-         WTO 'GVBJGO95: REQUEST TABLE SET ACTIVE'
+         WTO 'GVBJGO95: COMMUNICATIONS TENSOR TABLE ACTIVATED'
          J     A0180
 *
 A0180    EQU   *
@@ -201,7 +199,7 @@ H255     DC    H'255'
 F04      DC    F'04'
 F40      DC    F'40'
 F4096    DC    F'4096'
-CTTEYEB  DC    CL8'GVBCTT'
+CTTEYEB  DC    CL8'GVBCTTAB'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'                    TOKEN PERSISTENCE
