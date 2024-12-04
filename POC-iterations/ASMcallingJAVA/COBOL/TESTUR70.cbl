@@ -1,34 +1,32 @@
        IDENTIFICATION DIVISION.
        PROGRAM-ID. TESTUR70.
-      ******************************************************************
-      **                PROGRAM INFORMATION                            *
-      ******************************************************************
-      **                                                               *
-      ** DESCRIPTION: VSAM READ/WRITE TEST PROGRAM FOR GVBTP90         *
-      **              AND GVBUR70.                                     *
-      **                                                               *
-      ** MODULES CALLED: GVBTP90 - I/O HANDLER                         *
-      **                 GVBUR70 - ASM/3GL/NATURAL TO JAVA INTERFACE   *
-      **                                                               *
-      ** INPUT FILES:   M456                                           *
-      **                                                               *
-      ** OUTPUT FILES:  M456                                           *
-      **                                                               *
-      ** REPORTS:       NONE                                           *
-      **                                                               *
-      ** RETURN CDS:  0000 - SUCCESSFUL PROCESSING                     *
-      **              0004 - WARNING                                   *
-      **              0008 - ERROR                                     *
-      **              0016 - CATASTROPHIC FAILURE                      *
-      **                                                               *
-      ******************************************************************
-      **                ISSUANCE INFORMATION                           *
-      ******************************************************************
-      ** VERSION  PROJECT  ANALYST  EFF        REASON                  *
-      **                                                               *
-      ** 418  RTC22964    BEESLEY    02/02/2023 INITIAL                *
-      **                                                               *
-      ******************************************************************
+      *****************************************************************
+      **
+      ** (c) Copyright IBM Corporation 2024.
+      **     Copyright Contributors to the GenevaERS Project.
+      ** SPDX-License-Identifier: Apache-2.0
+      **
+      *****************************************************************
+      **
+      **   Licensed under the Apache License,
+      **   Version 2.0 (the "License");
+      **   you may not use this file except in compliance with the
+      **   License.
+      **   You may obtain a copy of the License at
+      **
+      **     http://www.apache.org/licenses/LICENSE-2.0
+      **
+      **   Unless required by applicable law or agreed to in writing,
+      **   software distributed under the License is distributed on an           
+      **   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+      **   either express or implied.
+      **   See the License for the specific language governing
+      **   permissions and limitations under the License.
+      *****************************************************************
+      **
+      ** TESTUR70 - test program for calling Java via GVBUR70 (64 bit)
+      **
+      *****************************************************************
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
@@ -53,7 +51,10 @@
           05  UR70-LEN-RETN               PIC S9(9) USAGE IS BINARY.
           05  UR70-RETC                   PIC S9(9) USAGE IS BINARY.
           05  UR70-ANCHOR                 POINTER.
-          05  UR70-SPARE                  PIC X(4).
+          05  UR70-JRET                   PIC X(4).
+          05  UR70-FLAG1                  PIC X(1).
+          05  UR70-FLAG2                  PIC X(1).
+          05  UR70-SPARE                  PIC X(6).
       *
        01 GVBUR70                         PIC X(8)  VALUE 'GVBUR70'.
       *
@@ -65,35 +66,6 @@
 
        01  UR70-RECV-AREA.
            05  UR70-A80-RECV-AREA         PIC  X(80)      VALUE SPACES.
-
-      *****************************************************************
-      *                                                               *
-      *  COMMAREA FOR SUBROUTINE FIFIX   - VSAM/QSAM I/O HANDLER.     *
-      *                                                               *
-      *  FUNCTION CODES:                                              *
-      *                                                               *
-      *        OP  - OPEN                                             *
-      *        CL  - CLOSE                                            *
-      *        IN  - FILE INFORMATION                                 *
-      *        SB  - START BROWSE                                     *
-      *        LO  - LOCATE                                           *
-      *        RD  - READ RECORD                                      *
-      *        BR  - READ NEXT                                        *
-      *        WR  - WRITE RECORD                                     *
-      *        UP  - UPDATE RECORD                                    *
-      *        DL  - DELETE RECORD                                    *
-      *        RI  - RELEASE HELD RECORD                              *
-      *                                                               *
-      *  RETURN CODES:                                                *
-      *                                                               *
-      *        0   - SUCCESSFUL                                       *
-      *        1   - NOT FOUND                                        *
-      *        2   - END-OF-FILE                                      *
-      *        B   - BAD PARAMETER                                    *
-      *        E   - I/O ERROR                                        *
-      *        L   - LOGIC ERROR                                      *
-      *                                                               *
-      *****************************************************************
 
        01  FIFIX-RECORD-AREA.
            05  FIFIX-FB-RECORD-AREA     PIC  X(80)      VALUE SPACES.

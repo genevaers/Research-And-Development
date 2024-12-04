@@ -1,7 +1,7 @@
          TITLE    'TELL JAVA HOW MANY THREADS FOR MR95 AND PROCEED'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *

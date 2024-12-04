@@ -1,7 +1,7 @@
          TITLE 'GVBUR70 - Interface for calling Java'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
