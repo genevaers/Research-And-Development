@@ -1,7 +1,7 @@
          TITLE    'Establish Communications Tensor Table'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -97,7 +97,7 @@ CTRLENOUT DS   D               LENGTH OUTPUT AREA
 CTRMEMIN DS    D               ADDR INPUT AREA
 CTRMEMOUT DS   D               ADDR OUTPUT AREA
 CTRTHRDN DS    H
-         DS    XL2
+CTRRETC  DS    XL2
 CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
          DS    XL8
 CTRLEN   EQU   *-CTRAREA
@@ -106,8 +106,10 @@ CTRLEN   EQU   *-CTRAREA
 PARMSTR  DSECT                         Call control block
 PAFUN    DS    CL8                     Function code
 PAOPT    DS    CL8                     Option(s)
-PACLASS  DS    CL32                    Java class
-PAMETHOD DS    CL32                    Java method
+PATHREAD DS    CL10                    Name of Java thread
+PAFLAG1  DS    X
+PAFLAG2  DS    X
+PASPARE  DS    XL52
 PALEN1   DS    D                       Length of data sent from ASM
 PALEN2   DS    D                       Length of data received by ASM
 PAADDR1  DS    D                       Address of data sent
@@ -115,6 +117,7 @@ PAADDR2  DS    D                       Address of data received
 PARETC   DS    D                       Return code
 PAANCHR  DS    D                       Communications Tensor Table addr
 PAATMEM  DS    D                       Thread local 31 bit storage
+PAGENPA  DS    10D                     Genparm if called by GVBMR95
 PARMLEN  EQU   *-PARMSTR
 *
 *
@@ -180,32 +183,23 @@ MAIN_095 EQU   *
 * INITIALIZE CTT AREA                                                 *
 ***********************************************************************
 MAIN_096 EQU   *
-         LGHI  R0,CTRLEN
-         MH    R0,=H'99'
+         LGHI  R0,CTRLEN                 Length of individual CTR entry
+         MH    R0,=H'99'                 times 99 red balloons
+         AGHI  R0,CTTLEN                 Plus CTT length
          LGR   R2,R0
-         STORAGE OBTAIN,LENGTH=(0),LOC=(ANY),CHECKZERO=YES
-         LGR   R5,R1
+         STORAGE OBTAIN,LENGTH=(0),LOC=(ANY),CHECKZERO=YES,BNDRY=PAGE
+         LGR   R4,R1                     Starts with CTT area
+         ST    R4,WKTOKNCTT
          CIJE  R15,14,MAIN_097
          LGR   R0,R1
          LGR   R1,R2
          XGR   R14,R14
          XGR   R15,R15
          MVCL  R0,R14
-*
 MAIN_097 EQU   *
-         LGHI  R0,CTTLEN
-         STORAGE OBTAIN,LENGTH=(0),LOC=(ANY),CHECKZERO=YES
-         ST    R1,WKTOKNCTT
-         LGR   R4,R1
-         USING CTTAREA,R4
-         CIJE  R15,14,MAIN_098
-         LGR   R0,R1
-         LGHI  R1,CTTLEN
-         XGR   R14,R14
-         XGR   R15,R15
-         MVCL  R0,R14
 *
-MAIN_098 EQU   *
+         LA    R5,CTTLEN(,R4)
+         USING CTTAREA,R4
          MVC   CTTEYE,CTTEYEB
          ST    R5,CTTACTR
          MVC   CTTNUME,=H'99'
@@ -226,7 +220,7 @@ MAIN_098 EQU   *
 *
 MAIN_140 EQU   *
          USING PARMSTR,R9
-         STG   R4,PAANCHR                Address of GVBJXXX
+         STG   R4,PAANCHR                Address of CTT
          DROP  R4 CTTAREA
          WTO 'GVBJMAIN: COMMUNICATIONS TENSOR TABLE ESTABLISHED'
 *
@@ -267,7 +261,7 @@ H255     DC    H'255'
 F04      DC    F'04'
 F40      DC    F'40'
 F4096    DC    F'4096'
-CTTEYEB  DC    CL8'GVBCTT'
+CTTEYEB  DC    CL8'GVBCTTAB'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'                    TOKEN PERSISTENCE

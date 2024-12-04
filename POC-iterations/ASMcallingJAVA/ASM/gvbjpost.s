@@ -1,7 +1,7 @@
          TITLE    'REPLY TO REQUEST FROM GVBMR95 '
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -97,7 +97,7 @@ CTRLENOUT DS   D               LENGTH OUTPUT AREA
 CTRMEMIN DS    D               ADDR INPUT AREA
 CTRMEMOUT DS   D               ADDR OUTPUT AREA
 CTRTHRDN DS    H
-         DS    XL2
+CTRRETC  DS    XL2             Provides exit return code to GVBMR95
 CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
          DS    XL8
 CTRLEN   EQU   *-CTRAREA
@@ -106,8 +106,10 @@ CTRLEN   EQU   *-CTRAREA
 PARMSTR  DSECT                         Call control block
 PAFUN    DS    CL8                     Function code
 PAOPT    DS    CL8                     Option(s)
-PACLASS  DS    CL32                    Java class
-PAMETHOD DS    CL32                    Java method
+PATHREAD DS    CL10                    Name of Java thread
+PAFLAG1  DS    X
+PAFLAG2  DS    X
+PASPARE  DS    XL52
 PALEN1   DS    D                       Length of data sent from ASM
 PALEN2   DS    D                       Length of data received by ASM
 PAADDR1  DS    D                       Address of data sent
@@ -115,6 +117,7 @@ PAADDR2  DS    D                       Address of data received
 PARETC   DS    D                       Return code
 PAANCHR  DS    D                       Communications Tensor Table addr
 PAATMEM  DS    D                       Thread local 31 bit storage
+PAGENPA  DS    10D                     Genparm if called by GVBMR95
 PARMLEN  EQU   *-PARMSTR
 *
 *
@@ -247,6 +250,8 @@ MAIN_116 EQU   *
 A0026    EQU   *
          LG    R15,CTRLENIN              LENGTH
 A0027    EQU   *
+         LG    R0,PARETC
+         STH   R0,CTRRETC
          AGHI  R15,-1
          EXRL  R15,MVCR14R1
          POST  CTRECB2           POST reply ECB on which MR95 waits
@@ -326,7 +331,7 @@ H255     DC    H'255'
 F04      DC    F'04'
 F40      DC    F'40'
 F4096    DC    F'4096'
-CTTEYEB  DC    CL8'GVBCTT'
+CTTEYEB  DC    CL8'GVBCTTAB'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'                    TOKEN PERSISTENCE

@@ -1,7 +1,7 @@
          TITLE 'GVBJMEM - obtain 31 bit thread local storage'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2024.
+* (c) Copyright IBM Corporation 2023.
 *     Copyright Contributors to the GenevaERS Project.                          
 * SPDX-License-Identifier: Apache-2.0                                           
 *                                                                               
@@ -54,21 +54,20 @@ FINDMEM2 EQU   *
          J     EXIT0
 FINDMEM3 EQU   *
          WTO 'GVBJMEM : THREAD LOCAL STORAGE ANCHOR IS BAD'
-         LGHI  R3,8
+         LA    R3,8
          J     EXIT
 * -----------------------------------------------------------                   
 * Obtain 31 bit memory
 * -----------------------------------------------------------                   
 GETMEM   DS    0H
-         LGHI  R0,1024+16         Memory plus header
+         LGHI  R0,1024
          STORAGE OBTAIN,LENGTH=(0),LOC=(ANY),CHECKZERO=YES
-         MVC   0(6,R1),=CL6'GVBMEM'
-         MVC   6(10,R1),PATHREAD
-         LA    R1,16(,R1)
+         MVC   0(8,R1),=CL8'GVBJMEMX'
+         LA    R1,8(,R1)
          STG   R1,PAATMEM
          CIJE  R15,14,GETMEM10
          LGR   R0,R1
-         LGHI  R1,1024-16         Clear everything but header
+         LGHI  R1,1024-8
          XGR   R14,R14
          XGR   R15,R15
          MVCL  R0,R14
@@ -85,7 +84,7 @@ GETMEM10 EQU   *
          LTGF  R15,WKTOKNRC       SUCCESSFUL  ???
          JZ    GETMEM20
          WTO 'GVBJMEM : Thread local storage not persisted'
-         LGHI  R3,12
+         LA    R3,12
          J     EXIT
 GETMEM20 EQU   *
 *         WTO 'GVBJMEM : Thread local storage is persisted'
@@ -93,7 +92,7 @@ GETMEM20 EQU   *
 * Zero Return Code and Exit                                                     
 * -----------------------------------------------------------                   
 EXIT0    DS    0H                                                               
-         XGR   R3,R3                   Zero Return Code                         
+         XR    R3,R3                   Zero Return Code                         
 EXIT     DS    0H                                                               
          CELQEPLG                      Return to caller                         
 *
@@ -122,10 +121,8 @@ WORKLEN  EQU   *-WORKAREA
 PARMSTR  DSECT                         Call control block
 PAFUN    DS    CL8                     Function code
 PAOPT    DS    CL8                     Option(s)
-PATHREAD DS    CL10                    Name of Java thread
-PAFLAG1  DS    X
-PAFLAG2  DS    X
-PASPARE  DS    XL52
+PACLASS  DS    CL32                    Java class
+PAMETHOD DS    CL32                    Java method
 PALEN1   DS    D                       Length of data sent from ASM
 PALEN2   DS    D                       Length of data received by ASM
 PAADDR1  DS    D                       Address of data sent
@@ -133,7 +130,6 @@ PAADDR2  DS    D                       Address of data received
 PARETC   DS    D                       Return code
 PAANCHR  DS    D                       Communications Tensor Table addr
 PAATMEM  DS    D                       Thread local 31 bit storage
-PAGENPA  DS    10D                     Genparm if called by GVBMR95
 PARMLEN  EQU   *-PARMSTR
 *
 *
