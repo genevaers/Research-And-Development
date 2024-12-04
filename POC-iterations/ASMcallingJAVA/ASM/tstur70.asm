@@ -1,7 +1,7 @@
         TITLE 'TSTUR70 - CALL GVBUR70 TO INVOKE JAVA'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -77,7 +77,7 @@ WKREENT  DS    XL256           Reentrant workarea
 WKDBLWK  DS    XL08            Double work workarea
 *
 WKUR70A  DS    A               GVBUR70 ADDRESS
-UR70LIST DS   0A               PARAMETER  LIST FOR "STGTP90"
+UR70LIST DS   0A               PARAMETER  LIST FOR "GVBUR70"
 UR70PA   DS    A               ADDRESS OF API  STRUCTURE
 UR70SNDA DS    A               ADDRESS OF SEND BUFFER
 UR70RECA DS    A               ADDRESS OF RECV BUFFER
@@ -329,7 +329,7 @@ A00150   EQU   *
          ST    R0,UR70LIST+04
          LAY   R0,WKRECV
          ST    R0,UR70LIST+08
-         OI    UR70LIST,X'80'
+         OI    UR70LIST+8,X'80'
 *
          CLC   WKTASKS,=H'0'
          JNE   A0003
@@ -348,8 +348,7 @@ A00150   EQU   *
          ST    R0,OUTDCBA
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(27),=CL27'TSTUR70: INPUT PARAMETERS: '
-         MVC   WKPRINT+27(100),WKPARM
+         MVC   WKPRINT(35),=CL35'TSTUR70: INPUT PARAMETERS: SUBTASK '
          JAS   R10,MYPUT
          J     A0010A
 *
@@ -534,10 +533,13 @@ A0010F   EQU   *
 *
 ***********************************************************************
 A0010A   EQU   *
+         MVC   WKSEND(10),ZEROTO9
+*
          WTO 'TSTUR70 : ABOUT TO CALL JAVA METHOD'
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(45),=CL45'TSTUR70: CALLING MyClass Method1 XXXXX+
-               X TIMES'
+         MVC   WKPRINT(52),=CL52'TSTUR70: CALLING MyClass Method1 XXXXX+
+               X TIMES WITH: '
+         MVC   WKPRINT+52(10),WKSEND
          LH    R15,WKNCALL
          CVD   R15,WKDBL3
          MVC   WKPRINT+33(6),NUMMSK+6
@@ -552,10 +554,16 @@ A0010A   EQU   *
          MVC   UR70LSND,SNDLEN
          MVC   UR70LRCV,RECLEN
          XC    UR70RETC,UR70RETC
-         MVC   WKSEND(10),=CL10'0123456789'
 *
          LH    R2,WKNCALL
+         XR    R5,R5
 A0011B   EQU   *
+         IC    R0,ZEROTO9(R5)
+         STC   R0,UR70METH+6
+         LA    R5,1(,R5)
+         CIJNH R5,9,A0011C
+         XR    R5,R5
+A0011C   EQU   *
          LAY   R1,UR70LIST
          L     R15,WKUR70A
          BASR  R14,R15
@@ -580,8 +588,8 @@ A0012    EQU   *
 *
          WTO 'TSTUR70 : HAS CALLED JAVA METHOD'
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(09),=CL09'TSTUR70: '
-         MVC   WKPRINT+09(22),WKRECV
+         MVC   WKPRINT(20),=CL20'TSTUR70: RECEIVING: '
+         MVC   WKPRINT+20(22),WKRECV
          JAS   R10,MYPUT
 ***********************************************************************
 A0016    EQU   *
@@ -706,6 +714,8 @@ STATIC   LOCTR
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *
 STATIC   LOCTR
+ZEROTO9  DC    CL10'0123456789'
+         DC    CL6'ABCDEF'
          ds    0d
 MVCR14R1 MVC   0(0,R14),0(R1)     * * * * E X E C U T E D * * * *
          ds    0d
@@ -725,7 +735,7 @@ EYEBALL  DC    CL8'GVBUR70'
 SNDLEN   DC    F'10'
 RECLEN   DC    F'22'
 LINKNAME DC    CL8'GVBUR70'
-NUMMSK   DC    XL12'402020202020202020202021'
+NUMMSK   DC    XL12'402020202020202020202120'
 SPACES   DC    CL256' '
          DS    0F
 MDLENQX  ENQ   (GENEVA,LOGNAME,E,,STEP),RNL=NO,MF=L
