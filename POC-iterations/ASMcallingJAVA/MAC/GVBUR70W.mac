@@ -1,0 +1,31 @@
+*
+*        DYNAMIC WORK AREA
+*
+DYNAREA  DSECT
+*
+WKSAVE   DS  18F
+         DS  18F
+*
+EYEBALL  DS    CL8
+         DS    0F
+WKPRINT  DS    XL131           PRINT LINE
+WKJFLAG  DS    XL1             JAVAFLAG
+         DS   0F
+WKREENT  DS    XL256           REENTRANT WORKAREA/PARMLIST
+WKDBLWK  DS    XL08            DOUBLE WORK WORKAREA
+WKDDNAME DS    CL8
+WKRETC   DS    F
+GVBMR95E DS    A
+WKTOKNRC DS    A                  NAME/TOKEN  SERVICES RETURN CODE
+WKTOKNAM DS    XL16               TOKEN NAME
+WKTOKN   DS   0XL16               TOKEN VALUE
+WKTOKNCTT DS   A                  A(CTT)
+         DS    A
+         DS    A
+         DS    A
+*
+WKATCB   DS    A                  TCB address
+WKICTR   DS    H                  CTR idx this subtask is using
+         DS    A
+         DS    A
+DYNLEN   EQU   *-DYNAREA                 DYNAMIC AREA LENGTH
