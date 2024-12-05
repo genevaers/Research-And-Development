@@ -24,7 +24,7 @@
       **   permissions and limitations under the License.
       *****************************************************************
       **
-      ** TESTUR70 - test program for calling Java via GVBUR70 (64 bit)
+      ** TESTUR70 - test program for calling Java via GVBUR70
       **
       *****************************************************************
        ENVIRONMENT DIVISION.
