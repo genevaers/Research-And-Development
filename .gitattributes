@@ -1,0 +1,9 @@
+# Default to ASCII unless otherwise specified
+
+*                zos-working-tree-encoding=iso8859-1 git-encoding=iso8859-1
+
+*.asm            zos-working-tree-encoding=ibm-1047 git-encoding=iso8859-1
+*.mac            zos-working-tree-encoding=ibm-1047 git-encoding=iso8859-1
+
+# The git attributes and ignore files MUST be ASCII
+*.gitattributes  zos-working-tree-encoding=iso8859-1 git-encoding=iso8859-1
