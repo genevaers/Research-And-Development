@@ -222,7 +222,7 @@ MAINLINE DS    0H
          USING GENENV,R14
          DROP  R14
 *
-         wto 'M4L5I calling Java lookup invoked'
+         wto 'JLKUPEX: calling Java lookup method'
 *
 ***********************************************************************
 *  FIND GLOBAL NAME/TOKEN AREA                                        *
@@ -242,7 +242,7 @@ MAINLINE DS    0H
                MF=(E,WKREENT)
          LTGF  R15,WKTOKNRC       SUCCESSFUL  ???
          JZ    MAIN_140
-         WTO 'M4L5I: COMMUNICATIONS TENSOR TABLE NOT LOCATED'
+         WTO 'JLKUPEX: COMMUNICATIONS TENSOR TABLE NOT LOCATED'
          MVC   WKRETC,=F'8'
          J     DONE
 *
@@ -251,7 +251,7 @@ MAIN_140 EQU   *
          USING CTTAREA,R4
          CLC   CTTEYE,CTTEYEB
          JE    MAIN_114
-         WTO 'M4L5I: COMMUNICATIONS TENSOR TABLE DOES NOT MATCH'
+         WTO 'JLKUPEX: COMMUNICATIONS TENSOR TABLE DOES NOT MATCH'
          MVC   WKRETC,=F'12'
          J     DONE
 *
@@ -309,31 +309,18 @@ MAIN_114 EQU   *
 *
          LH    R15,CTRJRETC       ZERO RETURN CODE
          ST    R15,WKRETC
-         J     A0180
+         J     DONE
 *
 MAIN_116 EQU   *
-         WTO 'M4L5I: GPTHRDNO EXCEEDS MAXIMUM'
+         WTO 'JLKUPEX: GPTHRDNO EXCEEDS MAXIMUM'
          MVC   WKRETC,=F'4'
-         J     A0180
+         J     DONE
 *
 MAIN_117 EQU   *
-         WTO 'M4L5I: GPTHRDNO LESS THAN MINIMUM'
+         WTO 'JLKUPEX: GPTHRDNO LESS THAN MINIMUM'
          MVC   WKRETC,=F'4'
-         J     A0180
+         J     DONE
 *
-***********************************************************************
-*  NON JAVA VERSION                                                   *
-***********************************************************************
-MAIN_201 EQU   *
-         LAY   R9,=CL16'NON JAVA VERSION'
-         L     R14,GPBLOCKA       LOAD RESULT    POINTER ADDRESS
-         STG   R9,0(,R14)
-*
-         LHI   R0,16
-         L     R14,GPBLKSIZ
-         ST    R0,0(,R14)
-*
-A0180    EQU   *
 ***********************************************************************
 *  RETURN TO CALLER (SAFR)                                            *
 ***********************************************************************
@@ -353,7 +340,7 @@ DONE     EQU   *                  RETURN TO CALLER
          BSM   0,R14              RETURN
 *
 CTTEYEB  DC    CL8'GVBCTTAB'
-WORKEYEB DC    CL8'M4L5I   '
+WORKEYEB DC    CL8'JLKUPEX '
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'
