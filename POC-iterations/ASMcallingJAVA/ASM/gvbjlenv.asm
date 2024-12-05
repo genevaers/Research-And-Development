@@ -330,13 +330,12 @@ MAIN_114 EQU   *
          POST  CTRECB1           POST A REQUEST ECB
 *
 *
-*        WTO 'GVBJPOST: REQUEST POSTED TO JAVA'
+         WTO 'GVBJPOST: REQUEST POSTED TO JAVA'
+*
          WAIT  1,ECB=CTRECB2
          XC    CTRECB2,CTRECB2
 *
 *
-** **    sam64
-** **    sysstate amode64=YES
          LG    R9,CTRMEMIN
          L     R14,GPBLOCKA       LOAD RESULT    POINTER ADDRESS
          STG   R9,0(,R14)
@@ -344,10 +343,8 @@ MAIN_114 EQU   *
          LHI   R0,16
          L     R14,GPBLKSIZ
          ST    R0,0(,R14)         ---> NOT SURE IF THIS IS NEEDED
-*        dc h'0'
-** **    sysstate amode64=NO
-** **    sam31
-*        WTO 'GVBJPOST: RESPONSE RECEIVED TO REQUEST'
+*
+         WTO 'GVBJPOST: RESPONSE RECEIVED TO REQUEST'
          J     A0180
 *
 MAIN_116 EQU   *
