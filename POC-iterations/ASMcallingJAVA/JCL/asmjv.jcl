@@ -1,4 +1,4 @@
-//ASMUR70T  JOB (ACCT),'BUILD MR95 JAVA BITS',
+//ASMUR70T  JOB (ACCT),'BUILD MR95 JAVA PIECES',
 //            NOTIFY=&SYSUID.,
 //            CLASS=A,
 //            MSGLEVEL=(1,1),
