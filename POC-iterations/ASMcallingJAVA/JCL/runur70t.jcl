@@ -5,7 +5,7 @@
 //          MSGCLASS=H
 //********************************************************************
 //*
-//* (C) COPYRIGHT IBM CORPORATION 2023.
+//* (C) COPYRIGHT IBM CORPORATION 2024.
 //*    Copyright Contributors to the GenevaERS Project.
 //*SPDX-License-Identifier: Apache-2.0
 //*

@@ -9,7 +9,7 @@
 //            GEBT.BUILD.PROC)
 //*
 //*********************************************************************
-//*   GET ASM MAC AND JCL LIBRARIES FROM USS
+//*   GET ASM MAC AND JCL LIBRARIES FROM USS TO MVS
 //*********************************************************************
 //*
 //GETSRC   EXEC PGM=IKJEFT1A

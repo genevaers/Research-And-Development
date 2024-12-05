@@ -1,4 +1,4 @@
-//LNKUR70T  JOB (ACCT),'LINK JAVA BITS',
+//LNKUR70T  JOB (ACCT),'LINK JAVA PIECES',
 //            NOTIFY=&SYSUID.,
 //            CLASS=A,
 //            MSGLEVEL=(1,1),
