@@ -30,7 +30,7 @@
 *
          YREGS
 *
-*        COPY  GVBJDSCT
+         COPY  GVBJDSCT
 *
 *        DYNAMIC WORK AREA
 *
@@ -67,57 +67,6 @@ WKENTIDX DS    A
          DS    A
          DS    0F
 DYNLEN   EQU   *-DYNAREA                 DYNAMIC AREA LENGTH
-*
-*        COMMUNICATIONS TENSOR TABLE DSECTS
-*
-CTTAREA  DSECT
-CTTEYE   DS    CL8
-CTTACTR  DS    A               ADDR CTRAREA
-CTTNUME  DS    H               NUMBER OF ENTRIES
-CTTACTIV DS    X
-         DS    X
-CTTTECB  DS    F               TERMINATION ECB
-CTTGECB  DS    F               GO ECB
-CTTGECB2 DS    F               Acknowledge GO
-         DS    XL4
-CTTLEN   EQU   *-CTTAREA
-*
-*
-CTRAREA  DSECT
-CTRECB1  DS    F               ECB JAVA WORKER WAITS ON
-CTRECB2  DS    F               ECB ASM  WORKER WAITS ON
-CTRCSWRD DS    F               CS CONTROL WORD
-CTRREQ   DS    CL4             REQUEST FUNCTION
-CTRACLSS DS    D               ADDRESS OF CLASS FIELD (A32) 
-CTRAMETH DS    D               ADDRESS OF METHOD FIELD (A32)
-CTRLENIN DS    D               LENGTH INPUT AREA
-CTRLENOUT DS   D               LENGTH OUTPUT AREA
-CTRMEMIN DS    D               ADDR INPUT AREA
-CTRMEMOUT DS   D               ADDR OUTPUT AREA
-CTRTHRDN DS    H
-CTRRETC  DS    XL2
-CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
-         DS    XL8
-CTRLEN   EQU   *-CTRAREA
-*
-*
-PARMSTR  DSECT                         Call control block
-PAFUN    DS    CL8                     Function code
-PAOPT    DS    CL8                     Option(s)
-PATHREAD DS    CL10                    Name of Java thread
-PAFLAG1  DS    X
-PAFLAG2  DS    X
-PASPARE  DS    XL52
-PALEN1   DS    D                       Length of data sent from ASM
-PALEN2   DS    D                       Length of data received by ASM
-PAADDR1  DS    D                       Address of data sent
-PAADDR2  DS    D                       Address of data received
-PARETC   DS    D                       Return code
-PAANCHR  DS    D                       Communications Tensor Table addr
-PAATMEM  DS    D                       Thread local 31 bit storage
-PAGENPA  DS    10D                     Genparm if called by GVBMR95
-PARMLEN  EQU   *-PARMSTR
-*
 *
 GVBJWAIT RMODE 24
 GVBJWAIT AMODE 31
