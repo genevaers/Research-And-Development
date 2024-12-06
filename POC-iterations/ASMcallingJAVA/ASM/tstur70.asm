@@ -130,13 +130,7 @@ WORKDCB  DSECT
 OUTDCB   DS    XL(outfilel)    Reentrant DCB and DCBE areas
 WORKDCBL EQU   (*-WORKDCB)
 *
-         print off
          SYSSTATE ARCHLVL=2
-         COPY  ASMMSP
-LEAVE    OPSYN ASM_LEAVE
-         asmmrel on
-         print on
-*
 *
 ***********************************************************************
 *                                                                     *

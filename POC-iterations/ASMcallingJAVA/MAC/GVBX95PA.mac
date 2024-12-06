@@ -1,0 +1,203 @@
+**********************************************************************
+*
+* (C) COPYRIGHT IBM CORPORATION 2008, 2022.
+*     Copyright Contributors to the GenevaERS Project.
+* SPDX-License-Identifier: Apache-2.0
+*
+**********************************************************************
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+*  or implied.
+*  See the License for the specific language governing permissions
+*  and limitations under the License.
+*
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        GENEVA PROVIDED PARAMETER LIST                               *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+*  IF YOU CHANGE THIS PARAMETER LIST, LOOK THROUGH ALL USER EXITS
+*  FOR REFERENCE TO GVBX95PA AND UPDATE ANY USER COPYBOOKS/MACROS
+*  TO BE CONSISTENT WITH THE CHANGES.
+*
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENPARM  DSECT                  GENEVA  PARAMETER LIST
+*
+GPENVA   DS    A   was environa ENVIRONMENT  INFO ADDR
+GPFILEA  DS    A   was fileinfa FILE         INFO ADDR
+GPSTARTA DS    A   was startupa STARTUP      DATA ADDR
+GPEVENTA DS    A   was recaddr  EVENT RECORD PTR  ADDR
+GPEXTRA  DS    A   was extreca  EXTRACT    RECORD ADDR      (N/A)
+GPKEYA   DS    A   was lkupkeya LOOK-UP    KEY    ADDR      (N/A)
+GPWORKA  DS    A   was anchora  WORK AREA POINTER ADDR
+*
+GPRTNCA  DS    A   was retncoda RETURN CODE       ADDR
+GPBLOCKA DS    A   was retnptra OUTPUT BLOCK PTR  ADDR
+GPBLKSIZ DS   0A                OUTPUT BLOCK SIZE ADDR
+*
+* Following not part of original GENPARM, but for UR20, UR35, DAYS
+* and calling LE written exits.
+*
+GENPARM1 DS    A
+GENPARM2 DS    A
+GENPARM3 DS    A
+GENPARM4 DS    A
+GENPARM5 DS    A
+GENPARM_L EQU *-GENPARM
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        ENVIRONMENT INFORMATION                                      *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENENV   DSECT                  ENVIRONMENT INFORMATION
+*
+GPTHRDNO DS    H                CURRENT THREAD   NUMBER
+GPPHASE  DS    CL02             CURRENT EXECUTION PHASE
+GPVIEW#  DS    FL04             CURRENT EXECUTING  VIEW
+GPENVVA  DS    AL04             ENV VARIABLE TABLE ("MR95ENVV") ADDR
+GPJSTPCT DS    FL04             JOIN STEP COUNT
+GPJSTKA  DS    AL04             JOIN STACK ADDRESS
+GP_PROCESS_DATE_TIME DS 0XL16   Process Date and time
+GP_PROCESS_DATE      DS  XL8    Date
+GP_PROCESS_TIME      DS  XL8    Time
+GP_ERROR_REASON      DS  FL04   Error reason code
+GP_ERROR_BUFFER_PTR  DS  AL04   -> error text
+GP_ERROR_BUFFER_LEN  DS  FL04   To exit - set to length of buffer
+*                               from exit - set to text length
+GP_PF_count DS XL04             Number of PF in the current LF
+GP_THRD_WA  DS AL04             Address of current thread WA
+         ds    0d
+genenv_l equ   *-genenv
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        FILE        INFORMATION                                      *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENFILE  DSECT                  EVENT FILE   INFORMATION
+*
+GPDDNAME DS    CL08             EVENT  FILE  DDNAME: must be first !!!
+GPRECCNT DS    xl08          Event file record count (now 8 bytes bin)
+GPRECFMT DS    CL01             RECORD FORMAT  (F,V,D)
+GPRECDEL DS    CL01             RECORD DELIMITER
+GPRECLEN DS    FL04             RECORD LEN   CURRENT
+GPRECMAX DS    FL04             RECORD LEN   MAXIMUM
+GPBLKMAX DS    FL04             BLOCK  SIZE  MAXIMUM
+GPLFID   DS    FL04             Associated LFID
+gp_call_srb ds C                If set to Y by i/o routine at open,
+*                    MR95 will stay in SRB mode when calling routine
+GP_redrive  ds C                If set to Y, then MR95 will switch
+*                                            to TCB and redrive
+genfile_l equ  *-genfile        length of area
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        STARTUP DATA INFORMATION                                     *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENSTART DSECT
+*
+GP_STARTUP_DATA DS CL32
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        EVENT RECORD INFORMATION                                     *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENEVENT DSECT
+*
+GP_EVENT_REC    DS AD   DOUBLE WORD POINTER TO EVENT RECORD
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        EXTRACT RECORD INFORMATION                                   *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENEXTR  DSECT
+*
+GP_EXTRACT_REC          DS  0CL17
+GP_EXTRACT_RDW          DS  0XL4
+GP_EXT_REC_LENGTH       DS  XL2
+                        DS  XL2
+GP_EXTRACT_PREFIX       DS  0CL12
+GP_SORT_KEY_LENGTH      DS  XL2
+GP_TITLE_KEY_LENGTH     DS  XL2
+GP_DATA_AREA_LENGTH     DS  XL2
+GP_NBR_CT_COLS          DS  XL2
+GP_VIEW_ID              DS  XL4
+GP_EXTRACT_VAR_LEN_AREA DS  C
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        LOOK-UP KEY INFORMATION                                      *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENKEY   DSECT
+*
+GP_LOOKUP_KEY  DS  CL256
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        WORK AREA PTR INFORMATION                                    *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENWORK  DSECT
+*
+GP_WORK_AREA_ANCHOR DS  A
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        RETURN CODE INFORMATION                                      *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENRTNC  DSECT
+*
+GP_RETURN_CODE DS  A
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        OUTPUT BLOCK PTR INFORMATION                                 *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENBLOCK DSECT
+*
+GP_RESULT_PTR   DS  AD
+*
+         SPACE 3
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*                                                                     *
+*        OUTPUT BLOCK SIZE INFORMATION                                *
+*                                                                     *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+*
+GENBLKSZ DSECT
+*
+GP_RESULT_BLK_SIZE DS F
+*
