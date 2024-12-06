@@ -6,7 +6,7 @@
 //*
 //********************************************************************
 //*
-//* (C) COPYRIGHT IBM CORPORATION 2023.
+//* (C) COPYRIGHT IBM CORPORATION 2024.
 //*    Copyright Contributors to the GenevaERS Project.
 //*SPDX-License-Identifier: Apache-2.0
 //*
@@ -26,11 +26,6 @@
 //*  and limitations under the License.
 //*
 //******************************************************************
-//*
-//*        SET HLQ=<YOUR-TSO-PREFIX>
-//*        SET MLQ=GVBDEMO
-//*
-//*********************************************************************
 //*  LINK-EDIT JLKUPEX
 //*********************************************************************
 //*

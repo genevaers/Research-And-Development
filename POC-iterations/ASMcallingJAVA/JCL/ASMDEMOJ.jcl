@@ -25,13 +25,8 @@
 //*  See the License for the specific language governing permissions
 //*  and limitations under the License.
 //*
-//******************************************************************
-//*
-//*        SET HLQ=<YOUR-TSO-PREFIX>
-//*        SET MLQ=GVBDEMOJ
-//*
 //****************************************************************
-//*  ASSEMBLE GVBUR70, TSTUR70 AND GVBJLENV MODULES
+//*  ASSEMBLE GVBUR70, TSTUR70, GVBJLENV, GVBGO95 and JLKUPEX
 //****************************************************************
 //ASMP1    PROC
 //ASM      EXEC PGM=ASMA90,
