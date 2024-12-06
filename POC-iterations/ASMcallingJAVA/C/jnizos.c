@@ -31,9 +31,9 @@
 #include <unistd.h>
 #include <string.h>
 
-/* #define GVBDEBUG */
+/* #define GVBDEBUG -- this is actually set in DEFS of the build script makegvbdlld */
 
-/* JNIEXPORT jbyteArray JNICALL Java_zOSInfo_showZos (JNIEnv *, jobject, jint, jstring, jstring, jbyteArray); */
+/* JNIEXPORT jbyteArray JNICALL Java_zOSInfo_showZos (JNIEnv *, jobject, jint, jstring, jstring, jbyteArray, jint); */
  
 /*========================================================  
  Mainline Code                                 
