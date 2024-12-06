@@ -30,8 +30,8 @@
 //*
 //         EXPORT SYMLIST=*
 //*
-//*        SET HLQ=<YOUR-TSO-PREFIX>
-//*        SET MLQ=GVBDEMO 
+//         SET HLQ=<YOUR-TSO-PREFIX>
+//         SET MLQ=GVBDEMOJ
 //*
 //         JCLLIB ORDER=&LVL1..RTC&RTC..JCL
 //*

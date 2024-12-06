@@ -27,6 +27,14 @@
 *      - THIS MODULE ALLOWS A SPECIFIED JAVA CLASS AND METHOD TO BE   *
 *        CALLED USING THE GVBUR70 INTERFACE.                          *
 *                                                                     *
+*        IT SUPPORTS: 1) INIT initialize and indicate the number of   *
+*                        Java thread required by a multi-tasking      *
+*                        application. Should be called only once by   *
+*                        the application.                             *
+*                                                                     *
+*                     2) SEND invoke specified Java class and method  *
+*                        sending and receiving data from it.          *
+*                                                                     *
 ***********************************************************************
                         EJECT
 ***********************************************************************
@@ -144,7 +152,7 @@ START    DS    0H
          JP    CHAIN              YES - BYPASS ALLOCATION
 *
 ***********************************************************************
-*  ALLOCATE "GVBXLST" WORKAREA IF NOT ALREADY ALLOCATED (PER THREAD)  *
+*  ALLOCATE DYNAMIC WORKAREA IF NOT ALREADY ALLOCATED (PER THREAD)    *
 ***********************************************************************
          STORAGE OBTAIN,LENGTH=DYNLEN,COND=NO,CHECKZERO=YES
          LLGTR R13,R1
@@ -314,8 +322,6 @@ MAIN_116 EQU   *
 *  And acknoledge GvbDaemon with a handshake..                        *
 ***********************************************************************
 A0200    EQU   *
-*         CLI   CTTACTIV,X'FF'            Ensure initialization not
-*         JE    MAIN_220                  already done
          TS    CTTACTIV
          JNZ   MAIN_220
          LH    R6,CTTNUME                And it's set to the initial

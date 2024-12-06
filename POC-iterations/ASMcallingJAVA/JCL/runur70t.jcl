@@ -27,7 +27,7 @@
 //*
 //         EXPORT SYMLIST=*
 //*
-//*        SET HLQ=<YOUR-TSO-PREFIX>
+//         SET HLQ=<YOUR-TSO-PREFIX>
 //         SET MLQ=GVBDEMOJ
 //*
 //         JCLLIB ORDER=AJV.V11R0M0.PROCLIB

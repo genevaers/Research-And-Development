@@ -1,7 +1,7 @@
 //LNKDEMOJ JOB (ACCT),CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),NOTIFY=&SYSUID
 //*
 //         EXPORT SYMLIST=*
-//*        SET HLQ=<YOUR-TSO-PREFIX>
+//         SET HLQ=<YOUR-TSO-PREFIX>
 //         SET MLQ=GVBDEMOJ
 //*
 //********************************************************************
