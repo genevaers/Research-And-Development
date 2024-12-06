@@ -5,6 +5,6 @@
   OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/JCL/' -
    '<YOUR-TSO-PREFIX>.GVBDEMOJ.JCL' SUFFIX(jcl) CONVERT(NO) LC                                         
    OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/COPY/' -
-   '<YOUR-TSO-PREFIX>.GVBDEMOJ.COPY' SUFFIX(jcl) CONVERT(NO) LC                                         
+   '<YOUR-TSO-PREFIX>.GVBDEMOJ.COPY' SUFFIX(cpy) CONVERT(NO) LC                                         
    OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/COBOL/' -
-   '<YOUR-TSO-PREFIX>.GVBDEMOJ.COBOL' SUFFIX(jcl) CONVERT(NO) LC                                         
+   '<YOUR-TSO-PREFIX>.GVBDEMOJ.COBOL' SUFFIX(cbl) CONVERT(NO) LC                                         
