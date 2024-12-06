@@ -83,7 +83,7 @@
 //*
 //ISPFTTRC DD SYSOUT=*,RECFM=VB,LRECL=259        TSO OUTPUT
 //*
-//SYSTSIN  DD *
+//SYSTSIN  DD *,SYMBOLS=EXECSYS
  OPUT  '&HLQ..MLQ..LOADLIB(JNIASM)' -
        '/u/<your-user-id>/DllLib/GVBJDLL'
 //*
