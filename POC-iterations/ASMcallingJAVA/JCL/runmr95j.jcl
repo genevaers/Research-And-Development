@@ -1,11 +1,11 @@
-//RUNMR95J  JOB (ACCT),'JAVA&MR95E',
+//RUNMR95J  JOB (ACCT),'GVBMR95E JAVA LOOKUP',
 //          NOTIFY=&SYSUID.,
 //          CLASS=A,
 //          MSGLEVEL=(1,1),
 //          MSGCLASS=H
 //********************************************************************
 //*
-//* (C) COPYRIGHT IBM CORPORATION 2023.
+//* (C) COPYRIGHT IBM CORPORATION 2024.
 //*    Copyright Contributors to the GenevaERS Project.
 //*SPDX-License-Identifier: Apache-2.0
 //*
@@ -25,17 +25,25 @@
 //*  and limitations under the License.
 //*
 //******************************************************************
-//* Run GVBDEMO Extract job that will call JAVA exit(s)
+//*
+//* Run GVBDEMOJ Extract job that will call JAVA lookup exit(s)
+//*
+//* NOTE: This job assumes you have already installed GVBDEMO
+//*
 //*********************************************************************
 //*
 //         EXPORT SYMLIST=*
 //*
 //         SET HLQ=<YOUR-TSO-PREFIX>
-//         SET MLQ=GVBDEMOJ
+//         SET MLQJ=GVBDEMOJ
+//         SET MLQ=GVBDEMO
 //*
-//         JCLLIB ORDER=&LVL1..RTC&RTC..JCL
+//         JCLLIB ORDER=AJV.V11R0M0.PROCLIB
 //*
-//JOBLIB   DD DISP=SHR,DSN=&LVL1..RTC&RTC..GVBLOAD
+//JOBLIB   DD DISP=SHR,DSN=AJV.V11R0M0.SIEALNKE
+//         DD DISP=SHR,DSN=&HLQ..&MLQJ..LOADLIB
+//         DD DISP=SHR,DSN=&HLQ..&MLQ..GVBLOAD
+//         DD DISP=SHR,DSN=CEE.SCEERUN
 //*
 //*********************************************************************
 //* Copy dll JNIASM to accessible location for Java LIBPATH
@@ -84,9 +92,9 @@
 //*
 //ISPFTTRC DD SYSOUT=*,RECFM=VB,LRECL=259        TSO OUTPUT
 //*
-//SYSTSIN  DD *
- OPUT  '&LVL1..RTC&RTC..GVBLOAD(JNIASM)' -
-       '/safr/mf_build/lib/JNIzOS64'
+//SYSTSIN  DD *,SYMBOLS=EXECSYS
+ OPUT  '&HLQ..&MLQJ..LOADLIB(GVBJDLL)' -
+       '/u/<your-user-id>/DllLib/GVBJDLL'
 //*
 //*
 //*********************************************************************
@@ -120,21 +128,21 @@
 //*
 //*******************************************************************
 //PSTEP705 EXEC PROC=JVMPRC16,
-// JAVACLS='GvbJavaDaemon2'
+// JAVACLS='GvbJavaDaemon'
 //STDENV DD *
 # This is a shell script which configures
 # any environment variables for the Java JVM.
 # Variables must be exported to be seen by the launcher.
 
 . /etc/profile
-. /u/<user-id>/jcallhlasmprofile2
+. /u/<your-user-id>/ASMcallingJAVAprofile
 
 LIBPATH=/lib:/usr/lib:"${JAVA_HOME}"/bin
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib/j9vm
-LIBPATH="$LIBPATH":/safr/mf_build/lib
+LIBPATH="$LIBPATH":/u/<your-user-id>/DllLib
 export LIBPATH="$LIBPATH":
-# LIBPATH="$LIBPATH":"//&LVL1..RTC&RTC..GVBLOAD"
+# LIBPATH="$LIBPATH":"//&HLQ..&MLQJ..LOADLIB"
 # Customize your CLASSPATH here
 
 # Add Application required jars to end of CLASSPATH
@@ -231,7 +239,7 @@ $QUAL=SDATRT01
 //*
 //*        <<< INPUT SOURCE FILES >>>
 //*                                                                 %%%
-//CUSTOMER  DD DISP=SHR,DSN=&HLQ..&MLQ..GVBDEMO.CUSTOMER
+//CUSTOMER  DD DISP=SHR,DSN=&HLQ..&MLQ..CUSTOMER
 //*
 //*        <<< OUTPUT EXTRACT VIEW FILES >>>
 //*                                                                 %%%
