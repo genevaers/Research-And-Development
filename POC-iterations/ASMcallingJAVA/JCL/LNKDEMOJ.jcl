@@ -1,8 +1,9 @@
-//LNKUR70T  JOB (ACCT),'LINK JAVA PIECES',
-//            NOTIFY=&SYSUID.,
-//            CLASS=A,
-//            MSGLEVEL=(1,1),
-//            MSGCLASS=H
+//CPUSSMVS JOB (ACCT),CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),NOTIFY=&SYSUID
+//*
+//         EXPORT SYMLIST=*
+//*        SET HLQ=<YOUR-TSO-PREFIX>
+//         SET MLQ=GVBDEMOJ
+//*
 //********************************************************************
 //*
 //* (C) COPYRIGHT IBM CORPORATION 2023.
@@ -30,17 +31,17 @@
 //*        SET MLQ=GVBDEMO
 //*
 //*********************************************************************
-//*  LINK-EDIT GVBJLENV
+//*  LINK-EDIT JLKUPEX
 //*********************************************************************
 //*
-//GVBJLENV EXEC PGM=IEWL,
-// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,AC(1),RENT,REUS)
+//JLKUPEX  EXEC PGM=IEWL,
+// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,RENT,REUS)
 //*
-//SYSLIN   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ(GVBJLENV)
+//SYSLIN   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ(JLKUPEX)
 //         DD *
- NAME GVBJLENV(R)
+ NAME JLKUPEX(R)
 //*
-//SYSLIB   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ
+//SYSLIB   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //         DD DISP=SHR,DSN=CEE.SCEELKED
 //         DD DISP=SHR,DSN=CEE.SCEELIB
@@ -52,7 +53,35 @@
 //            SPACE=(1024,(120,120),,,ROUND),
 //            BUFNO=1
 //*
-//SYSLMOD  DD DSN=&LVL1..RTC&RTC..GVBLOAD(GVBJLENV),
+//SYSLMOD  DD DSN=&HLQ..&MLQ..LOADLIB(JLKUPEX),
+//            DISP=SHR
+//*
+//SYSPRINT DD SYSOUT=*
+//*
+//*********************************************************************
+//*  LINK-EDIT GVBJLENV
+//*********************************************************************
+//*
+//GVBJLENV EXEC PGM=IEWL,
+// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,RENT,REUS)
+//*
+//SYSLIN   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ(GVBJLENV)
+//         DD *
+ NAME GVBJLENV(R)
+//*
+//SYSLIB   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ
+//         DD DISP=SHR,DSN=CEE.SCEERUN
+//         DD DISP=SHR,DSN=CEE.SCEELKED
+//         DD DISP=SHR,DSN=CEE.SCEELIB
+//         DD DISP=SHR,DSN=SYS1.CSSLIB
+//         DD DISP=SHR,DSN=SYS1.LINKLIB
+//*
+//SYSUT1   DD DSN=&&SYSUT1,
+//            UNIT=SYSDA,
+//            SPACE=(1024,(120,120),,,ROUND),
+//            BUFNO=1
+//*
+//SYSLMOD  DD DSN=&HLQ..&MLQ..LOADLIB(GVBJLENV),
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
@@ -61,13 +90,13 @@
 //*********************************************************************
 //*
 //GVBUR70  EXEC PGM=IEWL,
-// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,AC(1),RENT,REUS)
+// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,RENT,REUS)
 //*
-//SYSLIN   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ(GVBUR70)
+//SYSLIN   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ(GVBUR70)
 //         DD *
  NAME GVBUR70(R)
 //*
-//SYSLIB   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ
+//SYSLIB   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //         DD DISP=SHR,DSN=CEE.SCEELKED
 //         DD DISP=SHR,DSN=CEE.SCEELIB
@@ -79,7 +108,7 @@
 //            SPACE=(1024,(120,120),,,ROUND),
 //            BUFNO=1
 //*
-//SYSLMOD  DD DSN=&LVL1..RTC&RTC..GVBLOAD(GVBUR70),
+//SYSLMOD  DD DSN=&HLQ..&MLQ..LOADLIB(GVBUR70),
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
@@ -89,13 +118,13 @@
 //*********************************************************************
 //*
 //TSTUR70  EXEC PGM=IEWL,
-// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,AC(1),RENT,REUS)
+// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,RENT,REUS)
 //*
-//SYSLIN   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ(TSTUR70)
+//SYSLIN   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ(TSTUR70)
 //         DD *
  NAME TSTUR70(R)
 //*
-//SYSLIB   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ
+//SYSLIB   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //         DD DISP=SHR,DSN=CEE.SCEELKED
 //         DD DISP=SHR,DSN=CEE.SCEELIB
@@ -107,7 +136,7 @@
 //            SPACE=(1024,(120,120),,,ROUND),
 //            BUFNO=1
 //*
-//SYSLMOD  DD DSN=&LVL1..RTC&RTC..GVBLOAD(TSTUR70),
+//SYSLMOD  DD DSN=&HLQ..&MLQ..LOADLIB(TSTUR70),
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
@@ -117,13 +146,13 @@
 //*********************************************************************
 //*
 //GVBJGO95 EXEC PGM=IEWL,
-// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,AC(1),RENT,REUS)
+// PARM=(XREF,LET,LIST,MAP,RMODE(SPLIT),HOBSET,RENT,REUS)
 //*
-//SYSLIN   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ(GVBJGO95)
+//SYSLIN   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ(GVBJGO95)
 //         DD *
  NAME GVBJGO95(R)
 //*
-//SYSLIB   DD DISP=SHR,DSN=&LVL1..RTC&RTC..BTCHOBJ
+//SYSLIB   DD DISP=SHR,DSN=&HLQ..&MLQ..BTCHOBJ
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //         DD DISP=SHR,DSN=CEE.SCEELKED
 //         DD DISP=SHR,DSN=CEE.SCEELIB
@@ -135,7 +164,7 @@
 //            SPACE=(1024,(120,120),,,ROUND),
 //            BUFNO=1
 //*
-//SYSLMOD  DD DSN=&LVL1..RTC&RTC..GVBLOAD(GVBJGO95),
+//SYSLMOD  DD DSN=&HLQ..&MLQ..LOADLIB(GVBJGO95),
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
