@@ -280,6 +280,8 @@ MAIN_114 EQU   *
          LGHI  R0,256            Data length (arbitrary for now)
          STG   R0,CTRLENIN       Data being returned...
 *
+         MVC   CTRREQ,=CL4'MR95' Called by MR95
+*
          LAY   R1,WKCLSSMT       use 64 bytes of this field
          MVC   0(32,R1),=CL32'MyClassB' Java class to call
          MVC   32(32,R1),=CL32'MethodY' and (hard coded) method

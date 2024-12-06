@@ -304,8 +304,7 @@ MAIN_114 EQU   *
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2             Point to individual CTR
 *
-         sam64
-         sysstate amode64=YES
+         MVC   CTRREQ,=CL4'MR95' Called by MR95
          LGHI  R0,10
          STG   R0,CTRLENOUT      Key Data being sent...
          STG   R0,CTRLENIN       Data being returned...
@@ -322,13 +321,8 @@ MAIN_114 EQU   *
          AGHI  R7,4              R7 -> actual 10 byte key
          STG   R7,CTRMEMOUT      WAY OUT(going to Java.)
          STG   R9,CTRMEMIN       WAY IN (to be received)
-*        dc h'0'
-         sysstate amode64=NO
-         sam31
-*
 *
          POST  CTRECB1           POST A REQUEST ECB
-*
 *
          WTO 'GVBJPOST: REQUEST POSTED TO JAVA'
 *

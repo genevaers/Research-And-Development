@@ -232,8 +232,8 @@ MAIN_114 EQU   *
 A0100    EQU   *
          CLI   CTTACTIV,X'FF'
          JE    A0101
-         WTO 'GVBUR70 : REQUEST TABLE NOT ACTIVE'
-         DC    H'0'
+         WTO 'GVBUR70 : REQUEST TABLE NOT YET ACTIVE'
+         J     MAIN_220
 *
 A0101    EQU   *
          LLGT  R7,RECASND        LOAD  SEND BUFFER ADDRESS
@@ -271,10 +271,14 @@ A0104    EQU   *
          STH   R0,WKICTR         R0 = IDX; R:=SELECTED CTR SLOT
          ST    R13,CTRUR70W      STORE WORKAREA ADDRESS IN CTR
 *
-A0106    EQU   *
-         sam64
-         sysstate amode64=YES
-         MVC   CTRREQ,UR70FUN
+A0106    EQU   *                 Set identity of caller in the request
+         CLI   UR70FLG1,C'M'     as GVBMR95 is treated rather specialy
+         JE    A0107             in terms of its GVBX95PA parameters
+         MVC   CTRREQ,=CL4'UR70'
+         J     A0108
+A0107    EQU   *
+         MVC   CTRREQ,=CL4'MR95'
+A0108    EQU   *
          LLGT  R0,UR70LSND
          STG   R0,CTRLENOUT      Length of data being sent...
          LLGT  R0,UR70LRCV
@@ -285,8 +289,6 @@ A0106    EQU   *
          STG   R1,CTRAMETH       ADDRESS OF METHOD NAME
          STG   R7,CTRMEMOUT      WAY OUT(going to Java.)
          STG   R9,CTRMEMIN       WAY IN (to be received)
-         sysstate amode64=NO
-         sam31
 *
          POST  CTRECB1           POST A REQUEST ECB
 *
@@ -295,12 +297,8 @@ A0106    EQU   *
          WAIT  1,ECB=CTRECB2     WAIT FOR RESPONSE TO HAPPEN
          XC    CTRECB2,CTRECB2
 *
-         sam64
-         sysstate amode64=YES
          LLGT  R0,CTRLENOUT      Amount of data actually returned
          ST    R0,UR70LRET
-         sysstate amode64=NO
-         sam31
 *
 *        WTO 'GVBJPOST : RESPONSE RECEIVED TO REQUEST'
 *
@@ -316,9 +314,13 @@ MAIN_116 EQU   *
 *  And acknoledge GvbDaemon with a handshake..                        *
 ***********************************************************************
 A0200    EQU   *
-         LH    R6,CTTNUME                Ensure this not already done
-         CIJE  R6,99,A0200A              Should be init max (99)
-         J     MAIN_220                  Unexpected value, go
+*         CLI   CTTACTIV,X'FF'            Ensure initialization not
+*         JE    MAIN_220                  already done
+         TS    CTTACTIV,X'FF'
+         JNZ   MAIN_220
+         LH    R6,CTTNUME                And it's set to the initial
+         CIJE  R6,99,A0200A              value of 99 by GVBJMAIN
+         J     MAIN_220                  If not it's a repeated INIT
 *
 A0200A   EQU   *
          LGH   R6,UR70OPNT               FROM THREADS REQUIRED
@@ -326,7 +328,7 @@ A0200A   EQU   *
          CIJH  R6,99,MAIN_224            and 99.
          STH   R6,CTTNUME                SET# ACTUAL THREADS REQUIRED
 *
-         WTO 'GVBUR70 : SETTING UP CTR NOW'
+*        WTO 'GVBUR70 : SETTING UP CTR NOW'
 *
          XR    R1,R1                     THREAD COUNTER
 MAIN_120 EQU   *
@@ -340,7 +342,7 @@ MAIN_120 EQU   *
          STH   R1,CTRTHRDN               SET THREAD NUMBER
          LA    R5,CTRLEN(,R5)
          BRCT  R6,MAIN_120
-         WTO 'GVBUR70 : CTR COMPLETED'
+*       WTO 'GVBUR70 : CTR COMPLETED'
 *
          POST  CTTGECB                   POST THE GO ECB
          WTO 'GVBUR70 : POSTED FOR GO, NUMBER THREADS SET'
@@ -348,7 +350,8 @@ MAIN_120 EQU   *
          WAIT  ECB=CTTGECB2              Wait for acknowledgement
          XC    CTTGECB2,CTTGECB2
          WTO 'GVBUR70 : ACKNOWLEDGEMENT RECEIVED AND GECB2 RESET'
-         MVI   CTTACTIV,X'FF'
+*
+         MVI   CTTACTIV,X'FF'           Set communications table active
          WTO 'GVBUR70 : REQUEST TABLE SET ACTIVE'
          J     DONE
 *

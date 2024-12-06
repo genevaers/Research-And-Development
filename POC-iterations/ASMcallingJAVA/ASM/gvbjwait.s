@@ -287,8 +287,10 @@ A0025    EQU   *                  Point at "return" buffer"
          STG   R15,PALEN2                LENGTH
 *
          LG    R1,CTRMEMOUT              Incoming memory used later...
-         ICM   R0,B'1111',CTRUR70W       Called by GVBUR70 ?
-         JNZ   A0026                     No, go
+         CLC   CTRREQ,=CL4'MR95'         Called by GVBMR95 ?
+         JNE   A0026                     No, go
+*         ICM   R0,B'1111',CTRUR70W       Called by GVBUR70 ?
+*         JNZ   A0026                     No, go
 *
 * This is specifically for a GVBMR95 lookup exit using GVBX95PA only
 *
