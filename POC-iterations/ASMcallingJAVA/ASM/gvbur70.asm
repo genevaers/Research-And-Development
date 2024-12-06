@@ -316,7 +316,7 @@ MAIN_116 EQU   *
 A0200    EQU   *
 *         CLI   CTTACTIV,X'FF'            Ensure initialization not
 *         JE    MAIN_220                  already done
-         TS    CTTACTIV,X'FF'
+         TS    CTTACTIV
          JNZ   MAIN_220
          LH    R6,CTTNUME                And it's set to the initial
          CIJE  R6,99,A0200A              value of 99 by GVBJMAIN
