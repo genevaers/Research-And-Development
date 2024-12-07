@@ -24,11 +24,11 @@ The following installation instructions apply to using this interface with Genev
 
 ## Checkout code from Git
 
-Use the following command from Gitbash to check out the repository: git clone <git@github.com:genevaers/Research-And-Development.git>
+Use the following command from Gitbash to check out the repository: "git clone git@github.com:genevaers/Research-And-Development.git".
 
 ## Create directory on USS in you home directory
 
-Use "mkdir DllLib". This will later contain GVBJDLL which is needed by GvbJavaDaemon. This directory must be referenced by LIBPATH for jobs using this interface. For example, directory /u/<your-user-id>/DllLib
+Use "mkdir DllLib". This will later contain GVBJDLL which is needed by GvbJavaDaemon. This directory must be referenced by LIBPATH for jobs using this interface. For example, directory /u/"your-user-id"/DllLib
 
 ## Create MVS datasets required
 
@@ -36,17 +36,17 @@ Either [s]ftp or copy/paste ../ASMcallingJAVA/JCL/MAKELIBS.jcl to your JCL libra
 
 ## Tailor the names of your home directory and MVS datasets to be copied to MVS
 
-The file ../ASMcallingJAVA/SCRIPT/CPY2MVS contains your user id/home directory and MVS datasets used by SYSTSIN. Either [s]ftp or copy/paste it to your MVS <YOUR-USER-ID>.GVBDEMOJ.SYSTSIN dataset created in the step above. 
+The file ../ASMcallingJAVA/SCRIPT/CPY2MVS contains your user id/home directory and MVS datasets used by SYSTSIN. Either [s]ftp or copy/paste it to your MVS "YOUR-USER-ID".GVBDEMOJ.SYSTSIN dataset created in the step above. 
 
 ## Copy the GVBDEMOJ items needed on MVS
 
-The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX. Either [s]ftp or copy/past this to your MVS JCL <YOUR-USER-ID>.GVBDEMOJ.JCL library.
+The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX. Either [s]ftp or copy/past this to your MVS JCL "YOUR-USER-ID".GVBDEMOJ.JCL library.
 
 ## Build GVBJDLL used by GvbJavaDaemon
 
 Set export _C89_SUSRLIB="$LOGNAME.GVBDEMOJ.MACLIB" each time before running build script makegvbdll
 
-Run build script from directory ../ASMcallingJAVA directory to create an MVS DLL in your MVS dataset <YOU-USER-ID>.GVBDEMOJ.LOADLIB:
+Run build script from directory ../ASMcallingJAVA directory to create an MVS DLL in your MVS dataset "YOU-USER-ID".GVBDEMOJ.LOADLIB:
 
 Enter "make -f SCRIPT/makegvbdll"
 
