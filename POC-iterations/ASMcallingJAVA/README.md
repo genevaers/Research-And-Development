@@ -1,8 +1,8 @@
 # ASMcallingJAVA Interface
 
-The motivation for this POC iteration is to enable a GenevaERS view to call Java written "lookup" exits from the GenevaERS performance engine. For example being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java "lookup" exit is a method or collection of methods in a Java class and it is loaded dynamically.
+The motivation for this POC iteration is to enable a GenevaERS view (i.e. program) to call Java written "lookup" exits from the GenevaERS performance engine. For example being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java "lookup" exit is a method or collection of methods in a Java class and it is loaded dynamically.
 
-However, after being successful at achieving this goal the solution was generalized to allow any single or multi-threaded program written in assembler, 3GL or 4GL to call Java. This is exposed by the GVBUR70 interface provided here. Two installation verification programs (IVP) are provided one written in assembler and another COBOL (see Generalized Interface to Java, below). This facility is independent of installing GenevaERS Performance Engine.
+However, after being successful at achieving this goal the solution was generalized to allow any single or multi-threaded program written in assembler, 3GL or 4GL to call Java. This is exposed by the GVBUR70 interface (API) provided here. Two installation verification programs (IVP) are included, one written in assembler and another COBOL (see Generalized Interface to Java - below). This facility is independent of installing GenevaERS Performance Engine.
 
 ## Example GenevaERS Java lookup exit (Java class and methods)
 
@@ -20,11 +20,11 @@ For example TSTUR70.asm allows up to 20 MVS subtasks each to make tens of thousa
 
 # Installation
 
-The following installtion instructions apply to using this interface with GenevaERS Performance Engine in addition to using it as a stand-alone API. You must also install the GenevaERS Performance Engine to use the API with Performance Engine.
+The following installation instructions apply to using this interface with GenevaERS Performance Engine and also for using it as a stand-alone API. You must also install the GenevaERS Performance Engine to use the API with Performance Engine.
 
 ## Checkout code from Git
 
-Use the following command from Gitbash to check out the repository: git clone git@github.com:genevaers/Research-And-Development.git
+Use the following command from Gitbash to check out the repository: git clone <git@github.com:genevaers/Research-And-Development.git>
 
 ## Create directory on USS in you home directory
 
