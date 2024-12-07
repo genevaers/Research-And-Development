@@ -1,8 +1,8 @@
-# ASMcallingJAVA
+## ASMcallingJAVA
 
-The motivation for this POC interation is to enable a GenevaERS view to call Java written "lookup" exits from the performance engine. For example being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java program is a method or collection of methods in a class and is loaded dynamically.
+The motivation for this POC iteration is to enable a GenevaERS view to call Java written "lookup" exits from the GenevaERS performance engine. For example being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java "lookup" exit is a method or collection of methods in a Java class and it is loaded dynamically.
 
-The scope was later widened to call Java from any single or multi-threaded assembler or 3GL program, via the GVBUR70 interface provided by GenevaERS.
+However, after being successful at achieving this goal the solution was generalized to allow any single or multi-threaded program written in assembler, 3GL or 4GL to call Java. This is exposed by the GVBUR70 interface provided here. Two installation verification programs (IVP) are provided one written in assembler and another COBOL (see Generalized Interface to Java, below). This facility is independent of installing GenevaERS Performance Engine.
 
 ## Example GenevaERS Java lookup exit (Java class and methods)
 
@@ -12,9 +12,45 @@ Compile with: javac MyClass.java
 
  The class and method names are specified in a small assembler stub exit (GVBJLENV) but will eventually be specified through the GenevaERS workbench. The example uses view number 10903 and reads the GVBDEMO customer file.
 
-## Sample assembler program to call Java
+## Generalized Interface to Java (GVBUR70)
 
-TSTUR70.ASM provides an example of how to call Java from assembler/3GL. They are also useful test harnesses when developing Java exits for GenevaERS. The GVBUR70 INIT call will start the requested number of threads.
+The sample assembler and COBOL programs TSTUR70.asm and TESTUR70.cbl provide examples of how to call Java from assembler/3GL/4GL. AS well as serving as an IVP there are also useful for stress testing, for example TSTUR70.asm allows up to 20 MVS subtasks each to make tens of thousands of Java method calls, utilizing a pool of Java threads to service these calls simultaneously using the provided GvbJavaDaemon. The calling assembler/3GL/4GL application makes an initialization (INIT) call via GVBUR70 INIT so the request the daemon to start the specified number of threads.
+
+## Installation
+
+# Checkout code from Git
+
+Use the following command from Gitbash to check out the repository: git clone git@github.com:genevaers/Research-And-Development.git
+
+# Create directory on USS in you home directory
+
+Use "mkdir DllLib". This will later contain GVBJDLL which is needed by GvbJavaDaemon. This directory must be referenced by LIBPATH for jobs using this interface. For example, directory /u/<your-user-id>/DllLib
+
+# Create MVS datasets required
+
+Either [s]ftp or copy/paste ../ASMcallingJAVA/JCL/MAKELIBS.jcl to your JCL library, modify the JCL for you site and run the job.
+
+# Tailor the names of your home directory and MVS datasets to be copied to MVS
+
+The file ../ASMcallingJAVA/SCRIPT/CPY2MVS contains your user id/home directory and MVS datasets used by SYSTSIN. Either [s]ftp or copy/paste it to your MVS <YOUR-USER-ID>.GVBDEMOJ.SYSTSIN dataset created in the step above. 
+
+# Copy the GVBDEMOJ items needed on MVS
+
+The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX. Either [s]ftp or copy/past this to your MVS JCL <YOUR-USER-ID>.GVBDEMOJ.JCL library.
+
+# Build GVBJDLL used by GvbJavaDaemon
+
+Set export _C89_SUSRLIB="$LOGNAME.GVBDEMOJ.MACLIB" each time before running build script makegvbdll
+
+Run build script from directory ../ASMcallingJAVA directory to create an MVS DLL in your MVS dataset <YOU-USER-ID>.GVBDEMOJ.LOADLIB:
+
+Enter "make -f SCRIPT/makegvbdll"
+
+There is also version of the script for building a debug version which provides detailed diagnostics SCRIPT/makegvbdlld.
+
+# Build GvbJavaDaemon
+
+Go to directory ../ASMcallingJAVA/Java/GvbJavaDaemon and enter "javac GvbJavaDaemo.java" and similarly compile the examples Java programs MyClass.java and MyClassB.java
 
 ## The GvbJavaDaemon
 
@@ -26,9 +62,7 @@ Compile with: javac GvbJavaDaemon2.java
 
 This DLL provides the communications between Java and assembler. It comprises modules written in C and assembler, using the JNI interface.
 
-Build with: make -f makejni2
-
-## Assembling and linking GVBUR70 and other assembler written portions
+## Perform assemble and link of MVS only components
 
 The JCL asmjv.jcl assembles GVBUR70, GVBJLENV and TSTUR70. lnkjv.jcl link edits these modules.
 
@@ -39,7 +73,6 @@ runur70t.jcl runs the test program tstur70 (main program) which calls Java metho
 ## Running performance engine and calling Java exits
 
 runmr9j.jcl is a regular GenevaERS extract job that contains some additional components (job steps), for example copying the ZOS DLL load module into the required LIBPATH and starting the JVM.
-
 
 Learn more about GenevaERS at [GenevaERS Training](https://genevaers.org/training-videos/).  Join in the conversation at the [#GenevaERS channel on Open Mainframe Project Slack](https://slack.openmainframeproject.org). After requesting access with the above link, look for the [GenevaERS channel](https://openmainframeproject.slack.com/archives/C01711931GA)
 
