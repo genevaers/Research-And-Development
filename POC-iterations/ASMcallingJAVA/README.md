@@ -1,4 +1,4 @@
-## ASMcallingJAVA
+# ASMcallingJAVA Interface
 
 The motivation for this POC iteration is to enable a GenevaERS view to call Java written "lookup" exits from the GenevaERS performance engine. For example being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java "lookup" exit is a method or collection of methods in a Java class and it is loaded dynamically.
 
@@ -14,31 +14,35 @@ Compile with: javac MyClass.java
 
 ## Generalized Interface to Java (GVBUR70)
 
-The sample assembler and COBOL programs TSTUR70.asm and TESTUR70.cbl provide examples of how to call Java from assembler/3GL/4GL. AS well as serving as an IVP there are also useful for stress testing, for example TSTUR70.asm allows up to 20 MVS subtasks each to make tens of thousands of Java method calls, utilizing a pool of Java threads to service these calls simultaneously using the provided GvbJavaDaemon. The calling assembler/3GL/4GL application makes an initialization (INIT) call via GVBUR70 INIT so the request the daemon to start the specified number of threads.
+The sample assembler and COBOL programs TSTUR70.asm and TESTUR70.cbl provide examples of how to call Java from assembler/3GL/4GL using the GVBUR70 API. The programs serve as an IVP and are also useful for stress testing.
 
-## Installation
+For example TSTUR70.asm allows up to 20 MVS subtasks each to make tens of thousands of Java method calls, utilizing a pool of Java threads to service these calls simultaneously using the provided GvbJavaDaemon. The calling assembler/3GL/4GL application makes an initialization (INIT) call via GVBUR70 INIT so the request the daemon to start the specified number of threads.
 
-# Checkout code from Git
+# Installation
+
+The following installtion instructions apply to using this interface with GenevaERS Performance Engine in addition to using it as a stand-alone API. You must also install the GenevaERS Performance Engine to use the API with Performance Engine.
+
+## Checkout code from Git
 
 Use the following command from Gitbash to check out the repository: git clone git@github.com:genevaers/Research-And-Development.git
 
-# Create directory on USS in you home directory
+## Create directory on USS in you home directory
 
 Use "mkdir DllLib". This will later contain GVBJDLL which is needed by GvbJavaDaemon. This directory must be referenced by LIBPATH for jobs using this interface. For example, directory /u/<your-user-id>/DllLib
 
-# Create MVS datasets required
+## Create MVS datasets required
 
 Either [s]ftp or copy/paste ../ASMcallingJAVA/JCL/MAKELIBS.jcl to your JCL library, modify the JCL for you site and run the job.
 
-# Tailor the names of your home directory and MVS datasets to be copied to MVS
+## Tailor the names of your home directory and MVS datasets to be copied to MVS
 
 The file ../ASMcallingJAVA/SCRIPT/CPY2MVS contains your user id/home directory and MVS datasets used by SYSTSIN. Either [s]ftp or copy/paste it to your MVS <YOUR-USER-ID>.GVBDEMOJ.SYSTSIN dataset created in the step above. 
 
-# Copy the GVBDEMOJ items needed on MVS
+## Copy the GVBDEMOJ items needed on MVS
 
 The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX. Either [s]ftp or copy/past this to your MVS JCL <YOUR-USER-ID>.GVBDEMOJ.JCL library.
 
-# Build GVBJDLL used by GvbJavaDaemon
+## Build GVBJDLL used by GvbJavaDaemon
 
 Set export _C89_SUSRLIB="$LOGNAME.GVBDEMOJ.MACLIB" each time before running build script makegvbdll
 
@@ -48,7 +52,7 @@ Enter "make -f SCRIPT/makegvbdll"
 
 There is also version of the script for building a debug version which provides detailed diagnostics SCRIPT/makegvbdlld.
 
-# Build GvbJavaDaemon
+## Build GvbJavaDaemon
 
 Go to directory ../ASMcallingJAVA/Java/GvbJavaDaemon and enter "javac GvbJavaDaemo.java" and similarly compile the examples Java programs MyClass.java and MyClassB.java
 
