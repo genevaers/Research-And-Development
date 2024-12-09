@@ -95,7 +95,7 @@
            PERFORM 104-CALL-CLASS-METHOD    THRU 104-EXIT
       *
            DISPLAY 'TESTUR70 ENDING'
-      *           .
+                  .
        000-GOBACK.
            GOBACK.
 
