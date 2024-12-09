@@ -546,8 +546,8 @@ A0010A   EQU   *
 *
          MVC   UR70FUN,=CL8'CALL'
          MVC   UR70VERS,=H'1'                 Version 1
-         MVC   UR70FLG1,C' '                  Flg1: not MR95
-         MVC   UR70FLG2,C'0'                  Flg2: default aarg[]
+         MVI   UR70FLG1,C' '                  Flg1: not MR95
+         MVI   UR70FLG2,C'0'                  Flg2: default aarg[]
          MVC   UR70CLSS,=CL32'MyClass'
          MVC   UR70METH,=cl32'Method1'
          MVC   UR70LSND,SNDLEN
