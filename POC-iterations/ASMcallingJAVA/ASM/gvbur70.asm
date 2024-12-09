@@ -231,9 +231,9 @@ MAIN_114 EQU   *
 *
 *        CHECK FOR FUNCTION
 *
-         CLC   UR70FUN,=CL4'CALL'
+         CLC   UR70FUN(4),=CL4'CALL'
          JE    A0100
-         CLC   UR70FUN,=CL4'INIT'
+         CLC   UR70FUN(4),=CL4'INIT'
          JE    A0200
 *
          WTO 'GVBUR70 : INVALID FUNCTION CODE'
