@@ -549,9 +549,9 @@ A0010A   EQU   *
          MVC   UR70LRCV,RECLEN
          XC    UR70RETC,UR70RETC
 *
-         LH    R2,WKNCALL
+         LH    R2,WKNCALL              Each thread makes this #calls
          XR    R5,R5
-A0011B   EQU   *
+A0011B   EQU   *                       Call MyClass Method: 0 thru 9
          IC    R0,ZEROTO9(R5)
          STC   R0,UR70METH+6
          LA    R5,1(,R5)
@@ -579,7 +579,7 @@ A0011    EQU   *
 *
 A0012    EQU   *
          BRCT  R2,A0011B
-*
+*                                      Print result from last call made
          WTO 'TSTUR70 : HAS CALLED JAVA METHOD'
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(20),=CL20'TSTUR70: RECEIVING: '
