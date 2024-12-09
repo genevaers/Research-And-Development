@@ -212,8 +212,14 @@ MAIN_140 EQU   *
          LLGT  R4,WKTOKNCTT
          USING CTTAREA,R4
          CLC   CTTEYE,CTTEYEB
-         JE    MAIN_114
+         JE    MAIN_113
          WTO 'GVBUR70 : COMMUNICATIONS TENSOR TABLE DOES NOT MATCH'
+         MVC   WKRETC,=F'24'
+         J     DONE
+MAIN_113 EQU   *
+         CLC   CTTVERS,UR79VERS
+         JE    MAIN_114
+         WTO 'GVBUR70 : COMMUNICATIONS TENSOR TABLE VERSION ERROR'
          MVC   WKRETC,=F'24'
          J     DONE
 *
@@ -225,9 +231,9 @@ MAIN_114 EQU   *
 *
 *        CHECK FOR FUNCTION
 *
-         CLC   UR70FUN,=CL8'CALL'
+         CLC   UR70FUN,=CL4'CALL'
          JE    A0100
-         CLC   UR70FUN,=CL8'INIT'
+         CLC   UR70FUN,=CL4'INIT'
          JE    A0200
 *
          WTO 'GVBUR70 : INVALID FUNCTION CODE'
@@ -279,14 +285,11 @@ A0104    EQU   *
          STH   R0,WKICTR         R0 = IDX; R:=SELECTED CTR SLOT
          ST    R13,CTRUR70W      STORE WORKAREA ADDRESS IN CTR
 *
-A0106    EQU   *                 Set identity of caller in the request
-         CLI   UR70FLG1,C'M'     as GVBMR95 is treated rather specialy
-         JE    A0107             in terms of its GVBX95PA parameters
-         MVC   CTRREQ,=CL4'UR70'
-         J     A0108
-A0107    EQU   *
-         MVC   CTRREQ,=CL4'MR95'
-A0108    EQU   *
+A0106    EQU   *
+         MVC   CTRREQ,UR70FUN
+         MVC   CTRFLG1,UR70FLG1 'M' => GVBMR95 treated rather specially
+*                                   in terms of its GVBX95PA parameters
+         MVC   CTRFLG2,UR70FLG2
          LLGT  R0,UR70LSND
          STG   R0,CTRLENOUT      Length of data being sent...
          LLGT  R0,UR70LRCV
@@ -307,6 +310,8 @@ A0108    EQU   *
 *
          LLGT  R0,CTRLENOUT      Amount of data actually returned
          ST    R0,UR70LRET
+         LLGT  R0,CTRJRETC       "return code" from Java
+         ST    R0,UR70JRET
 *
 *        WTO 'GVBJPOST : RESPONSE RECEIVED TO REQUEST'
 *

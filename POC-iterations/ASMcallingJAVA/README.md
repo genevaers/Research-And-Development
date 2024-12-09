@@ -52,7 +52,7 @@ Either [s]ftp or copy/paste ../ASMcallingJAVA/JCL/MAKELIBS.jcl to a JCL library,
    "YOUR-TSO-PREFIX".GVBDEMOJ.SYSTIN
 
    "YOUR-TSO-PREFIX".GVBDEMOJ.SYSADATA
-   
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.ASMLANGX
 
 ## Tailor the names of your home directory and MVS datasets to be copied to MVS
@@ -67,11 +67,7 @@ The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGE
 
 Run jobs ASMDEMOJ and LNKDEMOJ on MVS from the JCL library where they were copied in the previous step. Tailor them first to contain your USER-ID as &HLQ. These jobs build the following LOAD modules:
 
-JLKUPEX
-GVBJLENV
-GVBUR70
-TSTUR70
-GVBJGO95
+JLKUPEX, GVBJLENV, GVBUR70, TSTUR70 and GVBJGO95
 
 ## Build GVBJDLL used by GvbJavaDaemon
 

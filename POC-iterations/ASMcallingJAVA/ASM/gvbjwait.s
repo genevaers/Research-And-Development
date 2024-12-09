@@ -286,8 +286,11 @@ A0025    EQU   *                  Point at "return" buffer"
          LG    R15,CTRLENOUT             LENGTH of available memory-in 
          STG   R15,PALEN2                LENGTH
 *
+         MVC   PAFLAG1,CTRFLAG1          Flags (inbound from UR70)
+         MVC   PAFLAG2,CTRFLAG2
+*
          LG    R1,CTRMEMOUT              Incoming memory used later...
-         CLC   CTRREQ,=CL4'MR95'         Called by GVBMR95 ?
+         CLI   CTRFLG1,C'M'              Called by GVBMR95 ?
          JNE   A0026                     No, go
 *
 * This is specifically for a GVBMR95 lookup exit using GVBX95PA only

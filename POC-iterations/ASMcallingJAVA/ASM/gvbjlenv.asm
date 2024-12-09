@@ -304,7 +304,9 @@ MAIN_114 EQU   *
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2             Point to individual CTR
 *
-         MVC   CTRREQ,=CL4'MR95' Called by MR95
+         MVC   CTRREQ,=CL4'CALL' Called by MR95
+         MVC   CTRFLG1,C'M'      Flg1: MR95
+         MVC   CTRFLG2,C'0'      Flg2: default aarg[]
          LGHI  R0,10
          STG   R0,CTRLENOUT      Key Data being sent...
          STG   R0,CTRLENIN       Data being returned...

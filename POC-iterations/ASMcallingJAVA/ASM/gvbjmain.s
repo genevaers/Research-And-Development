@@ -151,6 +151,7 @@ MAIN_097 EQU   *
          USING CTTAREA,R4
          MVC   CTTEYE,CTTEYEB
          ST    R5,CTTACTR
+         MVC   CTTVERS,=H'GVBJVERS'
          MVC   CTTNUME,=H'99'
 *
 ***********************************************************************

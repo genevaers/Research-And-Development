@@ -36,6 +36,9 @@
 *        GVBUR70 CALL INTERFACE
 *
 UR70STR  DSECT
+UR70VERS DS    H                 API version number == 1
+UR70FLG1 DS    X                 Flag 1: M indicates called by MR95 
+UR70FLG2 DS    X                 Flag 2: Indicates method argument type
 UR70FUN  DS    CL8               Function
 UR70OPNT DS   0H                 Number of Java threads requested
 UR70OPT  DS    CL8               Options
@@ -47,9 +50,6 @@ UR70LRET DS    F                 Actual length received from Java
 UR70RETC DS    F                 Return code from GVBUR70
 UR70ANCH DS    A                 Anchor initialize zero but don't alter
 UR70JRET DS    F                 Return code from Java method
-UR70FLG1 DS    X                 Flag 1: M indicates called by MR95 
-UR70FLG2 DS    X                 Flag 2: Indicates method argument type
-         DS    H
          DS    F
 UR70LEN  EQU   *-UR70STR
 *

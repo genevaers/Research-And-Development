@@ -26,18 +26,20 @@
 *
 ***********************************************************************
 *
+GVBJVERS EQU   1
+*
 *        COMMUNICATIONS TENSOR TABLE DSECTS
 *
 CTTAREA  DSECT               ==TABLE HEADER
 CTTEYE   DS    CL8
 CTTACTR  DS    A               ADDR CTRAREA
+CTTVERS  DS    H               Table version
 CTTNUME  DS    H               NUMBER OF ENTRIES
-CTTACTIV DS    X
-         DS    X
 CTTTECB  DS    F               TERMINATION ECB
 CTTGECB  DS    F               GO ECB
 CTTGECB2 DS    F               Acknowledge GO
-         DS    XL4
+CTTACTIV DS    X
+         DS    XL3
 CTTLEN   EQU   *-CTTAREA
 *
 *
@@ -53,9 +55,11 @@ CTRLENOUT DS   D               LENGTH OUTPUT AREA
 CTRMEMIN DS    D               ADDR INPUT AREA
 CTRMEMOUT DS   D               ADDR OUTPUT AREA
 CTRTHRDN DS    H               Thread number
-CTRJRETC DS    H               Provides exit return code to GVBMR95
+CTRFLG1  DS    X               Flag 1 from GVBUR70 API
+CTRFLG2  DS    X               Flag 2 from GVBUR70 API
 CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
-         DS    XL8                                        
+CTRJRETC DS    F               Provides exit return code to GVBMR95
+         DS    XL4                                        
 CTRLEN   EQU   *-CTRAREA
 *
 *

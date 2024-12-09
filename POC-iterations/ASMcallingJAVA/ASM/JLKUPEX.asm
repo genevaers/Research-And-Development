@@ -280,7 +280,9 @@ MAIN_114 EQU   *
          LGHI  R0,256            Data length (arbitrary for now)
          STG   R0,CTRLENIN       Data being returned...
 *
-         MVC   CTRREQ,=CL4'MR95' Called by MR95
+         MVC   CTRREQ,=CL4'CALL' Called by MR95
+         MVC   CTRFLG1,C'M'      Flg1: MR95
+         MVC   CTRFLG2,C'0'      Flg2: default aarg[]
 *
          LAY   R1,WKCLSSMT       use 64 bytes of this field
          MVC   0(32,R1),=CL32'MyClassB' Java class to call
@@ -309,7 +311,7 @@ MAIN_114 EQU   *
          L     R14,GPBLKSIZ
          ST    R0,0(,R14)         ---> NOT SURE IF THIS IS NEEDED
 *
-         LH    R15,CTRJRETC       ZERO RETURN CODE
+         LLGT  R15,CTRJRETC       JAVA "RETURN CODE"
          ST    R15,WKRETC
          J     DONE
 *
