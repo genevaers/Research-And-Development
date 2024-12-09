@@ -7,8 +7,8 @@
 //********************************************************************
 //*
 //* (C) COPYRIGHT IBM CORPORATION 2024.
-//*    Copyright Contributors to the GenevaERS Project.
-//*SPDX-License-Identifier: Apache-2.0
+//*     Copyright Contributors to the GenevaERS Project.
+//*     SPDX-License-Identifier: Apache-2.0
 //*
 //********************************************************************
 //*

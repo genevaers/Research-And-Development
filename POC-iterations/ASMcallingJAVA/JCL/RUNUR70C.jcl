@@ -1,4 +1,4 @@
-//RUNIVPJA JOB (ACCT),CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),NOTIFY=&SYSUID
+//RUNIVPJC JOB (ACCT),CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),NOTIFY=&SYSUID
 //*
 //*********************************************************************
 //*
@@ -22,12 +22,12 @@
 //*  and limitations under the License.
 //*
 //*********************************************************************
-//* RUN GVBUR70 IVP ASSEMBLER PROGRAM TSTUR70 TO CALL JAVA CLASS METHOD
+//* RUN GVBUR70 IVP COBOL PROGRAM TESTUR70 TO CALL JAVA CLASS METHOD
 //*********************************************************************
 //*
 //         EXPORT SYMLIST=*
 //*
-//         SET HLQ=<YOUR-TSO-PREFIX>
+//*        SET HLQ=<YOUR-TSO-PREFIX>
 //         SET MLQ=GVBDEMOJ
 //*
 //         JCLLIB ORDER=AJV.V11R0M0.PROCLIB
@@ -108,7 +108,7 @@
 # Variables must be exported to be seen by the launcher.
 
 . /etc/profile
-. /u/<user-id>/ASMcallingJAVAprofile
+. /u/<your-user-id>/ASMcallingJAVAprofile
 
 LIBPATH=/lib:/usr/lib:"${JAVA_HOME}"/bin
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib
@@ -146,11 +146,11 @@ export IBM_JAVA_OPTIONS="$IJO "
 //STDERR   DD SYSOUT=*
 //*
 //*******************************************************************
-//* EXEC CARD FOR TSTUR70 IVP PROGRAM MAKING CALLS TO JAVA
+//* EXEC CARD FOR TESTUR70 COBOL IVP PROGRAM MAKING CALLS TO JAVA
 //*******************************************************************
 //*
 //DDEXEC   DD *
-PGM=TSTUR70,PARM='TASKS=20,NCALL=32767'
+PGM=TESTUR70
 /*
 //*
 //SYSIN    DD DUMMY

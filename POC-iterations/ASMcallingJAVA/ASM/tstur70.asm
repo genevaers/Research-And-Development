@@ -21,8 +21,8 @@
 *   limitations under the License.
 ***********************************************************************
 *                                                                     *
-*  MODULE DESCRIPTION     : THIS IS A TEST PROGRAM FOR CALLING        *
-*                           GVBUR70.                                  *
+*  MODULE DESCRIPTION     : THIS IS AN ASSEMBLER TEST PROGRAM TSTUR70 *
+*                           FOR CALLING GVBUR70 API                   *
 *                                                                     *
 *                           IT INVOKES A JAVA CLASS AND METHOD.       *
 *                                                                     *
@@ -177,7 +177,7 @@ A0002    EQU   *
          J     MAINLINE           BEGIN
 *
 *
-CHAIN    DS    0H <-- never comes here
+CHAIN    DS    0H                 <-- never comes here
          ST    R13,4(,R1)         save caller's r13 in our SVA
          ST    R1,8(,R13)         save our SVA in caller's
          LLGTR R13,R1             Get new workarea into r13
