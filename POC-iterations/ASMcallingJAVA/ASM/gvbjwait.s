@@ -286,8 +286,8 @@ A0025    EQU   *                  Point at "return" buffer"
          LG    R15,CTRLENOUT             LENGTH of available memory-in 
          STG   R15,PALEN2                LENGTH
 *
-         MVC   PAFLAG1,CTRFLAG1          Flags (inbound from UR70)
-         MVC   PAFLAG2,CTRFLAG2
+         MVC   PAFLAG1,CTRFLG1           Flags (inbound from UR70)
+         MVC   PAFLAG2,CTRFLG2
 *
          LG    R1,CTRMEMOUT              Incoming memory used later...
          CLI   CTRFLG1,C'M'              Called by GVBMR95 ?
