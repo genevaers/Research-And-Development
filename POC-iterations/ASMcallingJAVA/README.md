@@ -34,15 +34,25 @@ Create the appropriate sub-directory for example /u/"your-user-id"/git/public us
 Either [s]ftp or copy/paste ../ASMcallingJAVA/JCL/MAKELIBS.jcl to a JCL library, modify the JCL for you site and run the job on MVS. This job will create the following datasets:
 
    "YOUR-TSO-PREFIX".GVBDEMOJ.ASM
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.BTCHOBJ
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.COBOL
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.COPY
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.EXP
+   
    "YOUR-TSO-PREFIX".GVBDEMOJ.JCL
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.MACLIB
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.SYSTIN
+
    "YOUR-TSO-PREFIX".GVBDEMOJ.SYSADATA
+   
    "YOUR-TSO-PREFIX".GVBDEMOJ.ASMLANGX
 
 ## Tailor the names of your home directory and MVS datasets to be copied to MVS
