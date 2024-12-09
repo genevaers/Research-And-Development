@@ -281,8 +281,8 @@ MAIN_114 EQU   *
          STG   R0,CTRLENIN       Data being returned...
 *
          MVC   CTRREQ,=CL4'CALL' Called by MR95
-         MVC   CTRFLG1,C'M'      Flg1: MR95
-         MVC   CTRFLG2,C'0'      Flg2: default aarg[]
+         MVI   CTRFLG1,C'M'      Flg1: MR95
+         MVI   CTRFLG2,C'0'      Flg2: default aarg[]
 *
          LAY   R1,WKCLSSMT       use 64 bytes of this field
          MVC   0(32,R1),=CL32'MyClassB' Java class to call

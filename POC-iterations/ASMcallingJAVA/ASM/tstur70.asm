@@ -406,8 +406,8 @@ A0008    EQU   *
          XC    UR70ANCH,UR70ANCH
          MVC   UR70FUN,=CL8'INIT'             Set number of threads
          MVC   UR70VERS,=H'1'                 Version 1
-         MVC   UR70FLG1,C' '                  Flg1: not MR95
-         MVC   UR70FLG2,C'0'                  Flg2: default aarg[]
+         MVI   UR70FLG1,C' '                  Flg1: not MR95
+         MVI   UR70FLG2,C'0'                  Flg2: default aarg[]
          LH    R0,WKTASKS                     Number of subtasks..
          STH   R0,UR70OPNT                    Number of subtasks needed
          XC    UR70RETC,UR70RETC
