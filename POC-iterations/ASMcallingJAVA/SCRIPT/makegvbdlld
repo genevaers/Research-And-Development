@@ -42,16 +42,12 @@ DEFS = -D_ISOC99_SOURCE -D_CRT_SECURE_NO_DEPRECATE \
        -D_USE_32BIT_TIME_T -D_CRT_NON_CONFORMING_SWPRINTFS -D_OPEN_THREADS \
        -D_ALL_SOURCE=1 -DFD_SETSIZE=2048 -U_NO_PROTO -DOPT_ZOS -DOPT_VAR_MACS -DGVBDEBUG
 
-# COMMON_C_FLAGS =           /nologo /c /Zl /W3 /FR"$(*:"=).sbr"
-
 ASM_FLAGS   = -c -Wa,"LINECOUNT(54),LIST,RENT,SYSPARM(MVS,31BIT,POSIX),USING(NOLIMIT,MAP,WARN(7)),XREF(SHORT),ESD,RLD,GOFF"
 ASM_DEFS    =
-#ASM_VARS   = _C89_SSUFFIX="s" _C89_WORK_SPACE="(64000,(60,60))" _xx_="Test";
 
-# C_FLAGS   = $(opt) /c /nologo /D_CRT_SECURE_NO_DEPRECATE
 C_FLAGS     = $(opt) -c -V -Wc,"TARGET(LE,zOSV1R13),GONUM,NOMAR,NOSEQ,NOSHOW,SSCOMM,NOSHOWINC,LANG(LONGLONG,EXTENDED),XPLINK" -D_CRT_SECURE_NO_DEPRECATE $(DEFS) $(ADDFLAGS) -I"$(JNIINC)"
 
-C_DLLFLAGS  = -c -V -Wc,"LP64,EXPORTALL,CSECT($@)" -I"$(JNIINC)" $(DEFS)
+C_DLLFLAGS  = -c -V -Wc,"LP64,EXPORTALL,CSECT($@)" -I"$(JNIINC,/Java/J8.0_64/include)" $(DEFS)
 CDFLAGS     = -Zi -MDd -Fd"$(*:"=).pdb_"
 CRFLAGS     =
 AFLAGS      = $(ASM_FLAGS) $(ASM_DEFS)
@@ -63,9 +59,6 @@ CFLAGS      = $(C_FLAGS) $(CRFLAGS)
 .END
 
 SFLAGS      = -c -Wc,SSCOMM,"LANG(LONGLONG,EXTENDED)" -D_CRT_SECURE_NO_DEPRECATE $(DEFS) -I"$(JNIINC)"
-
-# LIBS        = "$(JNILIB)/jni32.lib"
-# LIBS        = //PRIVATE.BTCHOBJ
 
 L_FLAGS     = -V -W l,p,map
 DLL_FLAGS   = -V -W l,lp64,dll,map
@@ -81,13 +74,12 @@ LFLAGS      = $(L_FLAGS) $(LRFLAGS)
 
 directories = "$(JNILIB)" "$(JNIOBJ)" "$(JNILST)"
 
-# #DEFINE GVBDEBUG is set in the C compiler DEFS to build separate debug version gvbjdlld
+# #DEFINE GVBDEBUG is set in the C compiler DEFS above, to build separate debug version gvbjdlld
 jniasm_dll  = "$(JNILIB)/gvbjdlld"
 
 targets_dll = $(jniasm_dll)
 
 lib_objects = "$(JNIOBJ)/gvbjdlld"
-
 
 # Target module object lists
 
