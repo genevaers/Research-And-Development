@@ -390,7 +390,7 @@ class RunSupervisor implements Runnable {
                 System.out.println(threadIdentifier + ":JZOS not installed in GvbJavaDaemon: cannot process GVBX95PA");
                 exitRc = 16; // GvbX95process not available
                 returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-                flag = 1;
+                // flag = 1; otherwise it will stop waiting
                 System.out.println(threadIdentifier + ":JZOS not installed in GvbJavaDaemon: cannot process GVBX95PA (2)");
 
               } else {
