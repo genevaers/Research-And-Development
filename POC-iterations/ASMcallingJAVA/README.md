@@ -71,7 +71,7 @@ JLKUPEX, GVBJLENV, GVBUR70, TSTUR70 and GVBJGO95
 
 ## Build GVBJDLL used by GvbJavaDaemon
 
-Back in USS set the following environment variale: export _C89_SUSRLIB="$LOGNAME.GVBDEMOJ.MACLIB" each time before running build script makegvbdll (it can be added to your .profile). Also ensure the Java "include" library in the build script referencing the jni.h headers matches the location of the Java "include" directory at your site. For example, the build script provided contains: C_DLLFLAGS  = -c -V -Wc,"LP64,EXPORTALL,CSECT(<$>@)" -I"$(JNIINC),/Java/J8.0_64/include" $(DEFS)
+Back in USS set the following environment variale: export _C89_SUSRLIB="$LOGNAME.GVBDEMOJ.MACLIB" each time before running build script makegvbdll (it can be added to your .profile). Also ensure the Java "include" library in the build script referencing the jni.h headers matches the location of the Java "include" directory at your site. For example, the build script provided contains: C_DLLFLAGS  = -c -V -Wc,"LP64,EXPORTALL,CSECT(</$/>@)" -I"$(JNIINC),/Java/J8.0_64/include" $(DEFS)
 
 Run build script from directory ../ASMcallingJAVA directory to create an MVS DLL in your MVS dataset "YOU-USER-ID".GVBDEMOJ.LOADLIB
 
