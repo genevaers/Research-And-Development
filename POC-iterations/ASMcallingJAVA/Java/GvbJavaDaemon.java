@@ -312,12 +312,15 @@ class RunSupervisor implements Runnable {
     byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason code is invoker (GVBUR70 generalized API  )
     byte[] arrayReason = null;
 
+    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
     zOSInfo a = new zOSInfo();
     GVBA2I b = new GVBA2I();
-    GvbX95process X95process = new GvbX95process();
-    
-    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
-//    GVBCLASSLOADER6 javaClassLoader6 = new GVBCLASSLOADER6();
+
+    try {
+      GvbX95process X95process = new GvbX95process();
+    } catch (Exception e) {
+      System.out.println(threadIdentifier + ":Class GvbX95process method: GvbX95prepare() not available");
+    }
 
     GvbX95PJ  X95 = new GvbX95PJ(0, 0, null, 0, null, null); // for MR95 use
 
@@ -386,7 +389,7 @@ class RunSupervisor implements Runnable {
               }
 
               // Try to call GvbX95process method requiring JZOS
-              X95 =javaClassLoader.invokeClassMethod("GvbX95process", "GvbX95prepare", X95, header, byteB, thisThrd, ntrace);
+              X95 =javaClassLoader.invokeClassMethod("GvbX95process", "GvbX95prepare", X95, header, byteB, threadIdentifier, ntrace);
 
               if (X95 == null) {
                 System.out.print(threadIdentifier + ":JZOS not installed in GvbJavaDaemon: cannot process GVBX95PA");
