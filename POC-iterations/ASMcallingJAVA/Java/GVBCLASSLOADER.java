@@ -115,7 +115,7 @@ public class GVBCLASSLOADER extends ClassLoader {
             Method method = loadedMyClass.getMethod(methodName,aarg);
 
             // Invoke myClassObject)
-            Object X95 = method.invoke(myClassObject, x95, byteB, threadIdentifier, ntrace);
+            Object X95 = method.invoke(myClassObject, x95, header, byteB, threadIdentifier, ntrace);
             return (GvbX95PJ) X95;
 
         } catch (ClassNotFoundException e) {
