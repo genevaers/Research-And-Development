@@ -93,24 +93,12 @@ public class GVBCLASSLOADER extends ClassLoader {
     public GvbX95PJ invokeClassMethod(String classBinName, String methodName,
                                         GvbX95PJ x95, String header, byte[] byteB, String threadIdentifier, Integer ntrace) {
 
-        Class<?> loadedMyClass;
-
         try {
             // Create a new JavaClassLoader
             ClassLoader classLoader = this.getClass().getClassLoader();
 
             // Load the target class using its binary name
-//            try {
-                  loadedMyClass = classLoader.loadClass(classBinName);
-//                } catch (ClassNotFoundException e) {
-//                    System.out.println("Class: " + classBinName + " method: " + methodName + " cannot be loaded" );
-//                    e.printStackTrace();
-//                    return null;
-//                } catch (Exception e) {
-//                    System.out.println("Error loading class: " + classBinName + " method: " + methodName + " cannot be loaded" );
-//                    e.printStackTrace();
-//                    return null;
-//                }
+            Class<?> loadedMyClass = classLoader.loadClass(classBinName);
 
             // Create a new instance from the loaded class
             Constructor<?> constructor = loadedMyClass.getConstructor();
