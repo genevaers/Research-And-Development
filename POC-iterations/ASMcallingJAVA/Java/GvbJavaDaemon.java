@@ -391,7 +391,6 @@ class RunSupervisor implements Runnable {
                 exitRc = 16; // GvbX95process not available
                 returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
                 // flag = 1; otherwise it will stop waiting
-                System.out.println(threadIdentifier + ":JZOS not installed in GvbJavaDaemon: cannot process GVBX95PA (2)");
 
               } else {
                 ReturnData returnData = javaClassLoader.invokeClassMethod(javaClass, methodName, X95, payload);
@@ -409,9 +408,9 @@ class RunSupervisor implements Runnable {
                 }
               }
 
-              //if (ntrace > 1 ) {
+              if (ntrace > 1 ) {
                 System.out.println(threadIdentifier + ":About to perform POSTMR95 with exitRc = " + exitRc + " ntrace: " + ntrace);
-              //}
+              }
 
               byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
               retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)

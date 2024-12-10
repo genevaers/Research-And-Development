@@ -100,17 +100,17 @@ public class GVBCLASSLOADER extends ClassLoader {
             ClassLoader classLoader = this.getClass().getClassLoader();
 
             // Load the target class using its binary name
-            try {
+//            try {
                   loadedMyClass = classLoader.loadClass(classBinName);
-                } catch (ClassNotFoundException e) {
-                    System.out.println("Class: " + classBinName + " method: " + methodName + " cannot be loaded" );
-                    e.printStackTrace();
-                    return null;
-                } catch (Exception e) {
-                    System.out.println("Error loading class: " + classBinName + " method: " + methodName + " cannot be loaded" );
-                    e.printStackTrace();
-                    return null;
-                }
+//                } catch (ClassNotFoundException e) {
+//                    System.out.println("Class: " + classBinName + " method: " + methodName + " cannot be loaded" );
+//                    e.printStackTrace();
+//                    return null;
+//                } catch (Exception e) {
+//                    System.out.println("Error loading class: " + classBinName + " method: " + methodName + " cannot be loaded" );
+//                    e.printStackTrace();
+//                    return null;
+//                }
 
             // Create a new instance from the loaded class
             Constructor<?> constructor = loadedMyClass.getConstructor();
@@ -131,7 +131,12 @@ public class GVBCLASSLOADER extends ClassLoader {
             Object X95 = method.invoke(myClassObject, x95, header, byteB, threadIdentifier, ntrace);
             return (GvbX95PJ) X95;
 
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class: " + classBinName + " method: " + methodName + " cannot be loaded" );
+            e.printStackTrace();
+            return null;
         } catch (Exception e) {
+            System.out.println("Error running class: " + classBinName + " method: " + methodName );
             e.printStackTrace();
             return null;
         }
