@@ -316,13 +316,7 @@ class RunSupervisor implements Runnable {
     zOSInfo a = new zOSInfo();
     GVBA2I b = new GVBA2I();
 
-    try {
-      GvbX95process X95process = new GvbX95process();
-    } catch (Exception e) {
-      System.out.println(threadIdentifier + ":Class GvbX95process method: GvbX95prepare() not available");
-    }
-
-    GvbX95PJ  X95 = new GvbX95PJ(0, 0, null, 0, null, null); // for MR95 use
+    GvbX95PJ X95 = new GvbX95PJ(0, 0, null, 0, null, null); // for MR95 use
 
     threadIdentifier = String.format("%6s%04d", threadName, thrdNbr);
     System.out.println(threadIdentifier + ":Running");
