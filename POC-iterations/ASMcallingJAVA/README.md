@@ -1,6 +1,6 @@
 # ASMcallingJAVA Interface
 
-The motivation for this POC iteration is to enable a GenevaERS view (i.e. program) to call Java written "lookup" exits from the GenevaERS Performance Engine. For example, being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java "lookup" exit is a method or collection of methods in a Java class, and it is loaded dynamically.
+The motivation for this POC iteration is to enable GenevaERS views (i.e. program) to call Java written "lookup" exits efficiently from the GenevaERS Performance Engine. For example, being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java "lookup" exit is a method or collection of methods in a Java class, and it is loaded dynamically. The JVM is started only once regardless of how many times Java is called.
 
 However, after being successful at achieving this goal, the solution was generalized to allow any single or multi-threaded program written in assembler, 3GL or 4GL to call Java. This is exposed by the GVBUR70 interface (API) provided here. Two installation verification programs (IVP) are included, one written in assembler and another COBOL (see Generalized Interface to Java - below). This facility is independent of installing GenevaERS Performance Engine.
 
