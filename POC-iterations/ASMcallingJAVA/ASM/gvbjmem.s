@@ -1,7 +1,7 @@
          TITLE 'GVBJMEM - obtain 31 bit thread local storage'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.                          
 * SPDX-License-Identifier: Apache-2.0                                           
 *                                                                               
@@ -24,7 +24,9 @@
 * GVBJMEM - Get Address of or obtain (first time) thread local storage
 *                                                                               
 ***********************************************************************
-         YREGS                                                                  
+         YREGS
+*
+         COPY  GVBJDSCT
 *                                                                               
 GVBJMEM  CELQPRLG PARMWRDS=1,BASEREG=R10,EXPORT=YES,DSASIZE=160+WORKLEN
          LG    R9,0(R1)                R9 -> Input area                         
@@ -54,20 +56,21 @@ FINDMEM2 EQU   *
          J     EXIT0
 FINDMEM3 EQU   *
          WTO 'GVBJMEM : THREAD LOCAL STORAGE ANCHOR IS BAD'
-         LA    R3,8
+         LGHI  R3,8
          J     EXIT
 * -----------------------------------------------------------                   
 * Obtain 31 bit memory
 * -----------------------------------------------------------                   
 GETMEM   DS    0H
-         LGHI  R0,1024
+         LGHI  R0,1024+16         Memory plus header
          STORAGE OBTAIN,LENGTH=(0),LOC=(ANY),CHECKZERO=YES
-         MVC   0(8,R1),=CL8'GVBJMEMX'
-         LA    R1,8(,R1)
+         MVC   0(6,R1),=CL6'GVBMEM'
+         MVC   6(10,R1),PATHREAD
+         LA    R1,16(,R1)
          STG   R1,PAATMEM
          CIJE  R15,14,GETMEM10
          LGR   R0,R1
-         LGHI  R1,1024-8
+         LGHI  R1,1024-16         Clear everything but header
          XGR   R14,R14
          XGR   R15,R15
          MVCL  R0,R14
@@ -84,7 +87,7 @@ GETMEM10 EQU   *
          LTGF  R15,WKTOKNRC       SUCCESSFUL  ???
          JZ    GETMEM20
          WTO 'GVBJMEM : Thread local storage not persisted'
-         LA    R3,12
+         LGHI  R3,12
          J     EXIT
 GETMEM20 EQU   *
 *         WTO 'GVBJMEM : Thread local storage is persisted'
@@ -92,7 +95,7 @@ GETMEM20 EQU   *
 * Zero Return Code and Exit                                                     
 * -----------------------------------------------------------                   
 EXIT0    DS    0H                                                               
-         XR    R3,R3                   Zero Return Code                         
+         XGR   R3,R3                   Zero Return Code                         
 EXIT     DS    0H                                                               
          CELQEPLG                      Return to caller                         
 *
@@ -117,20 +120,6 @@ WKTOKMEM DS    A                  A(Thread memory)
          DS    A
          DS    A
 WORKLEN  EQU   *-WORKAREA
-*
-PARMSTR  DSECT                         Call control block
-PAFUN    DS    CL8                     Function code
-PAOPT    DS    CL8                     Option(s)
-PACLASS  DS    CL32                    Java class
-PAMETHOD DS    CL32                    Java method
-PALEN1   DS    D                       Length of data sent from ASM
-PALEN2   DS    D                       Length of data received by ASM
-PAADDR1  DS    D                       Address of data sent
-PAADDR2  DS    D                       Address of data received
-PARETC   DS    D                       Return code
-PAANCHR  DS    D                       Communications Tensor Table addr
-PAATMEM  DS    D                       Thread local 31 bit storage
-PARMLEN  EQU   *-PARMSTR
 *
 *
 THEDSA   CEEDSA SECTYPE=XPLINK         Dynamic Save Area

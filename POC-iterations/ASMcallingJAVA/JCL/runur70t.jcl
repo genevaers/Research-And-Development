@@ -1,15 +1,12 @@
-//RUNUR70T JOB (ACCT),'UR70 TEST',
-//          NOTIFY=&SYSUID.,
-//          CLASS=A,
-//          MSGLEVEL=(1,1),
-//          MSGCLASS=H
-//********************************************************************
+//RUNIVPJA JOB (ACCT),CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),NOTIFY=&SYSUID
 //*
-//* (C) COPYRIGHT IBM CORPORATION 2023.
+//*********************************************************************
+//*
+//* (C) COPYRIGHT IBM CORPORATION 2024.
 //*    Copyright Contributors to the GenevaERS Project.
 //*SPDX-License-Identifier: Apache-2.0
 //*
-//********************************************************************
+//*********************************************************************
 //*
 //*  Licensed under the Apache License, Version 2.0 (the "License");
 //*  you may not use this file except in compliance with the License.
@@ -24,19 +21,19 @@
 //*  See the License for the specific language governing permissions
 //*  and limitations under the License.
 //*
-//******************************************************************
-//* RUN GVBUR70 TEST PROGRAM TESTUR70 TO CALL JAVA CLASS METHOD
+//*********************************************************************
+//* RUN GVBUR70 IVP ASSEMBLER PROGRAM TSTUR70 TO CALL JAVA CLASS METHOD
 //*********************************************************************
 //*
 //         EXPORT SYMLIST=*
 //*
-//*        SET HLQ=<YOUR-TSO-PREFIX>
-//*        SET MLQ=GVBDEMO
+//         SET HLQ=<YOUR-TSO-PREFIX>
+//         SET MLQ=GVBDEMOJ
 //*
-//         JCLLIB ORDER=&LVL1..RTC&RTC..JCL
+//         JCLLIB ORDER=AJV.V11R0M0.PROCLIB
 //*
 //JOBLIB   DD DISP=SHR,DSN=AJV.V11R0M0.SIEALNKE
-//         DD DISP=SHR,DSN=&LVL1..RTC&RTC..GVBLOAD
+//         DD DISP=SHR,DSN=&HLQ..&MLQ..LOADLIB
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //*
 //*********************************************************************
@@ -86,9 +83,9 @@
 //*
 //ISPFTTRC DD SYSOUT=*,RECFM=VB,LRECL=259        TSO OUTPUT
 //*
-//SYSTSIN  DD *
- OPUT  '&LVL1..RTC&RTC..GVBLOAD(JNIASM)' -
-       '/safr/mf_build/lib/JNIzOS64'
+//SYSTSIN  DD *,SYMBOLS=EXECSYS
+ OPUT  '&HLQ..&MLQ..LOADLIB(GVBJDLL)' -
+       '/u/<your-user-id>/DllLib/GVBJDLL'
 //*
 //*******************************************************************
 //*
@@ -104,21 +101,21 @@
 //*
 //*******************************************************************
 //TSTUR70 EXEC PROC=JVMPRC16,
-// JAVACLS='GvbJavaDaemon2'
+// JAVACLS='GvbJavaDaemon'
 //STDENV DD *
 # This is a shell script which configures
 # any environment variables for the Java JVM.
 # Variables must be exported to be seen by the launcher.
 
 . /etc/profile
-. /u/<user-id>/jcallhlasmprofile2
+. /u/<user-id>/ASMcallingJAVAprofile
 
 LIBPATH=/lib:/usr/lib:"${JAVA_HOME}"/bin
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib/j9vm
-LIBPATH="$LIBPATH":/safr/mf_build/lib
+LIBPATH="$LIBPATH":/u/<your-user-id>/DllLib
 export LIBPATH="$LIBPATH":
-# LIBPATH="$LIBPATH":"//&LVL1..RTC&RTC..GVBLOAD"
+# LIBPATH="$LIBPATH":"//&HLQ..&MLQ..LOADLIB"
 # Customize your CLASSPATH here
 
 
@@ -149,7 +146,7 @@ export IBM_JAVA_OPTIONS="$IJO "
 //STDERR   DD SYSOUT=*
 //*
 //*******************************************************************
-//* EXEC CARD FOR MAIN TSTUR70 PROGRAM CALLING JAVA
+//* EXEC CARD FOR TSTUR70 IVP PROGRAM MAKING CALLS TO JAVA
 //*******************************************************************
 //*
 //DDEXEC   DD *

@@ -1,7 +1,7 @@
-         TITLE 'GVBJLENV - ASM stub for calling Java'
+         TITLE 'JLKUPEX - ASM stub for calling Java loop up exit'
 **********************************************************************
 *
-* (C) COPYRIGHT IBM CORPORATION 2023.
+* (C) COPYRIGHT IBM CORPORATION 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -20,14 +20,13 @@
 *  See the License for the specific language governing permissions
 *  and limitations under the License.
 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 ***********************************************************************
 *                                                                     *
 *  MODULE DESCRIPTION:                                                *
 *                                                                     *
-*      - THIS MODULE INVOKES A JAVA CLASS AND METHOD                  *
-*          CLASS  : MyClass                                           *
-*          METHOD : MethodX                                           *
-*            where X is supplied as a one byte character from the key *    
+*      - THIS MODULE RETURNS THE ADDRESS OF THE SAFR ENVIRONMENT      *
+*        INFORMATION                                                  *
 *                                                                     *
 *                                                                     *
 *  SAFR MODULES USED      : NONE                                      *
@@ -65,7 +64,7 @@
 *            - RETURN    ADDR                                         *
 *                                                                     *
 *        R13 - CALLER  SAVE AREA ADDRESS                              *
-*        R12 - Base register                                          *
+*        R12 -                                                        *
 *        R11 -                                                        *
 *        R10 -                                                        *
 *        R9  -                                                        *
@@ -77,7 +76,7 @@
 *        R3  -                                                        *
 *        R2  -                                                        *
 *                                                                     *
-*        R1  - PARAMETER LIST    ADDRESS             (GENPARM)        *
+*        R1  - PARAMETER LIST    ADDRESS             (UPON ENTRY)     *
 *                                                                     *
 *        R0  - TEMPORARY WORK    REGISTER                             *
 *                                                                     *
@@ -146,16 +145,16 @@ WKECBLSZ DS    H
 WKENTIDX DS    A
          DS    A
          DS    0F
-WKKEYDAT DS    XL256
+WKCLSSMT DS    XL64
 WKRETDAT DS    XL4096
 DYNLEN   EQU   *-DYNAREA                 DYNAMIC AREA LENGTH
 *
 *
-GVBJLENV RMODE ANY
-GVBJLENV AMODE 31
-GVBJLENV CSECT
+JLKUPEX  RMODE ANY
+JLKUPEX  AMODE 31
+JLKUPEX  CSECT
          J     start
-         DC    CL8'GVBJLENV',CL8'&SYSDATC',CL6'&SYSTIME'
+         DC    CL8'GVBJ2ENV',CL8'&SYSDATC',CL6'&SYSTIME'
 *
 static   loctr
 CODE     loctr
@@ -168,7 +167,7 @@ start    DS    0H
          STMG  R14,R12,SAVF4SAG64RS14
 *
          LLGTR R12,R15                   ESTABLISH ...
-         USING GVBJLENV,R12              ... ADDRESSABILITY
+         USING JLKUPEX,R12               ... ADDRESSABILITY
 *
          LLGTR R8,R1                     => Genparm
          USING GENPARM,R8
@@ -198,29 +197,10 @@ start    DS    0H
          STG   R13,savf4sanext-DYNAREA(0,r10) fwd POINTER IN OLD
          STG   R10,savf4saprev    SET   BACKWARD POINTER IN NEW
 *
-         LLGT  R14,GPSTARTA
-         CLC   0(4,R14),=CL4'JAVA'
-         JE    A0001
-         MVI   WKJFLAG,C' '
-         WTO 'GVBJLENV: RUNNING WITHOUT JAVA EXIT'
-         J     A0002
-A0001    EQU   *
-         MVI   WKJFLAG,C'J'
-         WTO 'GVBJLENV: RUNNING WITH JAVA EXIT'
-A0002    EQU   *
-*
          LLGT  R14,GPENVA         OPEN  PHASE ???
-         USING GENENV,R14
+         USING GENENV,R14         Doesn't matter about phase
+         J     MAINLINE           All phases OP/RD/CL passed to Java
 *
-         CLI   GPPHASE,C'O'
-         JNE   MAINLINE
-*
-         MVC   WKRETC,=F'8'
-         J     DONE
-*
-         DROP  R14
-*
-                        EJECT
 ***********************************************************************
 *  CHAIN REGISTER SAVE AREAS TOGETHER                                 *
 *  CHECK FOR CHANGE IN EVENT RECORD ADDRESS                           *
@@ -234,28 +214,20 @@ CHAIN    DS    0H
 ***********************************************************************
 MAINLINE DS    0H
          LLGT  R7,GPKEYA          LOAD  LOOK-UP   KEY     ADDRESS
-*        dc h'0'
 * * *    USING LKUPKEY,R7         Logical record ID then key data
 *
          LAY   R9,WKRETDAT
          XC    WKRETC,WKRETC
          LLGT  R14,GPENVA         CHECK FOR   CLOSE PHASE
          USING GENENV,R14
-*
-         CLI   GPPHASE,C'C'
-         JE    DONE
-*
-* * *    dc h'0'
          DROP  R14
 *
-*        wto 'gvbjlenv invoked'
+         wto 'JLKUPEX: calling Java lookup method'
 *
 ***********************************************************************
 *  FIND GLOBAL NAME/TOKEN AREA                                        *
 ***********************************************************************
 *
-         CLI   WKJFLAG,C'J'
-         JNE   MAIN_201
          LLGT  R4,WKTOKNCTT
          LTR   R4,R4
          JP    MAIN_114
@@ -270,7 +242,7 @@ MAINLINE DS    0H
                MF=(E,WKREENT)
          LTGF  R15,WKTOKNRC       SUCCESSFUL  ???
          JZ    MAIN_140
-         WTO 'GVBJLENV: COMMUNICATIONS TENSOR TABLE NOT LOCATED'
+         WTO 'JLKUPEX: COMMUNICATIONS TENSOR TABLE NOT LOCATED'
          MVC   WKRETC,=F'8'
          J     DONE
 *
@@ -279,7 +251,7 @@ MAIN_140 EQU   *
          USING CTTAREA,R4
          CLC   CTTEYE,CTTEYEB
          JE    MAIN_114
-         WTO 'GVBJLENV: COMMUNICATIONS TENSOR TABLE DOES NOT MATCH'
+         WTO 'JLKUPEX: COMMUNICATIONS TENSOR TABLE DOES NOT MATCH'
          MVC   WKRETC,=F'12'
          J     DONE
 *
@@ -289,7 +261,6 @@ MAIN_114 EQU   *
          LLGT  R5,CTTACTR
          USING CTRAREA,R5
          LGH   R3,CTTNUME
-*        WTO 'GVBJLENV: CTR LOCATED AND LOOKING GOOD'
 *
          LLGT  R6,GPENVA          LOAD ENV  INFO POINTER ADDRESS
          USING GENENV,R6
@@ -304,29 +275,29 @@ MAIN_114 EQU   *
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2             Point to individual CTR
 *
+         LGHI  R0,64             Key length (arbitrary for now)
+         STG   R0,CTRLENOUT      Key Data being sent...
+         LGHI  R0,256            Data length (arbitrary for now)
+         STG   R0,CTRLENIN       Data being returned...
+*
          MVC   CTRREQ,=CL4'CALL' Called by MR95
          MVI   CTRFLG1,C'M'      Flg1: MR95
          MVI   CTRFLG2,C'0'      Flg2: default aarg[]
-         LGHI  R0,10
-         STG   R0,CTRLENOUT      Key Data being sent...
-         STG   R0,CTRLENIN       Data being returned...
-***      LAY   R0,GP_PROCESS_DATE_TIME
-***      STG   R0,CTRMEMOUT      WAY OUT(going to Java.)
-*        and now for something completely different
-         LAY   R1,WKKEYDAT       use 32 bytes of this field
-         MVC   0(32,R1),=CL32'MyClass' Java class to call
-         MVC   32(32,R1),=CL32'MethodX' and method
-         MVC   38(1,R1),4+9(R7)      Java method to call Method0..9
+*
+         LAY   R1,WKCLSSMT       use 64 bytes of this field
+         MVC   0(32,R1),=CL32'MyClassB' Java class to call
+         MVC   32(32,R1),=CL32'MethodY' and (hard coded) method
          STG   R1,CTRACLSS       ADDRESS OF CLASS NAME
          AGHI  R1,32
          STG   R1,CTRAMETH       ADDRESS OF METHOD NAME
-         AGHI  R7,4              R7 -> actual 10 byte key
-         STG   R7,CTRMEMOUT      WAY OUT(going to Java.)
+*
+*   R8 => GENPARM which contains pointer to key value (after view#)
+         STG   R8,CTRMEMOUT      WAY OUT(going to Java.)
          STG   R9,CTRMEMIN       WAY IN (to be received)
+*
 *
          POST  CTRECB1           POST A REQUEST ECB
 *
-         WTO 'GVBJPOST: REQUEST POSTED TO JAVA'
 *
          WAIT  1,ECB=CTRECB2
          XC    CTRECB2,CTRECB2
@@ -340,32 +311,20 @@ MAIN_114 EQU   *
          L     R14,GPBLKSIZ
          ST    R0,0(,R14)         ---> NOT SURE IF THIS IS NEEDED
 *
-         WTO 'GVBJPOST: RESPONSE RECEIVED TO REQUEST'
-         J     A0180
+         LLGT  R15,CTRJRETC       JAVA "RETURN CODE"
+         ST    R15,WKRETC
+         J     DONE
 *
 MAIN_116 EQU   *
-         WTO 'GVBJLENV: GPTHRDNO EXCEEDS MAXIMUM'
+         WTO 'JLKUPEX: GPTHRDNO EXCEEDS MAXIMUM'
          MVC   WKRETC,=F'4'
-         J     A0180
+         J     DONE
 *
 MAIN_117 EQU   *
-         WTO 'GVBJLENV: GPTHRDNO LESS THAN MINIMUM'
+         WTO 'JLKUPEX: GPTHRDNO LESS THAN MINIMUM'
          MVC   WKRETC,=F'4'
-         J     A0180
+         J     DONE
 *
-***********************************************************************
-*  NON JAVA VERSION                                                   *
-***********************************************************************
-MAIN_201 EQU   *
-         LAY   R9,=CL16'NON JAVA VERSION'
-         L     R14,GPBLOCKA       LOAD RESULT    POINTER ADDRESS
-         STG   R9,0(,R14)
-*
-         LHI   R0,16
-         L     R14,GPBLKSIZ
-         ST    R0,0(,R14)
-*
-A0180    EQU   *
 ***********************************************************************
 *  RETURN TO CALLER (SAFR)                                            *
 ***********************************************************************
@@ -385,7 +344,7 @@ DONE     EQU   *                  RETURN TO CALLER
          BSM   0,R14              RETURN
 *
 CTTEYEB  DC    CL8'GVBCTTAB'
-WORKEYEB DC    CL8'GVBJLENV'
+WORKEYEB DC    CL8'JLKUPEX '
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'

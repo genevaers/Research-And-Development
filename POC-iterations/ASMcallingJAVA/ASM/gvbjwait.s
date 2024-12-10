@@ -1,7 +1,7 @@
-         TITLE    'WAIT FOR REQUEST FROM GVBMR95 OR TERMINATION '
+         TITLE    'WAIT FOR REQUEST FROM APPLICATION OR TERMINATION '
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -23,14 +23,14 @@
 *
 *   This module is called by the GvbJavaDaemon to wait on events
 *   to communicate with assembler/3GL/etc code executing in separate
-*   threads in the same address space, i.e. GVBMR95.
+*   threads in the same address space, for example GVBMR95.
 *
 ***********************************************************************
          IHASAVER DSECT=YES,SAVER=YES,SAVF4SA=YES,SAVF5SA=YES,TITLE=NO
 *
          YREGS
 *
-*        COPY  GVBJDSCT
+         COPY  GVBJDSCT
 *
 *        DYNAMIC WORK AREA
 *
@@ -68,54 +68,6 @@ WKENTIDX DS    A
          DS    0F
 DYNLEN   EQU   *-DYNAREA                 DYNAMIC AREA LENGTH
 *
-*        COMMUNICATIONS TENSOR TABLE DSECTS
-*
-CTTAREA  DSECT
-CTTEYE   DS    CL8
-CTTACTR  DS    A               ADDR CTRAREA
-CTTNUME  DS    H               NUMBER OF ENTRIES
-CTTACTIV DS    X
-         DS    X
-CTTTECB  DS    F               TERMINATION ECB
-CTTGECB  DS    F               GO ECB
-CTTGECB2 DS    F               Acknowledge GO
-         DS    XL4
-CTTLEN   EQU   *-CTTAREA
-*
-*
-CTRAREA  DSECT
-CTRECB1  DS    F               ECB JAVA WORKER WAITS ON
-CTRECB2  DS    F               ECB ASM  WORKER WAITS ON
-CTRCSWRD DS    F               CS CONTROL WORD
-CTRREQ   DS    CL4             REQUEST FUNCTION
-CTRACLSS DS    D               ADDRESS OF CLASS FIELD (A32) 
-CTRAMETH DS    D               ADDRESS OF METHOD FIELD (A32)
-CTRLENIN DS    D               LENGTH INPUT AREA
-CTRLENOUT DS   D               LENGTH OUTPUT AREA
-CTRMEMIN DS    D               ADDR INPUT AREA
-CTRMEMOUT DS   D               ADDR OUTPUT AREA
-CTRTHRDN DS    H
-         DS    XL2
-CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
-         DS    XL8
-CTRLEN   EQU   *-CTRAREA
-*
-*
-PARMSTR  DSECT                         Call control block
-PAFUN    DS    CL8                     Function code
-PAOPT    DS    CL8                     Option(s)
-PACLASS  DS    CL32                    Java class
-PAMETHOD DS    CL32                    Java method
-PALEN1   DS    D                       Length of data sent from ASM
-PALEN2   DS    D                       Length of data received by ASM
-PAADDR1  DS    D                       Address of data sent
-PAADDR2  DS    D                       Address of data received
-PARETC   DS    D                       Return code
-PAANCHR  DS    D                       Communications Tensor Table addr
-PAATMEM  DS    D                       Thread local 31 bit storage
-PARMLEN  EQU   *-PARMSTR
-*
-*
 GVBJWAIT RMODE 24
 GVBJWAIT AMODE 31
 *
@@ -148,6 +100,7 @@ GVBJWAIT CSECT
          STG   R0,PAATMEM
 *
          ST    R2,WKENTIDX               Directions for ECB(s)
+         XC    PALEN2,PALEN2             Clear this until we know
 *
 *      OPEN MESSAGE FILE
          J     MAIN_096
@@ -248,7 +201,7 @@ MAIN_116 EQU   *                 Waiting for REQUEST
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2
 *
-         LAY   R1,WKECBLST       ASSIGN ECBLIST
+         LAY   R1,WKECBLST       ASSIGN ECBLIST -- Waiting for work
          LAY   R0,CTRECB1
          ST    R0,0(,R1)
          OI    0(R1),X'80'
@@ -295,7 +248,7 @@ A0180    EQU   *
          TM    CTRECB1,X'40'
          JO    A0024
          WTO 'GVBJWAIT: NOT POSTED BY ANY ECB'
-         MVC   WKRETC,=F'20'
+         MVC   WKRETC,=F'24'
          J     DONE
 *
 A0020    EQU   *                  Post by GO ECB
@@ -323,28 +276,56 @@ A0024    EQU   *                  Posted by REQUEST ECB
          MVC   WKRETC,=F'2'
          J     MAIN_200
 *
-A0025    EQU   *                  Put data into "return" buffer"
+A0025    EQU   *                  Point at "return" buffer"
          LG    R14,PAADDR2
-         CLC   PALEN2,CTRLENOUT
-         JNL   A0026
-         MVC   8(8,R14),=CL8'TRUNC'      REASON CODE
-         LG    R15,PALEN2                LENGTH
-         J     A0027
-A0026    EQU   *
-         MVC   8(8,R14),=CL8'00000000'   REASON CODE
-         LG    R15,CTRLENOUT             LENGTH
-A0027    EQU   *
-*
          LG    R1,CTRACLSS
          MVC   16(32,R14),0(R1)
          LG    R1,CTRAMETH
          MVC   48(32,R14),0(R1)
 *
-         LG    R1,CTRMEMOUT
-         AGHI  R14,16+32+32
-         AGHI  R15,-1
-         EXRL  R15,MVCR14R1
-         MVC   WKRETC,=F'4'              == REQUEST FROM MR95
+         LG    R15,CTRLENOUT             LENGTH of available memory-in 
+         STG   R15,PALEN2                LENGTH
+*
+         MVC   PAFLAG1,CTRFLG1           Flags (inbound from UR70)
+         MVC   PAFLAG2,CTRFLG2
+*
+         LG    R1,CTRMEMOUT              Incoming memory used later...
+         CLI   CTRFLG1,C'M'              Called by GVBMR95 ?
+         JNE   A0026                     No, go
+*
+* This is specifically for a GVBMR95 lookup exit using GVBX95PA only
+*
+         MVC   8(8,R14),=CL8'MR95WORK'   REASON CODE
+         LLGT  R0,00(,R1)                Populate 10 addresses for
+         STG   R0,PAGENPA+00             GVBX95PA which includes the
+         LLGT  R0,04(,R1)                key, i.e. data
+         STG   R0,PAGENPA+08
+         LLGT  R0,08(,R1)
+         STG   R0,PAGENPA+16
+         LLGT  R0,12(,R1)
+         STG   R0,PAGENPA+24
+         LLGT  R0,16(,R1)
+         STG   R0,PAGENPA+32
+         LLGT  R0,20(,R1)
+         STG   R0,PAGENPA+40
+         LLGT  R0,24(,R1)
+         STG   R0,PAGENPA+48
+         LLGT  R0,28(,R1)
+         STG   R0,PAGENPA+56
+         LLGT  R0,32(,R1)
+         STG   R0,PAGENPA+64
+         LLGT  R0,36(,R1)
+         STG   R0,PAGENPA+72
+*         wto 'GVBJWAIT: called by GVBMR95'
+         J     A0027
+*
+A0026    EQU   *                         data was sent using GVBUR70
+         MVC   8(8,R14),=CL8'UR70WORK'   REASON CODE
+         STG   R1,PAADDR2                just replace PAADDR2 pointer
+*         wto 'GVBJWAIT: called by GVBUR70'
+*
+A0027    EQU   *
+         MVC   WKRETC,=F'4'              == REQUEST FROM MAIN PROGRAM
 *
 MAIN_200 EQU   *
          DROP  R5 CTRAREA
@@ -401,12 +382,12 @@ H255     DC    H'255'
 F04      DC    F'04'
 F40      DC    F'40'
 F4096    DC    F'4096'
-CTTEYEB  DC    CL8'GVBCTT'
+CTTEYEB  DC    CL8'GVBCTTAB'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'                    TOKEN PERSISTENCE
-TOKNLVL1 DC    A(1)                    NAME/TOKEN  AVAILABILITY  LEVEL
-TOKNLVL2 DC    A(2)                    NAME/TOKEN  AVAILABILITY  LEVEL
+TOKNLVL1 DC    A(1)                    NAME/TOKEN  -- subtask
+TOKNLVL2 DC    A(2)                    NAME/TOKEN  -- address space
 *
          DS   0D
 MODE31   EQU   X'8000'
@@ -420,51 +401,10 @@ OUTFDCBE DCBE  RMODE31=BUFF
 OUTFILEL EQU   *-OUTFILE
 *
 SPACES   DC    CL256' '
-XHEXFF   DC 1024X'FF'
-*
 *
          LTORG ,
 *
 NUMMSK   DC    XL12'402020202020202020202021'
-*
-*******************************************************
-*                 UNPACKED NUMERIC TRANSLATION MATRIX
-*******************************************************
-*                    0 1 2 3 4 5 6 7 8 9 A B C D E F
-*
-TRTACLVL DC    XL16'00D500000000000000C5000000000000'  00-0F
-         DC    XL16'D9000000000000000000000000000000'  10-1F
-         DC    XL16'E4000000000000000000000000000000'  20-2F
-         DC    XL16'00000000000000000000000000000000'  30-3F
-         DC    XL16'C3000000000000000000000000000000'  40-4F
-         DC    XL16'00000000000000000000000000000000'  50-5F
-         DC    XL16'00000000000000000000000000000000'  60-6F
-         DC    XL16'00000000000000000000000000000000'  70-7F
-         DC    XL16'C1000000000000000000000000000000'  80-8F
-         DC    XL16'00000000000000000000000000000000'  90-9F
-         DC    XL16'00000000000000000000000000000000'  A0-AF
-         DC    XL16'00000000000000000000000000000000'  B0-BF
-         DC    XL16'00000000000000000000000000000000'  C0-CF
-         DC    XL16'00000000000000000000000000000000'  D0-DF
-         DC    XL16'00000000000000000000000000000000'  E0-EF
-         DC    XL16'00000000000000000000000000000000'  F0-FF
-*
-TRTTBLU  DC    XL16'08080808080808080808080808080808'  00-0F
-         DC    XL16'08080808080808080808080808080808'  10-1F
-         DC    XL16'08080808080808080808080808080808'  20-2F
-         DC    XL16'08080808080808080808080808080808'  30-3F
-         DC    XL16'08080808080808080808080808080808'  40-4F
-         DC    XL16'08080808080808080808080808080808'  50-5F
-         DC    XL16'08080808080808080808080808080808'  60-6F
-         DC    XL16'08080808080808080808080808080808'  70-7F
-         DC    XL16'08080808080808080808080808080808'  80-8F
-         DC    XL16'08080808080808080808080808080808'  90-9F
-         DC    XL16'08080808080808080808080808080808'  A0-AF
-         DC    XL16'08080808080808080808080808080808'  B0-BF
-         DC    XL16'08080808080808080808080808080808'  C0-CF
-         DC    XL16'08080808080808080808080808080808'  D0-DF
-         DC    XL16'08080808080808080808080808080808'  E0-EF
-         DC    XL16'00000000000000000000080808080808'  F0-FF
 *
 OPTTABLE DC    CL4'WRKT'
          DC    CL4'ACKG'

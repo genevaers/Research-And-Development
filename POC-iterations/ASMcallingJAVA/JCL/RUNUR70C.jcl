@@ -1,15 +1,12 @@
-//RUNMR95J  JOB (ACCT),'GVBMR95E JAVA LOOKUP',
-//          NOTIFY=&SYSUID.,
-//          CLASS=A,
-//          MSGLEVEL=(1,1),
-//          MSGCLASS=H
-//********************************************************************
+//RUNIVPJC JOB (ACCT),CLASS=A,MSGCLASS=X,MSGLEVEL=(1,1),NOTIFY=&SYSUID
+//*
+//*********************************************************************
 //*
 //* (C) COPYRIGHT IBM CORPORATION 2024.
 //*    Copyright Contributors to the GenevaERS Project.
 //*SPDX-License-Identifier: Apache-2.0
 //*
-//********************************************************************
+//*********************************************************************
 //*
 //*  Licensed under the Apache License, Version 2.0 (the "License");
 //*  you may not use this file except in compliance with the License.
@@ -24,29 +21,23 @@
 //*  See the License for the specific language governing permissions
 //*  and limitations under the License.
 //*
-//******************************************************************
-//*
-//* Run GVBDEMOJ Extract job that will call JAVA lookup exit(s)
-//*
-//* NOTE: This job assumes you have already installed GVBDEMO
-//*
+//*********************************************************************
+//* RUN GVBUR70 IVP COBOL PROGRAM TESTUR70 TO CALL JAVA CLASS METHOD
 //*********************************************************************
 //*
 //         EXPORT SYMLIST=*
 //*
-//         SET HLQ=<YOUR-TSO-PREFIX>
-//         SET MLQJ=GVBDEMOJ
-//         SET MLQ=GVBDEMO
+//*        SET HLQ=<YOUR-TSO-PREFIX>
+//         SET MLQ=GVBDEMOJ
 //*
 //         JCLLIB ORDER=AJV.V11R0M0.PROCLIB
 //*
 //JOBLIB   DD DISP=SHR,DSN=AJV.V11R0M0.SIEALNKE
-//         DD DISP=SHR,DSN=&HLQ..&MLQJ..LOADLIB
-//         DD DISP=SHR,DSN=&HLQ..&MLQ..GVBLOAD
+//         DD DISP=SHR,DSN=&HLQ..&MLQ..LOADLIB
 //         DD DISP=SHR,DSN=CEE.SCEERUN
 //*
 //*********************************************************************
-//* Copy dll JNIASM to accessible location for Java LIBPATH
+//* Copy dll JNIzOS64 to ZFS location
 //*********************************************************************
 //*
 //COPYDLL  EXEC PGM=IKJEFT1A
@@ -93,30 +84,12 @@
 //ISPFTTRC DD SYSOUT=*,RECFM=VB,LRECL=259        TSO OUTPUT
 //*
 //SYSTSIN  DD *,SYMBOLS=EXECSYS
- OPUT  '&HLQ..&MLQJ..LOADLIB(GVBJDLL)' -
+ OPUT  '&HLQ..&MLQ..LOADLIB(GVBJDLL)' -
        '/u/<your-user-id>/DllLib/GVBJDLL'
 //*
-//*
-//*********************************************************************
-//* DELETE THE FILE(S) CREATED IN EXTRACT STEP
-//*********************************************************************
-//*
-//PSTEP700 EXEC PGM=IDCAMS
-//*
-//SYSPRINT DD SYSOUT=*
-//*
-//SYSIN    DD *,SYMBOLS=EXECSYS
- /* VIEW DATA SETS: */
-
- DELETE  &HLQ..&MLQ..PASS1E1.F0010903 PURGE
- DELETE  &HLQ..&MLQ..PASS1E1.SYSMDUMP PURGE
-
- IF LASTCC > 0 THEN        /* IF OPERATION FAILED,     */    -
-     SET MAXCC = 0          /* PROCEED AS NORMAL ANYWAY */
-
 //*******************************************************************
 //*
-//* Batch job to run the Java VM calling GVBMR95(E)
+//* Batch job to run the Java VM calling TSTUR70
 //*
 //* Tailor the proc and job for your installation:
 //* 1.) Modify the Job card per your installation's requirements
@@ -127,7 +100,7 @@
 //* 6.) Modify JAVACLS and ARGS to launch desired Java class
 //*
 //*******************************************************************
-//PSTEP705 EXEC PROC=JVMPRC16,
+//TSTUR70 EXEC PROC=JVMPRC16,
 // JAVACLS='GvbJavaDaemon'
 //STDENV DD *
 # This is a shell script which configures
@@ -142,8 +115,9 @@ LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib/j9vm
 LIBPATH="$LIBPATH":/u/<your-user-id>/DllLib
 export LIBPATH="$LIBPATH":
-# LIBPATH="$LIBPATH":"//&HLQ..&MLQJ..LOADLIB"
+# LIBPATH="$LIBPATH":"//&HLQ..&MLQ..LOADLIB"
 # Customize your CLASSPATH here
+
 
 # Add Application required jars to end of CLASSPATH
 for i in $(find $APP_HOME -type f);do
@@ -167,103 +141,26 @@ IJO="-Xms16m -Xmx128m"
 IJO="$IJO -Dfile.encoding=ISO8859-1"
 export IBM_JAVA_OPTIONS="$IJO "
 
-//*******************************************************************
-//* EXEC CARDS FOR MAIN GVBMR95 PROGRAM
-//*******************************************************************
-//DDEXEC   DD *
-PGM=GVBMR95E
-/*
-//DDPARM   DD *
-/*
 //*
 //STDOUT   DD SYSOUT=*
 //STDERR   DD SYSOUT=*
 //*
-//*        <<< INPUT GENEVAERS FILES >>>
+//*******************************************************************
+//* EXEC CARD FOR TESTUR70 COBOL IVP PROGRAM MAKING CALLS TO JAVA
+//*******************************************************************
 //*
-//EXTRPARM DD *
-*
-*   STANDARD OPTIONS
-*-------------------
-*
-*RUN_DATE=20170105                      DEFAULT: (CURRENT DATE)
-*FISCAL_DATE_DEFAULT=20161231           DEFAULT: RUN_DATE
-*FISCAL_DATE_OVERRIDE=1:20160731        DEFAULT: FISCAL_DATE_DEFAULT
-*
-*DISK_THREAD_LIMIT=2                    DEFAULT: 9999
-*TAPE_THREAD_LIMIT=10                   DEFAULT: 9999
-*
-*IO_BUFFER_LEVEL=8                      DEFAULT: 4
-*OPTIMIZE_PACKED_OUTPUT=N               DEFAULT: Y
-*PAGE_FIX_IO_BUFFERS=N                  DEFAULT: Y
-*TREAT_MISSING_VIEW_OUTPUTS_AS_DUMMY=Y  DEFAULT: N
-*ABEND_ON_CALCULATION_OVERFLOW=N        DEFAULT: Y
-*
-*   DEBUGGING OPTIONS
-*--------------------
-*
-*TRACE=Y                                DEFAULT: N
-*DUMP_LT_AND_GENERATED_CODE=Y           DEFAULT: N
-*SOURCE_RECORD_LIMIT=100                DEFAULT: (NO LIMIT)
-*ABEND_ON_LOGIC_TABLE_ROW_NBR=57        DEFAULT: (NO ABEND)
-*ABEND_ON_MESSAGE_NBR=149               DEFAULT: (NO ABEND)
-*EXECUTE_IN_PARENT_THREAD=A             DEFAULT: N
-*                                           1=1ST UNIT, A=ALL UNITS
+//DDEXEC   DD *
+PGM=TESTUR70
+/*
 //*
-//EXTRTPRM DD *
-*TRACE KEYWORDS:
-*VIEW=,FROMREC=,THRUREC=,FROMLTROW=,THRULTROW=,LTFUNC=,DDNAME=
-*VPOS=,VLEN=,VALUE=
-*
-*TRACE EXAMPLES:
-*VIEW=4418,LTFUNC=WR
-*VPOS=17,VLEN=10,VALUE=24CXA01501,VIEW=3424
-*VIEW=302
-//*
-//EXTRENVV DD *
-$SUBSYS=DM12
-$QUAL=SDATRT01
-//*
-//MR95VDP  DD DSN=&HLQ..&MLQ..PASS1C1.VDP,
-//            DISP=SHR
-//
-//EXTRLTBL DD DSN=&HLQ..&MLQ..PASS1C1.XLT,
-//            DISP=SHR
-//
-//EXTRREH  DD DSN=&HLQ..&MLQ..PASS1D1.REH,
-//            DISP=SHR
-//*
-//*        <<< INPUT GENEVAERS REFERENCE WORK FILES >>>
-//*                                                                 %%%
-//*            NONE
-//*
-//*        <<< INPUT SOURCE FILES >>>
-//*                                                                 %%%
-//CUSTOMER  DD DISP=SHR,DSN=&HLQ..&MLQ..CUSTOMER
-//*
-//*        <<< OUTPUT EXTRACT VIEW FILES >>>
-//*                                                                 %%%
-//F0010903 DD DSN=&HLQ..&MLQ..PASS1E1.F0010903,
-//            DISP=(NEW,CATLG,DELETE),
-//            UNIT=SYSDA,
-//            SPACE=(TRK,(100,100),RLSE),
-//            DCB=(DSORG=PS,RECFM=VB,LRECL=1004)
-//*
-//DDPRINT  DD SYSOUT=*
+//SYSIN    DD DUMMY
+//UR70PRNT DD SYSOUT=*
 //SYSPRINT DD SYSOUT=*
-//EXTRRPT  DD SYSOUT=*
-//EXTRLOG  DD SYSOUT=*
-//EXTRTRAC DD SYSOUT=*
-//MERGRPT  DD SYSOUT=*
-//SNAPDATA DD SYSOUT=*
 //SYSOUT   DD SYSOUT=*
+//SYSTERM  DD SYSOUT=*
+//DDPRINT  DD SYSOUT=*
 //CEEDUMP  DD SYSOUT=*
 //*
 //IDIOFF   DD DUMMY
-//*
-//SYSMDUMP DD DSN=&HLQ..&MLQ..PASS1E1.SYSMDUMP,
-//            DISP=(NEW,DELETE,CATLG),
-//            UNIT=SYSDA,
-//            SPACE=(TRK,(1000,1000),RLSE),
-//            DCB=(DSORG=PS,RECFM=FBS,LRECL=4160)
+//SYSUDUMP DD SYSOUT=*
 //

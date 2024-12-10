@@ -34,24 +34,20 @@ JNIBIN = $(JNILST)
 JNILIB      = $(JNISAM)/lib
 .END
 
-USRLIB = //PRIVATE.MACLIB
-SYSLMOD = //PRIVATE.LOADLIB
+USRLIB = //GVBDEMOJ.MACLIB
+SYSLMOD = //GVBDEMOJ.LOADLIB
 #SYSLMOD = $(JNIBIN)
 
 DEFS = -D_ISOC99_SOURCE -D_CRT_SECURE_NO_DEPRECATE \
        -D_USE_32BIT_TIME_T -D_CRT_NON_CONFORMING_SWPRINTFS -D_OPEN_THREADS \
-       -D_ALL_SOURCE=1 -DFD_SETSIZE=2048 -U_NO_PROTO -DOPT_ZOS -DOPT_VAR_MACS
-
-# COMMON_C_FLAGS =           /nologo /c /Zl /W3 /FR"$(*:"=).sbr"
+       -D_ALL_SOURCE=1 -DFD_SETSIZE=2048 -U_NO_PROTO -DOPT_ZOS -DOPT_VAR_MACS -DGVBDEBUG
 
 ASM_FLAGS   = -c -Wa,"LINECOUNT(54),LIST,RENT,SYSPARM(MVS,31BIT,POSIX),USING(NOLIMIT,MAP,WARN(7)),XREF(SHORT),ESD,RLD,GOFF"
 ASM_DEFS    =
-#ASM_VARS   = _C89_SSUFFIX="s" _C89_WORK_SPACE="(64000,(60,60))" _xx_="Test";
 
-# C_FLAGS   = $(opt) /c /nologo /D_CRT_SECURE_NO_DEPRECATE
 C_FLAGS     = $(opt) -c -V -Wc,"TARGET(LE,zOSV1R13),GONUM,NOMAR,NOSEQ,NOSHOW,SSCOMM,NOSHOWINC,LANG(LONGLONG,EXTENDED),XPLINK" -D_CRT_SECURE_NO_DEPRECATE $(DEFS) $(ADDFLAGS) -I"$(JNIINC)"
 
-C_DLLFLAGS  = -c -V -Wc,"LP64,EXPORTALL,CSECT($@)" -I"$(JNIINC)" $(DEFS)
+C_DLLFLAGS  = -c -V -Wc,"LP64,EXPORTALL,CSECT($@)" -I"$(JNIINC),/Java/J8.0_64/include" $(DEFS)
 CDFLAGS     = -Zi -MDd -Fd"$(*:"=).pdb_"
 CRFLAGS     =
 AFLAGS      = $(ASM_FLAGS) $(ASM_DEFS)
@@ -63,9 +59,6 @@ CFLAGS      = $(C_FLAGS) $(CRFLAGS)
 .END
 
 SFLAGS      = -c -Wc,SSCOMM,"LANG(LONGLONG,EXTENDED)" -D_CRT_SECURE_NO_DEPRECATE $(DEFS) -I"$(JNIINC)"
-
-# LIBS        = "$(JNILIB)/jni32.lib"
-# LIBS        = //PRIVATE.BTCHOBJ
 
 L_FLAGS     = -V -W l,p,map
 DLL_FLAGS   = -V -W l,lp64,dll,map
@@ -81,31 +74,31 @@ LFLAGS      = $(L_FLAGS) $(LRFLAGS)
 
 directories = "$(JNILIB)" "$(JNIOBJ)" "$(JNILST)"
 
-jniasm_dll  = "$(JNILIB)/jniasm"
+# #DEFINE GVBDEBUG is set in the C compiler DEFS above, to build separate debug version gvbjdlld
+jniasm_dll  = "$(JNILIB)/gvbjdlld"
 
 targets_dll = $(jniasm_dll)
 
-lib_objects = "$(JNIOBJ)/jniasm"
-
+lib_objects = "$(JNIOBJ)/gvbjdlld"
 
 # Target module object lists
 
-jniasm_objects =    $(JNIOBJ)/jnizos2.o     \
-                    $(JNIOBJ)/asminf2.o     \
-                    $(JNIOBJ)/asminf264.o	\
+jniasm_objects =    $(JNIOBJ)/jnizos.o		\
+                    $(JNIOBJ)/asminf64.o	\
 					$(JNIOBJ)/gvbjwait.o	\
 					$(JNIOBJ)/gvbjpost.o	\
 					$(JNIOBJ)/gvbjmain.o	\
-					$(JNIOBJ)/gvbjmr95.o
+					$(JNIOBJ)/gvbjmr95.o	\
+					$(JNIOBJ)/gvbjmem.o
  
-sources =           ./C/jnizos2.c
+sources =           ./C/jnizos.c
  
-asm_sources =       ./ASM/asminf2.s   \
-                    ./ASM/asminf264.s \
-					./ASM/gvbjwait.s  \
-					./ASM/gvbjpost.s  \
-					./ASM/gvbjmain.s  \
-					./ASM/gvbjmr95.s
+asm_sources =       ./ASM/asminf64.s	\
+					./ASM/gvbjwait.s	\
+					./ASM/gvbjpost.s	\
+					./ASM/gvbjmain.s	\
+					./ASM/gvbjmr95.s	\
+					./ASM/gvbjmem.s
  
 # asm_macros =        jniequ.mac
 

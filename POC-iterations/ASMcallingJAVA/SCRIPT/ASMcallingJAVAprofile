@@ -1,0 +1,12 @@
+ls -al
+pwd
+export A2E=-ofrom=ISO8859-1,to=IBM-1047
+export JAVA_HOME=/Java/J11.0_64
+export IBM_JAVA_OPTIONS="-Dfile.encoding=ISO8859-1 -Xms256m -Xmx1g"
+export APPGIT=/u/<your-user-id>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA
+export APPTRG=Java
+export BASE=$APPGIT/$APPTRG
+export APP_HOME=$BASE
+export CLASSPATH=$APP_HOME:"${JAVA_HOME}"/lib
+##Add this environment valiable for diagnostics
+##export GVBDEBUG=3

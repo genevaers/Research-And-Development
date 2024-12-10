@@ -1,0 +1,10 @@
+  OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/ASM/' -
+   '<YOUR-TSO-PREFIX>.GVBDEMOJ.ASM' SUFFIX(asm) CONVERT(NO) LC                                         
+  OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/MAC/' -
+   '<YOUR-TSO-PREFIX>.GVBDEMOJ.MACLIB' SUFFIX(mac) CONVERT(NO) LC                                      
+  OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/JCL/' -
+   '<YOUR-TSO-PREFIX>.GVBDEMOJ.JCL' SUFFIX(jcl) CONVERT(NO) LC                                         
+   OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/COPY/' -
+   '<YOUR-TSO-PREFIX>.GVBDEMOJ.COPY' SUFFIX(cpy) CONVERT(NO) LC                                         
+   OGETX '/u/<your-tso-prefix>/git/public/Research-And-Development/POC-iterations/ASMcallingJAVA/COBOL/' -
+   '<YOUR-TSO-PREFIX>.GVBDEMOJ.COBOL' SUFFIX(cbl) CONVERT(NO) LC                                         

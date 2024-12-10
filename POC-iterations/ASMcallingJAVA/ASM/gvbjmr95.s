@@ -1,7 +1,7 @@
          TITLE    'INVOKE GVBMR95 '
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -31,7 +31,7 @@
 *
          YREGS
 *
-*        COPY  GVBJDSCT
+         COPY  GVBJDSCT
 *
 *        DYNAMIC WORK AREA
 *
@@ -41,6 +41,7 @@ SAVEAREA DS  18FD              64 bit SAVE AREA
 SAVER13  DS    D
 SAVER9   DS    D
 *
+WKDBL3   DS    XL08
          DS    0F
 OUTDCB   DS    A               Address of 24 bit getmained DCB (output)
 INDCB    DS    A               Address of 24 bit getmained DCB (input)
@@ -61,69 +62,13 @@ GVBMR95E DS    A
 WKTOKNRC DS    A                  NAME/TOKEN  SERVICES RETURN CODE
 WKTOKNAM DS    XL16               TOKEN NAME
 WKTOKN   DS   0XL16               TOKEN VALUE
-WKTOKNCTT DS   A                  A(CTT)
+WKTOKNCTT DS   A                  A(CTT) reserved 16 bytes
          DS    A
          DS    A
          DS    A
-WKECBLST DS    A                  ADDRESS OF ECB LIST TO WAIT ON
-WKECB1   DS    F
-WKECB2   DS    F
-WKECB3   DS    F
-WKECB4   DS    F
-WKECBNUM DS    H                  Number in list
-WKECBLSZ DS    H
-WKENTIDX DS    A
-         DS    A
+WKEXECRC DS    F
          DS    0F
 DYNLEN   EQU   *-DYNAREA                 DYNAMIC AREA LENGTH
-*
-*        COMMUNICATIONS TENSOR TABLE DSECTS
-*
-CTTAREA  DSECT
-CTTEYE   DS    CL8
-CTTACTR  DS    A               ADDR CTRAREA
-CTTNUME  DS    H               NUMBER OF ENTRIES
-CTTACTIV DS    X
-         DS    X
-CTTTECB  DS    F               TERMINATION ECB
-CTTGECB  DS    F               GO ECB
-CTTGECB2 DS    F               Acknowledge GO
-         DS    XL4
-CTTLEN   EQU   *-CTTAREA
-*
-*
-CTRAREA  DSECT
-CTRECB1  DS    F               ECB JAVA WORKER WAITS ON
-CTRECB2  DS    F               ECB ASM  WORKER WAITS ON
-CTRCSWRD DS    F               CS CONTROL WORD
-CTRREQ   DS    CL4             REQUEST FUNCTION
-CTRACLSS DS    D               ADDRESS OF CLASS FIELD (A32) 
-CTRAMETH DS    D               ADDRESS OF METHOD FIELD (A32)
-CTRLENIN DS    D               LENGTH INPUT AREA
-CTRLENOUT DS   D               LENGTH OUTPUT AREA
-CTRMEMIN DS    D               ADDR INPUT AREA
-CTRMEMOUT DS   D               ADDR OUTPUT AREA
-CTRTHRDN DS    H
-         DS    XL2
-CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
-         DS    XL8
-CTRLEN   EQU   *-CTRAREA
-*
-*
-PARMSTR  DSECT                         Call control block
-PAFUN    DS    CL8                     Function code
-PAOPT    DS    CL8                     Option(s)
-PACLASS  DS    CL32                    Java class
-PAMETHOD DS    CL32                    Java method
-PALEN1   DS    D                       Length of data sent from ASM
-PALEN2   DS    D                       Length of data received by ASM
-PAADDR1  DS    D                       Address of data sent
-PAADDR2  DS    D                       Address of data received
-PARETC   DS    D                       Return code
-PAANCHR  DS    D                       Communications Tensor Table addr
-PAATMEM  DS    D                       Thread local 31 bit storage
-PARMLEN  EQU   *-PARMSTR
-*
 *
 GVBJMR95 RMODE 24
 GVBJMR95 AMODE 31
@@ -178,7 +123,7 @@ GVBJMR95 CSECT
          TM    48(R2),X'10'              SUCCESSFULLY OPENED  ??
          JO    MAIN_090                  YES - BYPASS ABEND
          WTO 'GVBJMR95: DDEXEC OPEN FAILED'
-         MVC   WKRETC,=F'16'
+         MVC   WKRETC,=F'24'
          J     DONEDONE
 MAIN_090 EQU   *
          LA    R4,3
@@ -193,13 +138,13 @@ MAIN_092 EQU   *
          LLGT  R2,INDCB
          MVC   WKREENT(8),OPENPARM
          CLOSE ((R2)),MODE=31,MF=(E,WKREENT)
-         wto 'GVBJMR95: DDEXEC cards read'
+*        wto 'GVBJMR95: DDEXEC CARDS READ'
          DROP  R2 IHADCB
 *
          CLC   WKCARD(4),=CL4'PGM='
          JE    MAIN_093
          WTO  'GVBJMR95: EXEC CARD NOT FOUND FOR DDEXEC' 
-         MVC   WKRETC,=F'16'
+         MVC   WKRETC,=F'20'
          J     DONEDONE
 *
 MAIN_093 EQU   *
@@ -257,10 +202,8 @@ MAIN096D EQU   *
 MAIN_097 EQU   *
          STH   R0,WKDDPRML
 *
-MAIN_098 EQU   *
-*         MVC   WKDDEXEC,WKCARD+4
-*
 *      OPEN MESSAGE FILE
+MAIN_098 EQU   *
          LA    R14,OUTFILE               COPY MODEL   DCB
          LLGT  R2,OUTDCB
          MVC   0(OUTFILEL,R2),0(R14)
@@ -300,7 +243,7 @@ MAIN_099 EQU   *
          J     DONE
 *
 MAIN_140 EQU   *
-         wto 'GVBJMR95: finding CTT'
+*        wto 'GVBJMR95: finding CTT'
          LLGT  R4,WKTOKNCTT
          USING CTTAREA,R4
          CLC   CTTEYE,CTTEYEB
@@ -309,19 +252,23 @@ MAIN_140 EQU   *
          MVC   WKRETC,=F'12'
          J     DONE
 *
-*        LOAD AND EXECUTE GVBMR95, OR OTHER SPECIFIED MODULE
-*
-MAIN_114 EQU   *
-         LOAD  EPLOC=WKDDEXEC
+MAIN_114 EQU   *                  LOAD AND EXECUTE GVBMR95 OR SOMETHING
+         LOAD  EPLOC=WKDDEXEC,ERRET=G0010
          OILH  R0,MODE31
          ST    R0,GVBMR95E
-         WTO 'GVBJMR95: TARGET ACQUIRED'
+         J     MAIN_115
+G0010    EQU   *
+         WTO 'GVBJMR95: APPLICATION CANNOT BE LOADED'
+         MVC   WKRETC,=F'28'
+         J     DONE
 *
+MAIN_115 EQU   *
          LAY   R1,WKDDPRML
          ST    R1,WKEPARMA
          LAY   R1,WKEPARMA
          L     R15,GVBMR95E         This may not store 64 bit registers
          BASR  R14,R15                                 only 31 bit !!!!
+         ST    R15,WKEXECRC
 *
 *        ALLOW A FEW SECONDS FOR IN FLIGHT COMMANDS TO COMPLETE AND THE
 *        GvbJavaDaemon TO TIDY UP EACH WORKER THREAD.
@@ -341,8 +288,14 @@ MAIN_201 EQU   *
          DROP  R4 CTTAREA
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(28),=CL28'GVBJMR95: GVBMR95 EXECUTION '
-         MVC   WKPRINT+28(09),=CL9'COMPLETED'
+         MVC   WKPRINT(60),=CL60'GVBJMR95: XXXXXXXX EXECUTION COMPLETEDx
+               . RETURN CODE XXXXXX   '
+         MVC   WKPRINT+10(8),WKDDEXEC
+         LLGF  R15,WKEXECRC
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+52(6),NUMMSK+6
+         MVI   WKPRINT+52,C' '
+         ED    WKPRINT+52(6),WKDBL3+5
          LLGT  R2,OUTDCB
          LA    R0,WKPRINT
          PUT   (R2),(R0)
@@ -394,7 +347,7 @@ H255     DC    H'255'
 F04      DC    F'04'
 F40      DC    F'40'
 F4096    DC    F'4096'
-CTTEYEB  DC    CL8'GVBCTT'
+CTTEYEB  DC    CL8'GVBCTTAB'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'                    TOKEN PERSISTENCE
@@ -425,7 +378,7 @@ XHEXFF   DC 1024X'FF'
 *
          LTORG ,
 *
-NUMMSK   DC    XL12'402020202020202020202021'
+NUMMSK   DC    XL12'402020202020202020202120'
 *
 *******************************************************
 *                 UNPACKED NUMERIC TRANSLATION MATRIX

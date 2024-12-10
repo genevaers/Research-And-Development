@@ -1,7 +1,7 @@
-         TITLE 'GVBJINF - interface to ASM service routines'
+         TITLE 'ASMINF64 - interface to ASM service routines'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.                          
 * SPDX-License-Identifier: Apache-2.0                                           
 *                                                                               
@@ -24,7 +24,9 @@
 * ASMINF64 - JNI Interface to ASM service routines (64 bit)
 *
 ***********************************************************************
-         YREGS                                                                  
+         YREGS
+*
+         COPY  GVBJDSCT
 *                                                                               
 ASMINF64 CELQPRLG PARMWRDS=1,BASEREG=R10,EXPORT=YES,DSASIZE=160+WORKLEN
          LG    R9,0(R1)                R9 -> Input area                         
@@ -233,7 +235,7 @@ POST18   EQU   *
 * Zero Return Code and Exit                                                     
 * -----------------------------------------------------------                   
 EXIT0    DS    0H                                                               
-         XR    R3,R3                   Zero Return Code                         
+         XGR   R3,R3                   Zero Return Code                         
 EXIT     DS    0H                                                               
          CELQEPLG                      Return to caller                         
 MODE31   EQU   X'8000'
@@ -278,19 +280,6 @@ CONV_MFL DS    0F
 CONV_LEN EQU   *-CONV_MFL
 WORKLEN  EQU   *-WORKAREA
 *
-PARMSTR  DSECT                         Call control block
-PAFUN    DS    CL8                     Function code
-PAOPT    DS    CL8                     Option(s)
-PACLASS  DS    CL32                    Java class
-PAMETHOD DS    CL32                    Java method
-PALEN1   DS    D                       Length of data sent from ASM
-PALEN2   DS    D                       Length of data received by ASM
-PAADDR1  DS    D                       Address of data sent
-PAADDR2  DS    D                       Address of data received
-PARETC   DS    D                       Return code
-PAANCHR  DS    D                       Communications Tensor Table addr
-PAATMEM  DS    D                       Thread local 31 bit storage
-PARMLEN  EQU   *-PARMSTR
 *
 THEDSA   CEEDSA SECTYPE=XPLINK         Dynamic Save Area
 MYWORK   DS    XL(WORKLEN)

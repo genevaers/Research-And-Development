@@ -1,7 +1,7 @@
          TITLE 'GVBUR70 - Interface for calling Java'
 ***********************************************************************
 *
-* (c) Copyright IBM Corporation 2023.
+* (c) Copyright IBM Corporation 2024.
 *     Copyright Contributors to the GenevaERS Project.
 * SPDX-License-Identifier: Apache-2.0
 *
@@ -26,6 +26,14 @@
 *                                                                     *
 *      - THIS MODULE ALLOWS A SPECIFIED JAVA CLASS AND METHOD TO BE   *
 *        CALLED USING THE GVBUR70 INTERFACE.                          *
+*                                                                     *
+*        IT SUPPORTS: 1) INIT initialize and indicate the number of   *
+*                        Java thread required by a multi-tasking      *
+*                        application. Should be called only once by   *
+*                        the application.                             *
+*                                                                     *
+*                     2) SEND invoke specified Java class and method  *
+*                        sending and receiving data from it.          *
 *                                                                     *
 ***********************************************************************
                         EJECT
@@ -144,7 +152,7 @@ START    DS    0H
          JP    CHAIN              YES - BYPASS ALLOCATION
 *
 ***********************************************************************
-*  ALLOCATE "GVBXLST" WORKAREA IF NOT ALREADY ALLOCATED (PER THREAD)  *
+*  ALLOCATE DYNAMIC WORKAREA IF NOT ALREADY ALLOCATED (PER THREAD)    *
 ***********************************************************************
          STORAGE OBTAIN,LENGTH=DYNLEN,COND=NO,CHECKZERO=YES
          LLGTR R13,R1
@@ -204,8 +212,14 @@ MAIN_140 EQU   *
          LLGT  R4,WKTOKNCTT
          USING CTTAREA,R4
          CLC   CTTEYE,CTTEYEB
-         JE    MAIN_114
+         JE    MAIN_113
          WTO 'GVBUR70 : COMMUNICATIONS TENSOR TABLE DOES NOT MATCH'
+         MVC   WKRETC,=F'24'
+         J     DONE
+MAIN_113 EQU   *
+         CLC   CTTVERS,UR70VERS
+         JE    MAIN_114
+         WTO 'GVBUR70 : COMMUNICATIONS TENSOR TABLE VERSION ERROR'
          MVC   WKRETC,=F'24'
          J     DONE
 *
@@ -217,9 +231,9 @@ MAIN_114 EQU   *
 *
 *        CHECK FOR FUNCTION
 *
-         CLC   UR70FUN,=CL8'CALL'
+         CLC   UR70FUN(4),=CL4'CALL'
          JE    A0100
-         CLC   UR70FUN,=CL8'INIT'
+         CLC   UR70FUN(4),=CL4'INIT'
          JE    A0200
 *
          WTO 'GVBUR70 : INVALID FUNCTION CODE'
@@ -232,8 +246,8 @@ MAIN_114 EQU   *
 A0100    EQU   *
          CLI   CTTACTIV,X'FF'
          JE    A0101
-         WTO 'GVBUR70 : REQUEST TABLE NOT ACTIVE'
-         DC    H'0'
+         WTO 'GVBUR70 : REQUEST TABLE NOT YET ACTIVE'
+         J     MAIN_220
 *
 A0101    EQU   *
          LLGT  R7,RECASND        LOAD  SEND BUFFER ADDRESS
@@ -272,9 +286,10 @@ A0104    EQU   *
          ST    R13,CTRUR70W      STORE WORKAREA ADDRESS IN CTR
 *
 A0106    EQU   *
-         sam64
-         sysstate amode64=YES
          MVC   CTRREQ,UR70FUN
+         MVC   CTRFLG1,UR70FLG1 'M' => GVBMR95 treated rather specially
+*                                   in terms of its GVBX95PA parameters
+         MVC   CTRFLG2,UR70FLG2
          LLGT  R0,UR70LSND
          STG   R0,CTRLENOUT      Length of data being sent...
          LLGT  R0,UR70LRCV
@@ -285,8 +300,6 @@ A0106    EQU   *
          STG   R1,CTRAMETH       ADDRESS OF METHOD NAME
          STG   R7,CTRMEMOUT      WAY OUT(going to Java.)
          STG   R9,CTRMEMIN       WAY IN (to be received)
-         sysstate amode64=NO
-         sam31
 *
          POST  CTRECB1           POST A REQUEST ECB
 *
@@ -295,12 +308,10 @@ A0106    EQU   *
          WAIT  1,ECB=CTRECB2     WAIT FOR RESPONSE TO HAPPEN
          XC    CTRECB2,CTRECB2
 *
-         sam64
-         sysstate amode64=YES
          LLGT  R0,CTRLENOUT      Amount of data actually returned
          ST    R0,UR70LRET
-         sysstate amode64=NO
-         sam31
+         LLGT  R0,CTRJRETC       "return code" from Java
+         ST    R0,UR70JRET
 *
 *        WTO 'GVBJPOST : RESPONSE RECEIVED TO REQUEST'
 *
@@ -316,9 +327,11 @@ MAIN_116 EQU   *
 *  And acknoledge GvbDaemon with a handshake..                        *
 ***********************************************************************
 A0200    EQU   *
-         LH    R6,CTTNUME                Ensure this not already done
-         CIJE  R6,99,A0200A              Should be init max (99)
-         J     MAIN_220                  Unexpected value, go
+         TS    CTTACTIV
+         JNZ   MAIN_220
+         LH    R6,CTTNUME                And it's set to the initial
+         CIJE  R6,99,A0200A              value of 99 by GVBJMAIN
+         J     MAIN_220                  If not it's a repeated INIT
 *
 A0200A   EQU   *
          LGH   R6,UR70OPNT               FROM THREADS REQUIRED
@@ -326,7 +339,7 @@ A0200A   EQU   *
          CIJH  R6,99,MAIN_224            and 99.
          STH   R6,CTTNUME                SET# ACTUAL THREADS REQUIRED
 *
-         WTO 'GVBUR70 : SETTING UP CTR NOW'
+*        WTO 'GVBUR70 : SETTING UP CTR NOW'
 *
          XR    R1,R1                     THREAD COUNTER
 MAIN_120 EQU   *
@@ -340,7 +353,7 @@ MAIN_120 EQU   *
          STH   R1,CTRTHRDN               SET THREAD NUMBER
          LA    R5,CTRLEN(,R5)
          BRCT  R6,MAIN_120
-         WTO 'GVBUR70 : CTR COMPLETED'
+*       WTO 'GVBUR70 : CTR COMPLETED'
 *
          POST  CTTGECB                   POST THE GO ECB
          WTO 'GVBUR70 : POSTED FOR GO, NUMBER THREADS SET'
@@ -348,7 +361,8 @@ MAIN_120 EQU   *
          WAIT  ECB=CTTGECB2              Wait for acknowledgement
          XC    CTTGECB2,CTTGECB2
          WTO 'GVBUR70 : ACKNOWLEDGEMENT RECEIVED AND GECB2 RESET'
-         MVI   CTTACTIV,X'FF'
+*
+         MVI   CTTACTIV,X'FF'           Set communications table active
          WTO 'GVBUR70 : REQUEST TABLE SET ACTIVE'
          J     DONE
 *
@@ -385,7 +399,7 @@ DONE     EQU   *                  RETURN TO CALLER
 static   LOCTR
          LTORG ,
 *
-CTTEYEB  DC    CL8'GVBCTT'
+CTTEYEB  DC    CL8'GVBCTTAB'
 WORKEYEB DC    CL8'GVBUR70'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
