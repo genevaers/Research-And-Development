@@ -18,8 +18,8 @@
  */
 
 import java.util.Arrays;
-import com.ibm.jzos.fields.daa.BinaryUnsignedIntField;
-import com.ibm.jzos.fields.daa.BinaryUnsignedIntL2Field;
+//import com.ibm.jzos.fields.daa.BinaryUnsignedIntField;
+//import com.ibm.jzos.fields.daa.BinaryUnsignedIntL2Field;
 
 public class GvbX95process {
     // privates
