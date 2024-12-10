@@ -18,10 +18,8 @@
 // Java Daemon to service requests from ASM/3GL and dynamically load and execute user methods and classes
 //
 import java.nio.charset.StandardCharsets;
-import java.lang.reflect.Method;
+//import java.lang.reflect.Method;
 import java.util.Arrays;
-import com.ibm.jzos.fields.daa.BinaryUnsignedIntField;
-import com.ibm.jzos.fields.daa.BinaryUnsignedIntL2Field;
 
 // Backup statistics class
 class GvbRunInfo {
@@ -310,16 +308,16 @@ class RunSupervisor implements Runnable {
     byte[] returnPayload = null;
     String strMR95 = "MR95";
     String strUR70 = "UR70";
-    byte[] arrayMR95 = strMR95.getBytes(); // major part of WAIT reason
-    byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason
+    byte[] arrayMR95 = strMR95.getBytes(); // major part of WAIT reason code is invoker (GVBMR95)
+    byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason code is invoker (GVBUR70 generalized API  )
     byte[] arrayReason = null;
 
     zOSInfo a = new zOSInfo();
     GVBA2I b = new GVBA2I();
-    BinaryUnsignedIntField bui = new BinaryUnsignedIntField( 0 );
+    GvbX95process X95process = new GvbX95process();
     
-    GVBCLASSLOADER5 javaClassLoader5 = new GVBCLASSLOADER5();
-    GVBCLASSLOADER6 javaClassLoader6 = new GVBCLASSLOADER6();
+    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
+//    GVBCLASSLOADER6 javaClassLoader6 = new GVBCLASSLOADER6();
 
     GvbX95PJ  X95 = new GvbX95PJ(0, 0, null, 0, null, null); // for MR95 use
 
@@ -358,7 +356,7 @@ class RunSupervisor implements Runnable {
             flag = 1;
             break;
 
-          // a request from GVBMR95
+          // process request from ASM/3GL/etc application
           case 4:
             /* obtain class and method names */
             workName = header.substring(16, 48);
@@ -373,19 +371,9 @@ class RunSupervisor implements Runnable {
 
             // When request comes from GVBMR95 logic path
             if ((Arrays.equals(arrayReason, 0, 4, arrayMR95, 0, 4)) && (byteB.length > 148)) {
-              int lrID = 0;
-              int thrdNo = 0;
-              int viewID = 0;
-              String phase = null;
-              String processDateTime = null;
-              String startupParms = null;
-              byte[] lr = null;
-              byte[] genparm_digits = null;
       
-              lr = Arrays.copyOfRange(byteB, 144, 148);            // The LRID
-              genparm_digits = Arrays.copyOfRange(byteB, 136, 144);
-              payload = Arrays.copyOfRange(byteB, 148, byteB.length); // The value of the key as hex
-
+              payload = Arrays.copyOfRange(byteB, 148, byteB.length);
+ 
               if (ntrace > 1) {
                 System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
                 System.out.print(threadIdentifier + ":Request payload: ");
@@ -397,36 +385,29 @@ class RunSupervisor implements Runnable {
                 System.out.println();
               }
 
-              lrID = bui.getInt(lr);                                       // Ths LRID as Java number
-              thrdNo = bui.getInt(genparm_digits);                         // The thread number as Java number
-              viewID = bui.getInt(genparm_digits, 4);                      // The view ID as Java number
-              phase = header.substring(80, 82);
-              processDateTime = header.substring(82, 96);
-              startupParms = header.substring(98, 136);
+              // Try to call GvbX95process method requiring JZOS
+              X95 =javaClassLoader.invokeClassMethod("GvbX95process", "GvbX95prepare", X95, header, byteB, thisThrd, ntrace);
 
-              if (ntrace > 1) {
-                System.out.println(threadIdentifier +  ":lrID: " + lrID + " MR95thrd#: " + thrdNo + " View: " + viewID + " Phase: " + phase + " Proctime: " + processDateTime + " Startup: " + startupParms);
-              }
+              if (X95 == null) {
+                System.out.print(threadIdentifier + ":JZOS not installed in GvbJavaDaemon: cannot process GVBX95PA");
+                exitRc = 8001; // GvbX95process not available
+                returnPayload = null;
+                flag = 1;
 
-              X95.setLrID(lrID);
-              X95.setThrdNo(thrdNo);
-              X95.setPhase(phase);
-              X95.setViewID(viewID);
-              X95.setProcessDateTime(processDateTime);
-              X95.setStartupParms(startupParms);
-
-              ReturnData returnData = javaClassLoader6.invokeClassMethod(javaClass, methodName, X95, payload);
-              returnPayload = returnData.getPayload();
-              exitRc = returnData.getRc();
-
-              if (ntrace > 1 ) {
-                System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
-                System.out.print(threadIdentifier + ":Return payload:  ");
-                for (int i = 0; i < returnPayload.length; i++)
-                {
-                    System.out.print(String.format("%02X", returnPayload[i]));
+              } else {
+                ReturnData returnData = javaClassLoader.invokeClassMethod(javaClass, methodName, X95, payload);
+                returnPayload = returnData.getPayload();
+                exitRc = returnData.getRc();
+  
+                if (ntrace > 1 ) {
+                  System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                  System.out.print(threadIdentifier + ":Return payload:  ");
+                  for (int i = 0; i < returnPayload.length; i++)
+                  {
+                      System.out.print(String.format("%02X", returnPayload[i]));
+                  }
+                  System.out.println();
                 }
-                System.out.println();
               }
 
               byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
@@ -453,7 +434,7 @@ class RunSupervisor implements Runnable {
                     System.out.println();
                   }
 
-                  returnPayload = javaClassLoader5.invokeClassMethod(javaClass, methodName, payload);
+                  returnPayload = javaClassLoader.invokeClassMethod(javaClass, methodName, payload);
 
                   if (ntrace > 1 ) {
                     System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
@@ -473,7 +454,7 @@ class RunSupervisor implements Runnable {
                     System.out.println(threadIdentifier + ":POSTUR70 " + thisThrd + " returned with rc: " +  postrc);
                   }
 
-                } else { // this needs to involve a posted as well !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                } else { // Unknow requestor: this needs to involve a posted as well
                   System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
                   returnPayload = null;
                   byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
@@ -483,7 +464,7 @@ class RunSupervisor implements Runnable {
             break;
           
           default:
-            System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT" + waitrc + ". Worker thread completing");
+            System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT: " + waitrc + ". Worker thread completing");
             flag = 1;
             break;
         }
