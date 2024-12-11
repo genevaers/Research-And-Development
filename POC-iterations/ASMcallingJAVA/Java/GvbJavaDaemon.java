@@ -297,7 +297,6 @@ class RunSupervisor implements Runnable {
     String waitreason;
     int postrc = 0;
     int dummyRc = 0;
-    byte[] dummyRetPayload = {0,0,0,0};
     String workName;
     String javaClass;
     String methodName;
@@ -312,6 +311,7 @@ class RunSupervisor implements Runnable {
     byte[] arrayMR95 = strMR95.getBytes(); // major part of WAIT reason code is invoker (GVBMR95)
     byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason code is invoker (GVBUR70 generalized API  )
     byte[] arrayReason = null;
+    int caller_ID = 0;
 
     GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
     zOSInfo a = new zOSInfo();
@@ -366,49 +366,110 @@ class RunSupervisor implements Runnable {
             numberCalls = numberCalls + 1;
             arrayReason = waitreason.getBytes(); // major+minor part of WAIT reason
 
-            // When request comes from GVBMR95 logic path
-            if ((Arrays.equals(arrayReason, 0, 4, arrayMR95, 0, 4)) && (byteB.length > 148)) {
-      
-              payload = Arrays.copyOfRange(byteB, 148, byteB.length);
- 
-              if (ntrace > 1) {
-                System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
-                System.out.print(threadIdentifier + ":Request payload: ");
-                int maxI = Math.min(48,payload.length);
-                for (int i = 0; i < maxI; i++)
-                {
-                    System.out.print(String.format("%02X", payload[i]));
-                }
-                System.out.println();
+            // Identity of caller... an add more caller_ID's
+            if (Arrays.equals(arrayReason, 0, 4, arrayMR95, 0, 4)) {
+              caller_ID = 1;
+            } else {
+              if (Arrays.equals(arrayReason, 0, 4, arrayUR70, 0, 4)) {
+                caller_ID = 2;
+              } else {
+                caller_ID = 0; // unrecognized
               }
+            }
 
-              // Try to call GvbX95process method requiring JZOS
-              X95 =javaClassLoader.invokeClassMethod("GvbX95process", "GvbX95prepare", X95, header, byteB, threadIdentifier, ntrace);
+            // Process request types
+            switch (caller_ID ) {
+              // When request comes from GVBMR95 logic path
+              case 1:
+                if (byteB.length <= 148) {
+                  System.out.println(threadIdentifier + ":GVBMR95 request is too short to be valid, VIEW disabled");
+                  exitRc = 12;            // Too short to be valid request, disable view
+                  returnPayload = null;
 
-              if (X95 == null) {
-                System.out.println(threadIdentifier + ":JZOS not installed in GvbJavaDaemon: cannot process GVBX95PA");
-                exitRc = 12; // GvbX95process not available, disable view
-                returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-                if (ntrace > 1 ) {
-                  System.out.println(threadIdentifier + ":Performing POSTMR95 with exitRc = " + exitRc + " and dummy return payload");
+                } else {                  // valid request length. Try to call GvbX95process method requiring JZOS
+
+                  X95 =javaClassLoader.invokeClassMethod("GvbX95process", "GvbX95prepare",
+                                                         X95, header, byteB, threadIdentifier, ntrace);
+                  if (X95 == null) {
+                    System.out.println(threadIdentifier + ":Class GvbX95process not found. Cannot process GVBMR95 request, VIEW disabled");
+                    exitRc = 12;          // Class GvbX95process not available, disable view
+                    returnPayload = null;
+
+                  } else {                // Required class GvbX95process is available
+
+                    payload = Arrays.copyOfRange(byteB, 148, byteB.length);
+ 
+                    if (ntrace > 1) {
+                      System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
+                      System.out.print(threadIdentifier + ":Request payload: ");
+                      int maxI = Math.min(48,payload.length);
+                      for (int i = 0; i < maxI; i++)
+                      {
+                          System.out.print(String.format("%02X", payload[i]));
+                      }
+                      System.out.println();
+                    }
+
+                    // Try to call user specified classs and method
+                    ReturnData returnData = javaClassLoader.invokeClassMethod(javaClass, methodName, X95, payload);
+
+                    if (returnData == null) {
+                      System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, VIEW disabled");
+                      exitRc = 12;        // User's class method not available, disable view
+                      returnPayload = null;
+
+                    } else {              // user's Java was invoked successfully}
+
+                      returnPayload = returnData.getPayload();
+                      exitRc = returnData.getRc();
+
+                      if (ntrace > 1 ) {
+                        System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                        System.out.print(threadIdentifier + ":Return payload:  ");
+                        for (int i = 0; i < returnPayload.length; i++)
+                        {
+                          System.out.print(String.format("%02X", returnPayload[i]));
+                        }
+                        System.out.println();
+                      }
+                    }
+                  }
                 }
-  
-              } else { // GvbX95process.GvbX95prepare() was invoked successully
+                
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+                header = new String(retHeader, StandardCharsets.UTF_8);
+                postrc = b.doAtoi(header, 0, 8);
+                if (postrc != 0) {
+                  System.out.println(threadIdentifier + ":POSTMR95 " + thisThrd + " returned with rc: " +  postrc);
+                }
+                break;
+
+               // When request comes from GVBUR70 logic path 
+              case 2:
+                payload = Arrays.copyOfRange(byteB, 136, byteB.length);
+
+                if (ntrace > 1) {
+                  System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
+                  System.out.print(threadIdentifier + ":Request payload: ");
+                  int maxI = Math.min(48,payload.length);
+                  for (int i = 0; i < maxI; i++)
+                  {
+                      System.out.print(String.format("%02X", payload[i]));
+                  }
+                  System.out.println();
+                }
 
                 // Try to call user specified classs and method
-                ReturnData returnData = javaClassLoader.invokeClassMethod(javaClass, methodName, X95, payload);
+                returnPayload = javaClassLoader.invokeClassMethod(javaClass, methodName, payload);
+                if (returnPayload == null) {
+                  System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
+                  exitRc = 8001;      // User's class method not available, ensure this is known
+                  returnPayload = null;
+                
+                } else {              // user's Java was invoked successfully}
 
-                if (returnData == null) {
-                  exitRc = 12; // User's class method not available, disable view
-                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-                  if (ntrace > 1 ) {
-                    System.out.println(threadIdentifier + ":Java class and method not available. Posting with exitRc = " + exitRc);
-                  }
-
-                } else { // user's Java was invoked successfully}
-
-                  returnPayload = returnData.getPayload();
-                  exitRc = returnData.getRc();
+                  exitRc = 0;         //   the only Java Rc returned for UR70 calls for now
                   if (ntrace > 1 ) {
                     System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
                     System.out.print(threadIdentifier + ":Return payload:  ");
@@ -419,69 +480,50 @@ class RunSupervisor implements Runnable {
                     System.out.println();
                   }
                 }
-              }
 
-              // In all cases a POST must be given as ASM/3GL/etc is waiting
-              byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-              retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
-              header = new String(retHeader, StandardCharsets.UTF_8);
-              postrc = b.doAtoi(header, 0, 8);
-              if (postrc != 0) {
-                System.out.println(threadIdentifier + ":POSTMR95 " + thisThrd + " returned with rc: " +  postrc);
-              }
-  
-            // When request comes from GVBUR70 logic path 
-            } else {
-                if (Arrays.equals(arrayReason, 0, 4, arrayUR70, 0, 4)) {
-                  payload = Arrays.copyOfRange(byteB, 136, byteB.length);
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+                header = new String(retHeader, StandardCharsets.UTF_8);
+                postrc = b.doAtoi(header, 0, 8);
+                if (postrc != 0) {
+                  System.out.println(threadIdentifier + ":POSTUR70 " + thisThrd + " returned with rc: " +  postrc);
+                }
+                break;
 
-                  if (ntrace > 1) {
-                    System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
-                    System.out.print(threadIdentifier + ":Request payload: ");
-                    int maxI = Math.min(48,payload.length);
-                    for (int i = 0; i < maxI; i++)
-                    {
-                        System.out.print(String.format("%02X", payload[i]));
-                    }
-                    System.out.println();
-                  }
-
-                  returnPayload = javaClassLoader.invokeClassMethod(javaClass, methodName, payload);
-
-                  if (ntrace > 1 ) {
-                    System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
-                    System.out.print(threadIdentifier + ":Return payload:  ");
-                    for (int i = 0; i < returnPayload.length; i++)
-                    {
-                        System.out.print(String.format("%02X", returnPayload[i]));
-                    }
-                    System.out.println();
-                  }
+                default:
+                  System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
+                  returnPayload = null;
+                  exitRc = 8002;
 
                   byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
                   retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                   header = new String(retHeader, StandardCharsets.UTF_8);
                   postrc = b.doAtoi(header, 0, 8);
                   if (postrc != 0) {
-                    System.out.println(threadIdentifier + ":POSTUR70 " + thisThrd + " returned with rc: " +  postrc);
+                    System.out.println(threadIdentifier + ":POSTXXXX " + thisThrd + " returned with rc: " +  postrc);
                   }
-
-                } else { // Unknow requestor: this needs to involve a posted as well
-                  System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
-                  returnPayload = null;
-                  byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-                  flag = 1;
-                  // flag = 1; otherwise it will stop waiting
-                }
+                  // flag = 1; otherwise it will never stop waiting
+                  break;
             }
             break;
           
           default:
             System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT: " + waitrc + ". Worker thread completing");
-            flag = 1;
+            returnPayload = null;
+            exitRc = 8003;
+
+            byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+            retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+            header = new String(retHeader, StandardCharsets.UTF_8);
+            postrc = b.doAtoi(header, 0, 8);
+            if (postrc != 0) {
+              System.out.println(threadIdentifier + ":POSTYYYY " + thisThrd + " returned with rc: " +  postrc);
+            }
+            // flag = 1; otherwise it will never stop waiting
             break;
         }
     } while (flag == 0);
+
     System.out.println(threadIdentifier + ":Notified to exit");
     
     try {

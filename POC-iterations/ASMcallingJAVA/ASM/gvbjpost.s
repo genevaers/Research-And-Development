@@ -202,8 +202,17 @@ A0027    EQU   *
          STG   R15,CTRLENIN      Indicate how much is actually returned
          LTR   R15,R15           Does it amount to positive length ?
          JNP   A0028             No, go
-         AGHI  R15,-1
-         EXRL  R15,MVCR14R1
+*
+         LA    R15,255(,R15)
+         SRLG  R0,R15,8
+         J     NEXTMVC1
+NEXTMVC0 EQU   *
+         MVC   0(256,R14),0(R1)  MOVE     256 BYTES
+         LA    R1,256(,R1)       ADVANCE  SOURCE
+         LA    R14,256(,R14)     ADVANCE  TARGET
+NEXTMVC1 BRCT  R0,NEXTMVC0
+         EXRL  R15,MVCR14R1       COPY  REMAINDER
+*
 A0028    EQU   *
          LG    R0,PARETC         Give back return code from Java method
          ST    R0,CTRJRETC
@@ -273,23 +282,15 @@ DONEDONE EQU   *                         RETURN TO CALLER
 *
          DS    0D
 MVCR14R1 MVC   0(0,R14),0(R1)     * * * * E X E C U T E D * * * *
-         DS    0D
-CLCR1R14 CLC   0(0,R1),0(R14)     * * * * E X E C U T E D * * * *
 *
 *        CONSTANTS
 *
-H1       DC    H'1'
-H4       DC    H'4'
-H255     DC    H'255'
-F04      DC    F'04'
-F40      DC    F'40'
-F4096    DC    F'4096'
 CTTEYEB  DC    CL8'GVBCTTAB'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'                    TOKEN PERSISTENCE
-TOKNLVL1 DC    A(1)                    NAME/TOKEN  AVAILABILITY  LEVEL
-TOKNLVL2 DC    A(2)                    NAME/TOKEN  AVAILABILITY  LEVEL
+TOKNLVL1 DC    A(1)                    NAME/TOKEN  AVAILABILITY  TCB
+TOKNLVL2 DC    A(2)                    NAME/TOKEN  AVAILABILITY  ASCB
 *
          DS   0D
 MODE31   EQU   X'8000'

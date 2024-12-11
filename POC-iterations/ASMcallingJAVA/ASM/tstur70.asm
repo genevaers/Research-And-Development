@@ -569,6 +569,8 @@ A0011C   EQU   *
          LTR   R15,R15
          JNZ   A0011
          ICM   R15,B'1111',UR70RETC
+         JNZ   A0011
+         ICM   R6,B'1111',UR70JRET
          JZ    A0012
 A0011    EQU   *
          MVC   WKPRINT,SPACES
@@ -578,6 +580,15 @@ A0011    EQU   *
          MVI   WKPRINT+23,C' '
          ED    WKPRINT+23(4),WKDBL3+6
          JAS   R10,MYPUT
+*
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(34),=CL34'TSTUR70: GVBUR70 JRET: XXXX (CALL)'
+         CVD   R6,WKDBL3
+         MVC   WKPRINT+23(4),NUMMSK+8
+         MVI   WKPRINT+23,C' '
+         ED    WKPRINT+23(4),WKDBL3+6
+         JAS   R10,MYPUT
+*
          WTO 'TSTUR70 : ERROR CALLING GVBUR70 (CALL)'
          MVC   WKRETC,=F'8'
          J     DONE
@@ -589,6 +600,15 @@ A0012    EQU   *
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(20),=CL20'TSTUR70: RECEIVING: '
          MVC   WKPRINT+20(22),WKRECV
+         JAS   R10,MYPUT
+*
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(20),=CL20'TSTUR70: LRET = XXXX'
+         L     R6,UR70JRET
+         CVD   R6,WKDBL3
+         MVC   WKPRINT+16(4),NUMMSK+8
+         MVI   WKPRINT+16,C' '
+         ED    WKPRINT+16(4),WKDBL3+6
          JAS   R10,MYPUT
 ***********************************************************************
 A0016    EQU   *
