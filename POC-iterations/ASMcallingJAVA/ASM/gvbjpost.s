@@ -194,15 +194,19 @@ MAIN_116 EQU   *
          LG    R1,PAADDR1
          CLC   PALEN1,CTRLENIN
          JNL   A0026
-         LG    R15,PALEN1                LENGTH
+         LG    R15,PALEN1        LENGTH is actual length data from Java
          J     A0027
 A0026    EQU   *
-         LG    R15,CTRLENIN              LENGTH
+         LG    R15,CTRLENIN      LENGTH is max allowable length 
 A0027    EQU   *
-         LG    R0,PARETC
-         ST    R0,CTRJRETC
+         STG   R15,CTRLENIN      Indicate how much is actually returned
+         LTR   R15,R15           Does it amount to positive length ?
+         JNP   A0028             No, go
          AGHI  R15,-1
          EXRL  R15,MVCR14R1
+A0028    EQU   *
+         LG    R0,PARETC         Give back return code from Java method
+         ST    R0,CTRJRETC
          POST  CTRECB2           POST reply ECB on which MR95 waits
          J     A0180
 *
