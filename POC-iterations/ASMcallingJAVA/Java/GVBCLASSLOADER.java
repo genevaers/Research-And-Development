@@ -48,9 +48,11 @@ public class GVBCLASSLOADER extends ClassLoader {
             return (byte[]) returnData;
 
         } catch (ClassNotFoundException e) {
+            System.out.println("Class: " + classBinName + " method: " + methodName + " cannot be loaded" );
             e.printStackTrace();
             return null;
         } catch (Exception e) {
+            System.out.println("Error running class: " + classBinName + " method: " + methodName );
             e.printStackTrace();
             return null;
         }
@@ -81,9 +83,11 @@ public class GVBCLASSLOADER extends ClassLoader {
             return (ReturnData) returnData;
 
         } catch (ClassNotFoundException e) {
+            System.out.println("Class: " + classBinName + " method: " + methodName + " cannot be loaded" );
             e.printStackTrace();
             return null;
         } catch (Exception e) {
+            System.out.println("Error running class: " + classBinName + " method: " + methodName );
             e.printStackTrace();
             return null;
         }
@@ -91,7 +95,7 @@ public class GVBCLASSLOADER extends ClassLoader {
 
     // (GvbX95PJ X95, String header, byte[] byteB, String threadIdentifier, Integer ntrace)
     public GvbX95PJ invokeClassMethod(String classBinName, String methodName,
-                                        GvbX95PJ x95, String header, byte[] byteB, String threadIdentifier, Integer ntrace) {
+                                      GvbX95PJ x95, String header, byte[] byteB, String threadIdentifier, Integer ntrace) {
 
         try {
             // Create a new JavaClassLoader
