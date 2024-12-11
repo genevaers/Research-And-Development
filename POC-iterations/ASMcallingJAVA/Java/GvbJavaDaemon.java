@@ -332,9 +332,9 @@ class RunSupervisor implements Runnable {
 
         if (byteB.length < 136) {
           System.out.println("byteB length insufficient when returning from WAIT: " + byteB.length + ". Worker thread completing");
-          returnPayload = null;
+          exitRc = 8003;
+          returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
           byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-          flag = 1;
           break;
         }
 
@@ -385,7 +385,7 @@ class RunSupervisor implements Runnable {
                 if (byteB.length <= 148) {
                   System.out.println(threadIdentifier + ":GVBMR95 request is too short to be valid, VIEW disabled");
                   exitRc = 12;            // Too short to be valid request, disable view
-                  returnPayload = null;
+                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
 
                 } else {                  // valid request length. Try to call GvbX95process method requiring JZOS
 
@@ -393,8 +393,8 @@ class RunSupervisor implements Runnable {
                                                          X95, header, byteB, threadIdentifier, ntrace);
                   if (X95 == null) {
                     System.out.println(threadIdentifier + ":Class GvbX95process not found. Cannot process GVBMR95 request, VIEW disabled");
-                    exitRc = 12;          // Class GvbX95process not available, disable view
-                    returnPayload = null;
+                    exitRc = 12;          // Class GvbX95process not available, disable view: RC = 12
+                    returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
 
                   } else {                // Required class GvbX95process is available
 
@@ -416,8 +416,7 @@ class RunSupervisor implements Runnable {
 
                     if (returnData == null) {
                       System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, VIEW disabled");
-                      exitRc = 12;        // User's class method not available, disable view
-                      //returnPayload = null;
+                      exitRc = 12;        // User's class method not available, disable view: RC = 12
                       returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
 
                     } else {              // user's Java was invoked successfully}
@@ -437,8 +436,7 @@ class RunSupervisor implements Runnable {
                     }
                   }
                 }
-                
-                System.out.println(threadIdentifier + ":POSTMR95 " + thisThrd + " returning with rc: " +  postrc + " plen=" + returnPayload.length);
+
                 byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -468,7 +466,7 @@ class RunSupervisor implements Runnable {
                 if (returnPayload == null) {
                   System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
                   exitRc = 8001;      // User's class method not available, ensure this is known
-                  returnPayload = null;
+                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
                 
                 } else {              // user's Java was invoked successfully}
 
@@ -495,7 +493,7 @@ class RunSupervisor implements Runnable {
 
                 default:
                   System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
-                  returnPayload = null;
+                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
                   exitRc = 8002;
 
                   byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
@@ -512,7 +510,7 @@ class RunSupervisor implements Runnable {
           
           default:
             System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT: " + waitrc + ". Worker thread completing");
-            returnPayload = null;
+            returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
             exitRc = 8003;
 
             byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
