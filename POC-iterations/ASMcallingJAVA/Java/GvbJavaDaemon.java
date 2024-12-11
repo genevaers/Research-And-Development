@@ -348,13 +348,13 @@ class RunSupervisor implements Runnable {
         }
 
         switch ( waitrc ) {
-          // GVBMR95 has completed
+          // ASM/3GL/etc application has completed
           case 2:
             System.out.println(threadIdentifier + ":Calling application has terminated. Worker thread completing");
             flag = 1;
             break;
 
-          // process request from ASM/3GL/etc application
+          // Process request from ASM/3GL/etc application
           case 4:
             /* obtain class and method names */
             workName = header.substring(16, 48);
@@ -364,7 +364,6 @@ class RunSupervisor implements Runnable {
 
             /* Process the request */
             numberCalls = numberCalls + 1;
-
             arrayReason = waitreason.getBytes(); // major+minor part of WAIT reason
 
             // When request comes from GVBMR95 logic path
@@ -390,28 +389,39 @@ class RunSupervisor implements Runnable {
                 System.out.println(threadIdentifier + ":JZOS not installed in GvbJavaDaemon: cannot process GVBX95PA");
                 exitRc = 12; // GvbX95process not available, disable view
                 returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-                // flag = 1; otherwise it will stop waiting
                 if (ntrace > 1 ) {
                   System.out.println(threadIdentifier + ":Performing POSTMR95 with exitRc = " + exitRc + " and dummy return payload");
                 }
   
+              } else { // GvbX95process.GvbX95prepare() was invoked successully
 
-              } else {
+                // Try to call user specified classs and method
                 ReturnData returnData = javaClassLoader.invokeClassMethod(javaClass, methodName, X95, payload);
-                returnPayload = returnData.getPayload();
-                exitRc = returnData.getRc();
-  
-                if (ntrace > 1 ) {
-                  System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
-                  System.out.print(threadIdentifier + ":Return payload:  ");
-                  for (int i = 0; i < returnPayload.length; i++)
-                  {
-                      System.out.print(String.format("%02X", returnPayload[i]));
+
+                if (returnData == null) {
+                  exitRc = 12; // User's class method not available, disable view
+                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+                  if (ntrace > 1 ) {
+                    System.out.println(threadIdentifier + ":Java class and method not available. Posting with exitRc = " + exitRc);
                   }
-                  System.out.println();
+
+                } else { // user's Java was invoked successfully}
+
+                  returnPayload = returnData.getPayload();
+                  exitRc = returnData.getRc();
+                  if (ntrace > 1 ) {
+                    System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                    System.out.print(threadIdentifier + ":Return payload:  ");
+                    for (int i = 0; i < returnPayload.length; i++)
+                    {
+                      System.out.print(String.format("%02X", returnPayload[i]));
+                    }
+                    System.out.println();
+                  }
                 }
               }
 
+              // In all cases a POST must be given as ASM/3GL/etc is waiting
               byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
               retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
               header = new String(retHeader, StandardCharsets.UTF_8);
@@ -461,6 +471,7 @@ class RunSupervisor implements Runnable {
                   returnPayload = null;
                   byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
                   flag = 1;
+                  // flag = 1; otherwise it will stop waiting
                 }
             }
             break;

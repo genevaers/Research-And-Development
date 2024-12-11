@@ -62,19 +62,19 @@ typedef struct Genenv
 
 typedef struct PassStruct
 {
-    char       func[8];
-    char       opt[8];
-    char       thread[10];
-    char       flag1;
+    char       func[8];          /* function from GvbJavaDaemon  */
+    char       opt[8];           /* options                      */
+    char       thread[10];       /* thread identifier            */
+    char       flag1;       
     char       flag2;
     char       spare[52];
-    long       length1;
-    long       length2;
+    long       length1;          /* length data returned by Java */
+    long       length2;          /* length data going into Java  */
     void*      addr1;
     void*      addr2;
-    long       retcd;
-    char       anchor[8];
-    void*      thrdmem;
+    long       retcd;            /* method return code           */
+    char       anchor[8];        /* Anchor => request table      */
+    void*      thrdmem;          /* thread local memory          */
     struct Genparm genparms;
 } PassStruct;
 
