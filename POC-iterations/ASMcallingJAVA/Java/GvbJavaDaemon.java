@@ -436,6 +436,7 @@ class RunSupervisor implements Runnable {
                   }
                 }
                 
+                System.out.println(threadIdentifier + ":POSTMR95 " + thisThrd + " returning with rc: " +  postrc + " plen=" + returnPayload.length);
                 byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
