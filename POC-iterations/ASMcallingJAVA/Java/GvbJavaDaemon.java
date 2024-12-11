@@ -297,6 +297,7 @@ class RunSupervisor implements Runnable {
     String waitreason;
     int postrc = 0;
     int dummyRc = 0;
+    byte[] dummyRetPayload = {0,0,0,0};
     String workName;
     String javaClass;
     String methodName;
@@ -416,7 +417,8 @@ class RunSupervisor implements Runnable {
                     if (returnData == null) {
                       System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, VIEW disabled");
                       exitRc = 12;        // User's class method not available, disable view
-                      returnPayload = null;
+                      //returnPayload = null;
+                      returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
 
                     } else {              // user's Java was invoked successfully}
 
