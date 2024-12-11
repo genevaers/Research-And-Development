@@ -331,7 +331,7 @@ class RunSupervisor implements Runnable {
         byteB = a.showZos(WAITMR95, threadIdentifier, thisThrd, arrayIn, dummyRc);
 
         if (byteB.length < 136) {
-          System.out.println("byteB length insufficient when returning from WAIT: " + byteB.length + ". Worker thread completing");
+          System.out.println("Request byteB length insufficient when returning from WAIT: " + byteB.length);
           exitRc = 8003;
           returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
           byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);

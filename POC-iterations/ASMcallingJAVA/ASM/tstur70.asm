@@ -603,12 +603,13 @@ A0012    EQU   *
          JAS   R10,MYPUT
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(20),=CL20'TSTUR70: LRET = XXXX'
-         L     R6,UR70JRET
-         CVD   R6,WKDBL3
-         MVC   WKPRINT+16(4),NUMMSK+8
-         MVI   WKPRINT+16,C' '
-         ED    WKPRINT+16(4),WKDBL3+6
+         MVC   WKPRINT(52),=CL52'TSTUR70: Received UR70LRET =     XXXXX+
+               X from Java   '
+         L     R15,UR70LRET
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+33(6),NUMMSK+6
+         MVI   WKPRINT+33,C' '
+         ED    WKPRINT+33(6),WKDBL3+5
          JAS   R10,MYPUT
 ***********************************************************************
 A0016    EQU   *
