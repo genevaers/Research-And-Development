@@ -308,7 +308,7 @@ A0106    EQU   *
          WAIT  1,ECB=CTRECB2     WAIT FOR RESPONSE TO HAPPEN
          XC    CTRECB2,CTRECB2
 *
-         LLGT  R0,CTRLENIN       Amount of data actually returned
+         LG    R0,CTRLENIN       Amount of data actually returned
          ST    R0,UR70LRET
          LLGT  R0,CTRJRETC       "return code" from Java
          ST    R0,UR70JRET
