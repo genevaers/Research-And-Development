@@ -574,23 +574,23 @@ A0011C   EQU   *
          JZ    A0012
 A0011    EQU   *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(34),=CL34'TSTUR70: GVBUR70 ERROR XXXX (CALL)'
+         MVC   WKPRINT(36),=CL36'TSTUR70: GVBUR70 ERROR XXXXXX (CALL)'
          CVD   R15,WKDBL3
-         MVC   WKPRINT+23(4),NUMMSK+8
+         MVC   WKPRINT+23(6),NUMMSK+6
          MVI   WKPRINT+23,C' '
-         ED    WKPRINT+23(4),WKDBL3+6
+         ED    WKPRINT+23(6),WKDBL3+5
          JAS   R10,MYPUT
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(34),=CL34'TSTUR70: GVBUR70 JRET: XXXX (CALL)'
+         MVC   WKPRINT(36),=CL36'TSTUR70: GVBUR70 JRET: XXXXXX (CALL)'
          CVD   R6,WKDBL3
-         MVC   WKPRINT+23(4),NUMMSK+8
+         MVC   WKPRINT+23(6),NUMMSK+6
          MVI   WKPRINT+23,C' '
-         ED    WKPRINT+23(4),WKDBL3+6
+         ED    WKPRINT+23(6),WKDBL3+5
          JAS   R10,MYPUT
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(58),=CL52'TSTUR70: Received requires =     XXXXX+
+         MVC   WKPRINT(71),=CL71'TSTUR70: Received requires =     XXXXX+
                X for receive buffer and UR70LREQ'
          L     R15,UR70LREQ
          CVD   R15,WKDBL3
@@ -623,7 +623,7 @@ A0012    EQU   *
          JAS   R10,MYPUT
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(58),=CL52'TSTUR70: Received requires =     XXXXX+
+         MVC   WKPRINT(71),=CL71'TSTUR70: Received requires =     XXXXX+
                X for receive buffer and UR70LREQ'
          L     R15,UR70LREQ
          CVD   R15,WKDBL3

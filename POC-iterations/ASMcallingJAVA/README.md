@@ -84,7 +84,15 @@ The GVBJDLL is available for download if you do not have the IBM C or compatible
 
 ## Build GvbJavaDaemon
 
-Go to directory ../ASMcallingJAVA/Java/GvbJavaDaemon/Java and enter "javac GvbJavaDaemo.java" and similarly compile the examples Java programs MyClass.java and MyClassB.java.
+Go to directory ../ASMcallingJAVA/Java/GvbJavaDaemon/Java and enter:
+
+"javac GvbJavaDaemo.java"
+
+"javac GvbX95process.java"
+
+The latter requires JZOS to be present and is needed to run Performance Engine calling Java lookup exits.
+
+Similarly compile the examples Java programs MyClass.java and MyClassB.java.
 
 ## Copy profile script ASMcallingJAVAprofile
 

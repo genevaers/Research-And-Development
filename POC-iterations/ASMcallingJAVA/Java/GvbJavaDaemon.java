@@ -477,7 +477,7 @@ class RunSupervisor implements Runnable {
                 
                 } else {              // user's Java was invoked successfully}
 
-                  exitRc = 0;         //   the only Java Rc returned for UR70 calls for now
+                  exitRc = 0;         //   the only Java Rc returned from methods for UR70 calls for now
                   if (ntrace > 1 ) {
                     System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
                     System.out.print(threadIdentifier + ":Return payload:  ");

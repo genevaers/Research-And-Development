@@ -338,11 +338,12 @@ A0107    EQU   *                 save required receive buffer length
          ST    R0,UR70LREQ         or reset to zero, if zero
          LG    R0,CTRLENIN       Amount of data actually returned
          ST    R0,UR70LRET
-         LLGT  R0,CTRJRETC       "return code" from Java
+         LLGF  R0,CTRJRETC       "return code" from Java
          ST    R0,UR70JRET
 *
-         CIJH  R6,-1,A0108       Reserved range for daemon errors (-ve)
-         MVC   WKRETC,=F'8'      Java class method cannot be executed       
+         C     R0,=F'0'          Reserved range for daemon errors (-ve)
+         JNL   A0108
+         MVC   WKRETC,=F'8'      Java class method cannot be executed
 A0108    EQU   *
 *
 *        WTO 'GVBJPOST : RESPONSE RECEIVED TO REQUEST'
