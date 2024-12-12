@@ -589,6 +589,16 @@ A0011    EQU   *
          ED    WKPRINT+23(4),WKDBL3+6
          JAS   R10,MYPUT
 *
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(58),=CL52'TSTUR70: Received requires =     XXXXX+
+               X for receive buffer and UR70LREQ'
+         L     R15,UR70LREQ
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+33(6),NUMMSK+6
+         MVI   WKPRINT+33,C' '
+         ED    WKPRINT+33(6),WKDBL3+5
+         JAS   R10,MYPUT
+*
          WTO 'TSTUR70 : ERROR CALLING GVBUR70 (CALL)'
          MVC   WKRETC,=F'8'
          J     DONE
@@ -606,6 +616,16 @@ A0012    EQU   *
          MVC   WKPRINT(52),=CL52'TSTUR70: Received UR70LRET =     XXXXX+
                X from Java   '
          L     R15,UR70LRET
+         CVD   R15,WKDBL3
+         MVC   WKPRINT+33(6),NUMMSK+6
+         MVI   WKPRINT+33,C' '
+         ED    WKPRINT+33(6),WKDBL3+5
+         JAS   R10,MYPUT
+*
+         MVC   WKPRINT,SPACES
+         MVC   WKPRINT(58),=CL52'TSTUR70: Received requires =     XXXXX+
+               X for receive buffer and UR70LREQ'
+         L     R15,UR70LREQ
          CVD   R15,WKDBL3
          MVC   WKPRINT+33(6),NUMMSK+6
          MVI   WKPRINT+33,C' '

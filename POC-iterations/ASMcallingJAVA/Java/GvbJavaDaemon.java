@@ -330,12 +330,19 @@ class RunSupervisor implements Runnable {
 
         byteB = a.showZos(WAITMR95, threadIdentifier, thisThrd, arrayIn, dummyRc);
 
+        // In this situation we can do nothing other than terminate the daemon
         if (byteB.length < 136) {
-          System.out.println("Request byteB length insufficient when returning from WAIT: " + byteB.length);
-          exitRc = 8003;
-          returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-          byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-          break;
+          System.out.println(threadName + ":Request byteB length insufficient when returning from WAIT: " + byteB.length);
+          System.out.println(threadName + ":Cannot continue. Notify worker tasks to end");
+          byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+          // only need first 16 (8 + 8) bytes
+          retHeader = Arrays.copyOfRange(byteB, 0, 16);
+          header = new String(retHeader, StandardCharsets.UTF_8);
+          postrc = b.doAtoi(header, 0, 8);
+          if (ntrace > 1 ) {
+            System.out.println(threadName + ":POSTMR95 option WRKT returned with rc: " + postrc);
+          }
+          break; //exit the loop immediately
         }
 
         retHeader = Arrays.copyOfRange(byteB, 0, 136); // Full length of Pass2Struct
@@ -379,7 +386,7 @@ class RunSupervisor implements Runnable {
             }
 
             // Process request types
-            switch (caller_ID ) {
+            switch ( caller_ID ) {
               // When request comes from GVBMR95 logic path
               case 1:
                 if (byteB.length <= 148) {
@@ -465,7 +472,7 @@ class RunSupervisor implements Runnable {
                 returnPayload = javaClassLoader.invokeClassMethod(javaClass, methodName, payload);
                 if (returnPayload == null) {
                   System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
-                  exitRc = 8001;      // User's class method not available, ensure this is known
+                  exitRc = -1;        // User's class method not available, ensure this is known
                   returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
                 
                 } else {              // user's Java was invoked successfully}
@@ -491,38 +498,39 @@ class RunSupervisor implements Runnable {
                 }
                 break;
 
-                default:
-                  System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
-                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-                  exitRc = 8002;
+              default:
+                System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
+                returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+                exitRc = -2;
 
-                  byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-                  retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
-                  header = new String(retHeader, StandardCharsets.UTF_8);
-                  postrc = b.doAtoi(header, 0, 8);
-                  if (postrc != 0) {
-                    System.out.println(threadIdentifier + ":POSTXXXX " + thisThrd + " returned with rc: " +  postrc);
-                  }
-                  // flag = 1; otherwise it will never stop waiting
-                  break;
-            }
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+                header = new String(retHeader, StandardCharsets.UTF_8);
+                postrc = b.doAtoi(header, 0, 8);
+                if (postrc != 0) {
+                  System.out.println(threadIdentifier + ":POSTXXXX " + thisThrd + " returned with rc: " +  postrc);
+                }
+                break;
+
+            }   // end switch ( caller_ID )
             break;
           
           default:
             System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT: " + waitrc + ". Worker thread completing");
-            returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-            exitRc = 8003;
-
-            byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-            retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+            System.out.println(threadName + ":Cannot continue. Notify worker tasks to end");
+            byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+            // only need first 16 (8 + 8) bytes
+            retHeader = Arrays.copyOfRange(byteB, 0, 16);
             header = new String(retHeader, StandardCharsets.UTF_8);
             postrc = b.doAtoi(header, 0, 8);
-            if (postrc != 0) {
-              System.out.println(threadIdentifier + ":POSTYYYY " + thisThrd + " returned with rc: " +  postrc);
+            if (ntrace > 1 ) {
+              System.out.println(threadName + ":POSTMR95 option WRKT returned with rc: " + postrc);
             }
-            // flag = 1; otherwise it will never stop waiting
-            break;
-        }
+            flag = 1;
+            break; //exit the loop immediately
+
+        }   // end switch( waitrc )
+
     } while (flag == 0);
 
     System.out.println(threadIdentifier + ":Notified to exit");

@@ -36,20 +36,20 @@
 *        GVBUR70 CALL INTERFACE
 *
 UR70STR  DSECT
-UR70VERS DS    H                 API version number == 1
-UR70FLG1 DS    X                 Flag 1: M indicates called by MR95 
-UR70FLG2 DS    X                 Flag 2: Indicates method argument type
-UR70FUN  DS    CL8               Function
-UR70OPNT DS   0H                 Number of Java threads requested
-UR70OPT  DS    CL8               Options
-UR70CLSS DS    CL32              Java class requested
-UR70METH DS    CL32              Java method requested
-UR70LSND DS    F                 Length of data sent to Java (send)
-UR70LRCV DS    F                 Length of data expected from Java
-UR70LRET DS    F                 Actual length received from Java
-UR70RETC DS    F                 Return code from GVBUR70
-UR70ANCH DS    A                 Anchor initialize zero but don't alter
-UR70JRET DS    F                 Return code from Java method
-         DS    F
+UR70VERS DS    H               API version number == 1
+UR70FLG1 DS    X               Flag 1: M indicates called by MR95 
+UR70FLG2 DS    X               Flag 2: Indicates method argument type
+UR70FUN  DS    CL8             Function
+UR70OPNT DS   0H               Number of Java threads requested
+UR70OPT  DS    CL8             Options
+UR70CLSS DS    CL32            Java class requested
+UR70METH DS    CL32            Java method requested
+UR70LSND DS    F               Length of data sent to Java (send)
+UR70LRCV DS    F               Length of data expected from Java
+UR70LRET DS    F               Actual length received from Java
+UR70RETC DS    F               Return code from GVBUR70
+UR70ANCH DS    A               Anchor initialize zero but don't alter
+UR70JRET DS    F               Return code from Java method
+UR70LREQ DS    F               Needed UR70LRCV if reply truncated(RC=4)
 UR70LEN  EQU   *-UR70STR
 *

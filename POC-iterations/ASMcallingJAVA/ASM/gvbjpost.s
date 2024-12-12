@@ -190,22 +190,25 @@ MAIN_116 EQU   *
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2             Point to individual CTR
 *
-         LG    R14,CTRMEMIN
-         LG    R1,PAADDR1
-         CLC   PALEN1,CTRLENIN
-         JNL   A0026
+         LG    R14,CTRMEMIN      Target == caller's receive buffer
+         LG    R1,PAADDR1        Source == data returned by Java
+*
+         CLC   PALEN1,CTRLENIN   Will message be truncated ?
+         JH    A0026             Yes, go 
+         XC    CTRLNREQ,CTRLNREQ Message is not truncated: clear
          LG    R15,PALEN1        LENGTH is actual length data from Java
          J     A0027
 A0026    EQU   *
+         MVC   CTRLNREQ,PALEN1   Actual required length to not truncate
          LG    R15,CTRLENIN      LENGTH is max allowable length 
 A0027    EQU   *
          STG   R15,CTRLENIN      Indicate how much is actually returned
          LTR   R15,R15           Does it amount to positive length ?
          JNP   A0028             No, go
 *
-         LA    R15,255(,R15)
-         SRLG  R0,R15,8
-         J     NEXTMVC1
+         LA    R15,255(,R15)     Copy 256 byte segments
+         SRLG  R0,R15,8          Plus remaining bytes less than 256
+         J     NEXTMVC1          If l'msg < 256 goes only to EXRL
 NEXTMVC0 EQU   *
          MVC   0(256,R14),0(R1)  MOVE     256 BYTES
          LA    R1,256(,R1)       ADVANCE  SOURCE

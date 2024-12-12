@@ -325,7 +325,7 @@ A0026    EQU   *                         data was sent using GVBUR70
 *         wto 'GVBJWAIT: called by GVBUR70'
 *
 A0027    EQU   *
-         MVC   WKRETC,=F'4'              == REQUEST FROM MAIN PROGRAM
+         MVC   WKRETC,=F'4'              == REQUEST FROM APPLICATION
 *
 MAIN_200 EQU   *
          DROP  R5 CTRAREA
