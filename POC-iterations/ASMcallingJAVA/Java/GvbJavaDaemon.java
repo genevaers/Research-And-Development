@@ -448,7 +448,7 @@ class RunSupervisor implements Runnable {
                   }
                 }
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
@@ -493,7 +493,7 @@ class RunSupervisor implements Runnable {
                   }
                 }
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
@@ -507,7 +507,7 @@ class RunSupervisor implements Runnable {
                 returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
                 exitRc = -2;
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);

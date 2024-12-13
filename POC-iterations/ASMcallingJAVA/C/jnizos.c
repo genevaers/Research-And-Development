@@ -97,6 +97,8 @@ Java_zOSInfo_showZos(JNIEnv   *env
     __atoe((char*) msg);                     
     (*env)->ReleaseStringUTFChars(env, jOpt, msg);
     memcpy(pStruct->opt, msg, 8);     /* Put options in  */
+    pStruct->flag1   = pStruct->opt[4];
+    pStruct->flag2   = pStruct->opt[5];
 
     /* --- Get addressability to byte arrayin --- */
     bufferPtr = (*env)->GetByteArrayElements(env, arrayin, NULL);
@@ -112,10 +114,11 @@ Java_zOSInfo_showZos(JNIEnv   *env
     pStruct2 = (Pass2Struct*)passarea2;
 
     #ifdef GVBDEBUG
-      printf("%0.10s:Fid %d(%0.8s-%0.4s) pStruct->length1 %d pStruct->length2 %d Common Anchor: %0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x\n",
+      printf("%0.10s:Fid %d(%0.8s-%0.4s) pStruct->length1 %d pStruct->length2 %d Common Anchor: %0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x Flag1: %c Flag2: %c\n",
               pStruct->thread, fid,pStruct->func, pStruct->opt, pStruct->length1, pStruct->length2,
               pStruct->anchor[0], pStruct->anchor[1], pStruct->anchor[2], pStruct->anchor[3], 
-              pStruct->anchor[4], pStruct->anchor[5], pStruct->anchor[6], pStruct->anchor[7]);
+              pStruct->anchor[4], pStruct->anchor[5], pStruct->anchor[6], pStruct->anchor[7],
+              pStruct->flag1, pStruct->flag2);
     #endif
 
     #ifdef _LP64                             
@@ -178,7 +181,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
             memcpy(passarea2, "00000004", 8); /* work to do     */
 /*          memcpy(passarea2+8, "XXXXYYYY", 8); indicates nature*/
             #ifdef GVBDEBUG
-              printf("%0.10s:Fid %d(%0.8s-%0.4s) POST for work received from: %0.8s\n",
+              printf("%0.10s:Fid %d(%0.8s-%0.4s) POST for work received from: %0.4s\n",
                 pStruct->thread, fid, pStruct->func, pStruct->opt, pStruct2->reasonCD);
             #endif
             break;
@@ -298,7 +301,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
      /* ------ GVBMR95 logic path to invoke Java method ------ */
      if (0 == strncmp(pStruct2->reasonCD, "MR95", 4)) {
        #ifdef GVBDEBUG
-         printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d data length: %d l'passarea2: %d l'genparm_digits: %d caller: %0.8s\n",
+         printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d data length: %d l'passarea2: %d l'genparm_digits: %d caller: %0.4s\n",
          pStruct->thread,fid,pStruct->func,pStruct->opt,rc,pStruct->length2,sizeof(Pass2Struct),sizeof(genparm_digits),pStruct2->reasonCD);
        #endif
 
@@ -331,7 +334,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
      else {
        if (0 == strncmp(pStruct2->reasonCD, "UR70", 4)) {
          #ifdef GVBDEBUG 
-           printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d, data length: %d, l'passarea2: %d, caller: %0.8s\n",
+           printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d, data length: %d, l'passarea2: %d, caller: %0.4s\n",
                    pStruct->thread, fid, pStruct->func, pStruct->opt, rc, pStruct->length2, sizeof(Pass2Struct), pStruct2->reasonCD);
          #endif
 
