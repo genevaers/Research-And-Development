@@ -113,13 +113,14 @@ Java_zOSInfo_showZos(JNIEnv   *env
     pStruct->length2 = sizeof(Pass2Struct);
     pStruct2 = (Pass2Struct*)passarea2;
 
-    #ifdef GVBDEBUG
+/*    #ifdef GVBDEBUG */
+      printf("test\n");
       printf("%0.10s:Fid %d(%0.8s-%0.4s) pStruct->length1 %d pStruct->length2 %d Common Anchor: %0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x Flag1: %c Flag2: %c\n",
               pStruct->thread, fid,pStruct->func, pStruct->opt, pStruct->length1, pStruct->length2,
               pStruct->anchor[0], pStruct->anchor[1], pStruct->anchor[2], pStruct->anchor[3], 
               pStruct->anchor[4], pStruct->anchor[5], pStruct->anchor[6], pStruct->anchor[7],
               pStruct->flag1, pStruct->flag2);
-    #endif
+/*    #endif */
 
     #ifdef _LP64                             
        rc = GVBJMEM(&passarea);

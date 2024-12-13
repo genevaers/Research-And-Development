@@ -108,7 +108,6 @@ class RunSupervisor implements Runnable {
     private String strin;
     private Integer lenout;
     private String strout;
-//    private Integer threadnmbr;
     private Integer ntrace;
     private GvbRunInfo runinfo;
   
@@ -268,11 +267,9 @@ class RunSupervisor implements Runnable {
     private Thread t;
     private String threadName;
     private Integer thrdNbr;
-//    private Integer threadNbr;
     private String strin;
     private Integer lenout;
     private String strout;
-//    private Integer thrdnbr;
     private String threadIdentifier;
     private Integer ntrace;
     private GvbRunInfo runinfo;
