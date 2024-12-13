@@ -296,8 +296,8 @@ A0025    EQU   *                  Point at "return" buffer"
 * This is specifically for a GVBMR95 lookup exit using GVBX95PA only
 *
          MVC   8(8,R14),=CL8'MR95    '   REASON CODE (major)
-         MVC   12(1),PAFLAG1             Flags (inbound from MR95)
-         MVC   13(1),PAFLAG2
+         MVC   12(1,R14),PAFLAG1             Flags (inbound from MR95)
+         MVC   13(1,R14),PAFLAG2
          LLGT  R0,00(,R1)                Populate 10 addresses for
          STG   R0,PAGENPA+00             GVBX95PA which includes the
          LLGT  R0,04(,R1)                key, i.e. data
@@ -323,8 +323,8 @@ A0025    EQU   *                  Point at "return" buffer"
 *
 A0026    EQU   *                         data was sent using GVBUR70
          MVC   8(8,R14),=CL8'UR70    '   REASON CODE (major)
-         MVC   12(1),PAFLAG1             Flags (inbound from UR70)
-         MVC   13(1),PAFLAG2
+         MVC   12(1,R14),PAFLAG1             Flags (inbound from UR70)
+         MVC   13(1,R14),PAFLAG2
          STG   R1,PAADDR2                just replace PAADDR2 pointer
 *         wto 'GVBJWAIT: called by GVBUR70'
 *
