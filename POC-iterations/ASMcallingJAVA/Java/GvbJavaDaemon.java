@@ -108,7 +108,7 @@ class RunSupervisor implements Runnable {
     private String strin;
     private Integer lenout;
     private String strout;
-    private Integer threadnmbr;
+//    private Integer threadnmbr;
     private Integer ntrace;
     private GvbRunInfo runinfo;
   
@@ -268,11 +268,11 @@ class RunSupervisor implements Runnable {
     private Thread t;
     private String threadName;
     private Integer thrdNbr;
-    private Integer threadNbr;
+//    private Integer threadNbr;
     private String strin;
     private Integer lenout;
     private String strout;
-    private Integer thrdnbr;
+//    private Integer thrdnbr;
     private String threadIdentifier;
     private Integer ntrace;
     private GvbRunInfo runinfo;
@@ -295,6 +295,8 @@ class RunSupervisor implements Runnable {
     int numberCalls = 0;
     int waitrc = 0;
     String waitreason;
+    char flag1;
+    char flag2;
     int postrc = 0;
     int dummyRc = 0;
     byte[] dummyRetPayload = {0,0,0,0};
@@ -345,13 +347,15 @@ class RunSupervisor implements Runnable {
           break; //exit the loop immediately
         }
 
-        retHeader = Arrays.copyOfRange(byteB, 0, 136); // Full length of Pass2Struct
+        retHeader = Arrays.copyOfRange(byteB, 0, 136);     // Full length of Pass2Struct
         header = new String(retHeader, StandardCharsets.UTF_8);
         waitrc = b.doAtoi(header, 0, 8);
-        waitreason = header.substring( 8, 16);
+        waitreason = header.substring( 8, 12); // major part of reason code: caller
+        flag1     = header.charAt(12);                       // Minor part of reason code: flags
+        flag2     = header.charAt(13);
 
         if (ntrace > 1) {
-          System.out.println(threadIdentifier + ":WAIT returned with rc: " + waitrc + " reason: " + waitreason);
+          System.out.println(threadIdentifier + ":WAIT returned with rc: " + waitrc + " reason: " + waitreason + " flag1: " + flag1 + " flag2: " +flag2);
           System.out.println(threadIdentifier + ":Header: " + header.substring(0,80) + "(length: " + retHeader.length + ") bytes: " + byteB.length);
         }
 
@@ -372,7 +376,7 @@ class RunSupervisor implements Runnable {
 
             /* Process the request */
             numberCalls = numberCalls + 1;
-            arrayReason = waitreason.getBytes(); // major+minor part of WAIT reason
+            arrayReason = waitreason.getBytes(); // major part of WAIT reason
 
             // Identity of caller... an add more caller_ID's
             if (Arrays.equals(arrayReason, 0, 4, arrayMR95, 0, 4)) {
@@ -444,7 +448,7 @@ class RunSupervisor implements Runnable {
                   }
                 }
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
@@ -489,7 +493,7 @@ class RunSupervisor implements Runnable {
                   }
                 }
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
@@ -503,7 +507,7 @@ class RunSupervisor implements Runnable {
                 returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
                 exitRc = -2;
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
