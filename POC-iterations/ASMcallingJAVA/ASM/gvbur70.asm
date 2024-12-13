@@ -331,7 +331,7 @@ A0106    EQU   *
          WAIT  1,ECB=CTRECB2     WAIT FOR RESPONSE TO HAPPEN
          XC    CTRECB2,CTRECB2
 *
-         LTG   R0,CTRLNREQ       Was it truncated ?
+         LT    R0,CTRLNREQ       Was it truncated ?
          JZ    A0107             No, go
          MVC   WKRETC,=F'4'      rc == 4 indicates truncation
 A0107    EQU   *                 save required receive buffer length

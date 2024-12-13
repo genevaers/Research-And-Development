@@ -199,7 +199,8 @@ MAIN_116 EQU   *
          LG    R15,PALEN1        LENGTH is actual length data from Java
          J     A0027
 A0026    EQU   *
-         MVC   CTRLNREQ,PALEN1   Actual required length to not truncate
+         LG    R0,PALEN1
+         ST    R0,CTRLNREQ       Actual required length to not truncate
          LG    R15,CTRLENIN      LENGTH is max allowable length 
 A0027    EQU   *
          STG   R15,CTRLENIN      Indicate how much is actually returned
