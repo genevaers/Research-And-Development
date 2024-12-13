@@ -573,6 +573,8 @@ A0011C   EQU   *
          CLC   UR70JRET,=F'0'
          JE    A0012
 A0011    EQU   *
+         CLC   UR70RETC,=F'4'          Truncation only
+         JE    A0012
          MVC   WKPRINT,SPACES
          MVC   WKPRINT(35),=CL35'TSTUR70: GVBUR70 ERROR: XXXX (CALL)'
          L     R15,UR70RETC
@@ -598,13 +600,13 @@ A0011E   EQU   *
          CVD   R6,WKDBL3
          MVC   WKPRINT+24(4),NUMMSK+8
          MVI   WKPRINT+24,C' '
-         ED    WKPRINT+24(6),WKDBL3+6
-         MVC   WKPRINT+24(4),WKSIGN
+         ED    WKPRINT+24(4),WKDBL3+6
+         MVC   WKPRINT+24(1),WKSIGN
          JAS   R10,MYPUT
 *
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(65),=CL65'TSTUR70: Receive needs:XXXXXX bytes fo+
-               r receive buffer (UR70LRCV)'
+         MVC   WKPRINT(81),=CL81'TSTUR70: Receive needs:XXXXXX bytes fo+
+               r receive buffer to avoid truncation (RC=4)'
          L     R15,UR70LREQ
          CVD   R15,WKDBL3
          MVC   WKPRINT+23(6),NUMMSK+6
@@ -639,13 +641,13 @@ A0012    EQU   *
          CLC   UR70LREQ,=F'0'          Any truncation occurred ?
          JE    A0016                   No, go
          MVC   WKPRINT,SPACES
-         MVC   WKPRINT(70),=CL70'TSTUR70: Receive requires:XXXXXX bytes+
-                for receive buffer and UR70LRCV'
+         MVC   WKPRINT(81),=CL81'TSTUR70: Receive needs:XXXXXX bytes fo+
+               r receive buffer to avoid truncation (RC=4)'
          L     R15,UR70LREQ
          CVD   R15,WKDBL3
-         MVC   WKPRINT+26(6),NUMMSK+6
-         MVI   WKPRINT+26,C' '
-         ED    WKPRINT+26(6),WKDBL3+5
+         MVC   WKPRINT+23(6),NUMMSK+6
+         MVI   WKPRINT+23,C' '
+         ED    WKPRINT+23(6),WKDBL3+5
          JAS   R10,MYPUT
 *
 ***********************************************************************
