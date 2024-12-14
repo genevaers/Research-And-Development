@@ -356,6 +356,8 @@ class RunSupervisor implements Runnable {
         waitreason = header.substring( 8, 12); // major part of reason code: caller
         flag1     = header.charAt(12);                       // Minor part of reason code: flags
         flag2     = header.charAt(13);
+        options  = String.format("%04d%c%c  ", thrdNbr, flag1, flag2); // made of thread number and 4 bytes of flags
+
 
         if (ntrace > 1) {
           System.out.println(threadIdentifier + ":WAIT returned with rc: " + waitrc + " reason: " + waitreason + " flag1: " + flag1 + " flag2: " +flag2);
