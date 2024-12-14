@@ -75,7 +75,7 @@ class RunMR95 implements Runnable {
       GVBA2I b = new GVBA2I();
 
       /* --- Invoke Start GVBMR95 ---------------------- */
-      byteB = a.showZos(RUNMR95, threadName, "OPTS", arrayIn, dummyRc);
+      byteB = a.showZos(RUNMR95, threadName, "OPTS    ", arrayIn, dummyRc);
       // only need first 16 (8 + 8) bytes
       retHeader = Arrays.copyOfRange(byteB, 0, 16);
       header = new String(retHeader, StandardCharsets.UTF_8);
@@ -145,7 +145,7 @@ class RunSupervisor implements Runnable {
        try {
           /* --- Invoke MVS wait --------------------------- */
           do {
-            byteB = a.showZos(WAITMR95, threadName, "GO95", arrayIn, dummyRc);
+            byteB = a.showZos(WAITMR95, threadName, "GO95    ", arrayIn, dummyRc);
             // only need first 20 (8 + 8 + 4) bytes
             retHeader = Arrays.copyOfRange(byteB, 0, 20);
             header = new String(retHeader, StandardCharsets.UTF_8);
@@ -163,7 +163,7 @@ class RunSupervisor implements Runnable {
                 Thread.sleep(1000);
                 /* Give the worker threads a poke to finish */
                 System.out.println(threadName + ":Notify worker tasks to end");
-                byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+                byteB = a.showZos(POSTMR95, threadName, "WRKT    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -196,7 +196,7 @@ class RunSupervisor implements Runnable {
                 Thread.sleep(1000);
 
                 /* --- Post MR95 to continue */
-                byteB = a.showZos(POSTMR95, threadName, "ACKG", arrayIn, dummyRc);
+                byteB = a.showZos(POSTMR95, threadName, "ACKG    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -207,7 +207,7 @@ class RunSupervisor implements Runnable {
                 }
                 
                 /* --- Now wait for MR95 to end --- */
-                byteB = a.showZos(WAITMR95, threadName, "TERM", arrayIn, dummyRc);
+                byteB = a.showZos(WAITMR95, threadName, "TERM    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -219,7 +219,7 @@ class RunSupervisor implements Runnable {
                 
                 /* Give the worker threads a poke to finish */
                 System.out.println(threadName + ":Notify worker tasks to end as application has terminated");
-                byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+                byteB = a.showZos(POSTMR95, threadName, "WRKT    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -290,13 +290,16 @@ class RunSupervisor implements Runnable {
  public void run() {
     int flag = 0;
     int numberCalls = 0;
-    int waitrc = 0;
-    String waitreason;
+    int waitrc = 0;                        // RC from WAIT
+    int exitRc = 0;                        // RC from user written Java method
+    int postrc = 0;                        // RC from POST
+    int dummyRc = 0;                       // Dummy Rc, e.g. sent to POST
+    int caller_ID = 0;
     char flag1;
     char flag2;
-    int postrc = 0;
-    int dummyRc = 0;
     byte[] dummyRetPayload = {0,0,0,0};
+    String waitreason;
+    String options;
     String workName;
     String javaClass;
     String methodName;
@@ -311,7 +314,6 @@ class RunSupervisor implements Runnable {
     byte[] arrayMR95 = strMR95.getBytes(); // major part of WAIT reason code is invoker (GVBMR95)
     byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason code is invoker (GVBUR70 generalized API  )
     byte[] arrayReason = null;
-    int caller_ID = 0;
 
     GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
     zOSInfo a = new zOSInfo();
@@ -325,21 +327,25 @@ class RunSupervisor implements Runnable {
     String thisThrd = String.format("%04d", thrdNbr);
  
     do {
-        int exitRc = 0;
+        exitRc = 0;   // Reset each time variables
+        flag1  = ' ';
+        flag2  = ' ';
+        
+        options  = String.format("%04d%c%c  ", thrdNbr, flag1, flag2); // made of thread number, i.e. "0001" and 4 bytes of flags
 
-        byteB = a.showZos(WAITMR95, threadIdentifier, thisThrd, arrayIn, dummyRc);
+        byteB = a.showZos(WAITMR95, threadIdentifier, options, arrayIn, dummyRc);
 
         // In this situation we can do nothing other than terminate the daemon
         if (byteB.length < 136) {
-          System.out.println(threadName + ":Request byteB length insufficient when returning from WAIT: " + byteB.length);
-          System.out.println(threadName + ":Cannot continue. Notify worker tasks to end");
-          byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+          System.out.println(threadIdentifier + ":Request byteB length insufficient when returning from WAIT: " + byteB.length);
+          System.out.println(threadIdentifier + ":Cannot continue. Notify worker tasks to end");
+          byteB = a.showZos(POSTMR95, threadIdentifier, "WRKT    ", arrayIn, dummyRc);
           // only need first 16 (8 + 8) bytes
           retHeader = Arrays.copyOfRange(byteB, 0, 16);
           header = new String(retHeader, StandardCharsets.UTF_8);
           postrc = b.doAtoi(header, 0, 8);
           if (ntrace > 1 ) {
-            System.out.println(threadName + ":POSTMR95 option WRKT returned with rc: " + postrc);
+            System.out.println(threadIdentifier + ":POSTMR95 option WRKT returned with rc: " + postrc);
           }
           break; //exit the loop immediately
         }
@@ -445,7 +451,7 @@ class RunSupervisor implements Runnable {
                   }
                 }
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, options, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
@@ -490,7 +496,7 @@ class RunSupervisor implements Runnable {
                   }
                 }
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, options, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
@@ -504,7 +510,7 @@ class RunSupervisor implements Runnable {
                 returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
                 exitRc = -2;
 
-                byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd+flag1+flag2, returnPayload, exitRc);
+                byteB = a.showZos(POSTMR95, threadIdentifier, options, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
                 postrc = b.doAtoi(header, 0, 8);
@@ -518,14 +524,14 @@ class RunSupervisor implements Runnable {
           
           default:
             System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT: " + waitrc + ". Worker thread completing");
-            System.out.println(threadName + ":Cannot continue. Notify worker tasks to end");
-            byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+            System.out.println(threadIdentifier + ":Cannot continue. Notify worker tasks to end");
+            byteB = a.showZos(POSTMR95, threadIdentifier, "WRKT    ", arrayIn, dummyRc);
             // only need first 16 (8 + 8) bytes
             retHeader = Arrays.copyOfRange(byteB, 0, 16);
             header = new String(retHeader, StandardCharsets.UTF_8);
             postrc = b.doAtoi(header, 0, 8);
             if (ntrace > 1 ) {
-              System.out.println(threadName + ":POSTMR95 option WRKT returned with rc: " + postrc);
+              System.out.println(threadIdentifier + ":POSTMR95 option WRKT returned with rc: " + postrc);
             }
             flag = 1;
             break; //exit the loop immediately
@@ -610,7 +616,7 @@ public class GvbJavaDaemon {
       System.out.println("GvbJavaDaemon trace level: " + trace);
 
       /* --- Call program to initialize communication memory --- */
-      byteB = a.showZos(RUNMAIN, ThreadName, "OPTS", arrayIn, dummyRc);
+      byteB = a.showZos(RUNMAIN, ThreadName, "OPTS    ", arrayIn, dummyRc);
       retHeader = Arrays.copyOfRange(byteB, 0, 16);
       header = new String(retHeader, StandardCharsets.UTF_8);
       rc = b.doAtoi(header, 0, 8);
