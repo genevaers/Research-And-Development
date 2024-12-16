@@ -574,7 +574,7 @@ A0010A   EQU   *
 *
          WTO 'TSTUR70 : ABOUT TO CALL JAVA METHOD'
          MVC   WKPRINT,SPACES
-         CLI   WKFLAG1,C'0'
+         CLI   WKFLAG2,C'0'
          JNE   A0010A1
          MVC   WKPRINT(52),=CL52'TSTUR70: CALLING MyClass Method1 XXXXX+
                X TIMES WITH: '
