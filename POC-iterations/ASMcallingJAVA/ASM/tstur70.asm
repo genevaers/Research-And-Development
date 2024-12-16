@@ -592,10 +592,10 @@ A0010A   EQU   *
          CLI   UR70FLG2,C'0'
          JNE   A0010B
          MVC   UR70METH,=cl32'Method1'
-         J     A0010C
+         J     A0010H
 A0010B   EQU   *
          MVC   UR70METH,=cl32'MthASC1'
-A0010C   EQU   *
+A0010H   EQU   *
          MVC   UR70LSND,SNDLEN
          MVC   UR70LRCV,RECLEN
          XC    UR70RETC,UR70RETC
