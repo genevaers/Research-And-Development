@@ -88,9 +88,9 @@ WKPRINT  DS    XL131           Print line
 WKTRACE  DS    CL1             Tracing
 WKEOF    DS    CL1
 WKSIGN   DS    CL1
-FLAGS    DS   0CL2
-FLAG1    DS    C
-FLAG2    DS    C
+WKFLAGS  DS   0CL2
+WKFLAG1  DS    C
+WKFLAG2  DS    C
 WKPARM   DS    CL100
          DS    0F
 WKPLISTA DS    A
@@ -304,7 +304,8 @@ A00130   EQU   *
          MVC   WKFLAGS,6(R1)
 A00132   EQU   *
 *
-         L     R1,WKSUBPA2
+         LT    R1,WKSUBPA2
+         JZ    A00172
          L     R2,WKSUBPL2
          CLC   0(5,R1),=CL5'TASKS'
          JNE   A00140
@@ -326,7 +327,30 @@ A00150   EQU   *
          JNE   A00152
          MVC   WKFLAGS,6(R1)
 A00152   EQU   *
-
+*
+         LT    R1,WKSUBPA3
+         JZ    A00172
+         L     R2,WKSUBPL3
+         CLC   0(5,R1),=CL5'TASKS'
+         JNE   A00160
+         JAS   R14,SUBTASKS
+         CLC   WKTASKS,=H'20'                  To many subtasks..?
+         JNH   A00160                          Set lower
+         MVC   WKTASKS,=H'20'
+         STM   R14,R1,WKR14R1
+         wto 'TSTUR70 : too many tasks -- now set to TASKS=20'
+         LM    R14,R1,WKR14R1
+A00160   EQU   *
+         CLC   0(5,R1),=CL5'NCALL'
+         JNE   A00170
+         ST    R1,WKSUBPAN
+         ST    R2,WKSUBPLN
+         JAS   R14,NCALLS
+A00170   EQU   *
+         CLC   0(6,R1),=CL6'FLAGS='
+         JNE   A00172
+         MVC   WKFLAGS,6(R1)
+A00172   EQU   *
 *
 ***********************************************************************
          LA    R3,UR70PARM
@@ -561,7 +585,7 @@ A0010A   EQU   *
 *
          MVC   UR70FUN,=CL8'CALL'
          MVC   UR70VERS,=H'1'                 Version 1
-         MVI   UR70FLG1,WKFLAG1               Flg1: GVBUR70 calling(U)
+         MVC   UR70FLG1,WKFLAG1               Flg1: GVBUR70 calling(U)
          MVC   UR70FLG2,WKFLAG2               Flg2: delivery 0=>ASIS)
 *                                                            1=>TRAN
          MVC   UR70CLSS,=CL32'MyClass'
