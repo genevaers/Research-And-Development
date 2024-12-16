@@ -444,8 +444,9 @@ A0008    EQU   *
          XC    UR70ANCH,UR70ANCH
          MVC   UR70FUN,=CL8'INIT'             Set number of threads
          MVC   UR70VERS,=H'1'                 Version 1
-         MVI   UR70FLG1,C' '                  Flg1: not MR95
-         MVI   UR70FLG2,C'0'                  Flg2: default aarg[]
+         MVC   UR70FLG1,WKFLAG1               Flg1: GVBUR70 calling(U)
+         MVC   UR70FLG2,WKFLAG2               Flg2: delivery 0=>ASIS)
+*                                                            1=>TRAN
          LH    R0,WKTASKS                     Number of subtasks..
          STH   R0,UR70OPNT                    Number of subtasks needed
          XC    UR70RETC,UR70RETC
@@ -573,8 +574,15 @@ A0010A   EQU   *
 *
          WTO 'TSTUR70 : ABOUT TO CALL JAVA METHOD'
          MVC   WKPRINT,SPACES
+         CLI   WKFLAG1,C'0'
+         JNE   A0010A1
          MVC   WKPRINT(52),=CL52'TSTUR70: CALLING MyClass Method1 XXXXX+
                X TIMES WITH: '
+         J     A0010A2
+A0010A1  EQU   *
+         MVC   WKPRINT(52),=CL52'TSTUR70: CALLING MyClass MthASC1 XXXXX+
+               X TIMES WITH: '
+A0010A2  EQU   *
          MVC   WKPRINT+52(10),WKSEND
          LH    R15,WKNCALL
          CVD   R15,WKDBL3
