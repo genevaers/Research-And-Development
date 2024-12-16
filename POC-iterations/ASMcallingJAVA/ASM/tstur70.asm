@@ -88,7 +88,11 @@ WKPRINT  DS    XL131           Print line
 WKTRACE  DS    CL1             Tracing
 WKEOF    DS    CL1
 WKSIGN   DS    CL1
+FLAGS    DS   0CL2
+FLAG1    DS    C
+FLAG2    DS    C
 WKPARM   DS    CL100
+         DS    0F
 WKPLISTA DS    A
 WKPLISTL DS    F
 WKSUBPA1 DS    A
@@ -115,7 +119,6 @@ WKXPARM0 DS    A               Some additional parameters,, for TASKS=0
 WKXPARM1 DS    A
 WKXPARM2 DS    A
 WKXPARM3 DS    A
-         DS    0F
 OUTDCBA  DS    A               Reentrant DCB and DCBE areas
 *
          DS    0F
@@ -276,7 +279,8 @@ A000108  EQU   *
 A000109  EQU   *
          MVC   WKTASKS,=H'1'      default value
          MVC   WKNCALL,=H'1'      default value
-*
+         MVC   WKFLAGS,=CL2'U0'   Default: general API/flat payload
+*                                 no translation
          L     R1,WKSUBPA1
          L     R2,WKSUBPL1
          CLC   0(5,R1),=CL5'TASKS'
@@ -295,6 +299,10 @@ A00120   EQU   *
          ST    R2,WKSUBPLN
          JAS   R14,NCALLS
 A00130   EQU   *
+         CLC   0(6,R1),=CL6'FLAGS='
+         JNE   A00132
+         MVC   WKFLAGS,6(R1)
+A00132   EQU   *
 *
          L     R1,WKSUBPA2
          L     R2,WKSUBPL2
@@ -314,6 +322,11 @@ A00140   EQU   *
          ST    R2,WKSUBPLN
          JAS   R14,NCALLS
 A00150   EQU   *
+         CLC   0(6,R1),=CL6'FLAGS='
+         JNE   A00152
+         MVC   WKFLAGS,6(R1)
+A00152   EQU   *
+
 *
 ***********************************************************************
          LA    R3,UR70PARM
@@ -337,6 +350,7 @@ A00150   EQU   *
          MVC   WKTASKS,0(R1)
          MVC   WKNCALL,2(R1)
          MVC   WKUR70A,4(R1)
+         MVC   WKFLAGS,8(R1)
          LA    R1,32+4(,R8)       => WKXPARM1
          L     R0,0(,R1)
          ST    R0,OUTDCBA
@@ -449,6 +463,7 @@ A0010    EQU   *
          MVC   0(2,R1),WKTASKS      pass down number tasks
          MVC   2(2,R1),WKNCALL                number calls
          MVC   4(4,R1),WKUR70A                address gvbur70
+         MVC   8(2,R1),WKFLAGS                flags
          L     R0,OUTDCBA
          ST    R0,WKXPARM1          pass DCB address to subtask also
 *
@@ -546,10 +561,17 @@ A0010A   EQU   *
 *
          MVC   UR70FUN,=CL8'CALL'
          MVC   UR70VERS,=H'1'                 Version 1
-         MVI   UR70FLG1,C' '                  Flg1: not MR95
-         MVI   UR70FLG2,C'0'                  Flg2: default aarg[]
+         MVI   UR70FLG1,WKFLAG1               Flg1: GVBUR70 calling(U)
+         MVC   UR70FLG2,WKFLAG2               Flg2: delivery 0=>ASIS)
+*                                                            1=>TRAN
          MVC   UR70CLSS,=CL32'MyClass'
+         CLI   UR70FLG2,C'0'
+         JNE   A0010B
          MVC   UR70METH,=cl32'Method1'
+         J     A0010C
+A0010B   EQU   *
+         MVC   UR70METH,=cl32'MthASC1'
+A0010C   EQU   *
          MVC   UR70LSND,SNDLEN
          MVC   UR70LRCV,RECLEN
          XC    UR70RETC,UR70RETC

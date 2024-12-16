@@ -180,7 +180,8 @@ WAIT1200 EQU   *
          J     WAIT18
 WAIT125  EQU   *
          wto 'GVBUR70 : illegal wait'
-         dc    h'0'
+         LGHI  R3,16
+         J     EXIT
 WAIT18   EQU   *
          STH   R0,PAOPT+4              Directions to ECB's
 *
@@ -222,7 +223,8 @@ POST1200 EQU   *
          J     POST18
 POST125  EQU   *
          wto 'GVBUR70 : illegal post'
-         dc    h'0'
+         LGHI  R3,16
+         J     EXIT
 POST18   EQU   *
          STH   R0,PAOPT+4             Directions to ECB
 *
@@ -234,10 +236,11 @@ POST18   EQU   *
 * -----------------------------------------------------------                   
 * Zero Return Code and Exit                                                     
 * -----------------------------------------------------------                   
-EXIT0    DS    0H                                                               
-         XGR   R3,R3                   Zero Return Code                         
-EXIT     DS    0H                                                               
-         CELQEPLG                      Return to caller                         
+EXIT0    DS    0H
+         XGR   R3,R3                   Zero Return Code
+EXIT     DS    0H
+         CELQEPLG                      Return to caller
+*
 MODE31   EQU   X'8000'
 PATTERN  DC    X'202020202020202020202020202020 '
 TKNNAME  DC    CL8'GVBJMR95'                                          

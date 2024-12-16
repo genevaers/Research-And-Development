@@ -308,7 +308,9 @@ class RunSupervisor implements Runnable {
     byte[] retHeader = null;
     String header = null;
     byte[] payload = null;
+    String payloadASC = null;
     byte[] returnPayload = null;
+    String returnPayloadASC = null;
     String strMR95 = "MR95";
     String strUR70 = "UR70";
     byte[] arrayMR95 = strMR95.getBytes(); // major part of WAIT reason code is invoker (GVBMR95)
@@ -462,7 +464,7 @@ class RunSupervisor implements Runnable {
                 }
                 break;
 
-               // When request comes from GVBUR70 logic path 
+              // When request comes from GVBUR70 logic path 
               case 2:
                 payload = Arrays.copyOfRange(byteB, 136, byteB.length);
 
@@ -477,27 +479,53 @@ class RunSupervisor implements Runnable {
                   System.out.println();
                 }
 
-                // Try to call user specified classs and method
-                returnPayload = javaClassLoader.invokeClassMethod(javaClass, methodName, payload);
-                if (returnPayload == null) {
-                  System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
-                  exitRc = -1;        // User's class method not available, ensure this is known
-                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
-                
-                } else {              // user's Java was invoked successfully}
-
-                  exitRc = 0;         //   the only Java Rc returned from methods for UR70 calls for now
-                  if (ntrace > 1 ) {
-                    System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
-                    System.out.print(threadIdentifier + ":Return payload:  ");
-                    for (int i = 0; i < returnPayload.length; i++)
-                    {
-                      System.out.print(String.format("%02X", returnPayload[i]));
+                // Try to call user specified classs and method (translation requested)
+                if ( flag2 == '1')
+                {
+                  payloadASC = new String(payload, StandardCharsets.UTF_8);
+                  returnPayloadASC = javaClassLoader.invokeClassMethod(javaClass, methodName, payloadASC);
+                  if (returnPayloadASC == null) {
+                    System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
+                    exitRc = -1;      // User's class method not available, ensure this is known
+                    returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+                  } else {            // User's Java was invoked successfully}
+                    exitRc = 0;       // The only Java Rc returned from methods for UR70 calls for now
+                    returnPayload = returnPayloadASC.getBytes(StandardCharsets.UTF_8);
+                    payloadASC = null;
+                    returnPayloadASC = null;
+                    if (ntrace > 1 ) {
+                      System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                      System.out.print(threadIdentifier + ":Return payload:  ");
+                      for (int i = 0; i < returnPayload.length; i++)
+                      {
+                        System.out.print(String.format("%02X", returnPayload[i]));
+                      }
+                      System.out.println();
                     }
-                    System.out.println();
+                  }
+
+                // Try to call user specified classs and method (no translation to/from ASCII)
+                } else {
+
+                  returnPayload = javaClassLoader.invokeClassMethod(javaClass, methodName, payload);
+                  if (returnPayload == null) {
+                    System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
+                    exitRc = -1;      // User's class method not available, ensure this is known
+                    returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+                  } else {            // User's Java was invoked successfully}
+                    exitRc = 0;       // The only Java Rc returned from methods for UR70 calls for now
+                    if (ntrace > 1 ) {
+                      System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                      System.out.print(threadIdentifier + ":Return payload:  ");
+                      for (int i = 0; i < returnPayload.length; i++)
+                      {
+                        System.out.print(String.format("%02X", returnPayload[i]));
+                      }
+                      System.out.println();
+                    }
                   }
                 }
-
+                
                 byteB = a.showZos(POSTMR95, threadIdentifier, options, returnPayload, exitRc);
                 retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
                 header = new String(retHeader, StandardCharsets.UTF_8);
