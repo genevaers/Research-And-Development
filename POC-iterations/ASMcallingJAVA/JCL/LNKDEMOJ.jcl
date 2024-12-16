@@ -52,6 +52,7 @@
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
+//*SYSPRINT DD DISP=SHR,DSN=&HLQ..&MLQ..LISTLINK(JLKUPEX)
 //*
 //*********************************************************************
 //*  LINK-EDIT GVBJLENV
@@ -80,6 +81,8 @@
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
+//*SYSPRINT DD DISP=SHR,DSN=&HLQ..&MLQ..LISTLINK(GVBJLENV)
+//* 
 //*********************************************************************
 //*  LINK-EDIT GVBUR70
 //*********************************************************************
@@ -107,6 +110,7 @@
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
+//*SYSPRINT DD DISP=SHR,DSN=&HLQ..&MLQ..LISTLINK(GVBUR70)
 //*
 //*********************************************************************
 //*  LINK-EDIT TSTUR70
@@ -135,6 +139,7 @@
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
+//*SYSPRINT DD DISP=SHR,DSN=&HLQ..&MLQ..LISTLINK(TSTUR70)
 //*
 //*********************************************************************
 //*  LINK-EDIT GVBJGO95
@@ -163,5 +168,6 @@
 //            DISP=SHR
 //*
 //SYSPRINT DD SYSOUT=*
+//*SYSPRINT DD DISP=SHR,DSN=&HLQ..&MLQ..LISTLINK(GVBJGO95)
 //*
 //
