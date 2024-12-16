@@ -109,7 +109,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
 
     switch ( pStruct->flag2 ) {
       /* these cases provide EBCDIC translation of information returned from Java */
-      case '1','3':
+      case '1':
         bufferPtr[len1-1] = 0;                 /* enforce end of string character */
         __atoe(bufferPtr);
         break;
@@ -357,7 +357,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
             switch ( pStruct->flag2 )
             {
               /* these cases provide UTF-8 translation of information passed to Java     */
-              case '1','3':
+              case '1':
                 payloadin = malloc(pStruct->length2 + 1);      /* for string ending byte */
                 memcpy(payloadin, (void *)pStruct->addr2, pStruct->length2);
                 payloadin[pStruct->length2] = 0;               /*'X\00'                  */
