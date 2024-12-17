@@ -87,7 +87,7 @@
  OPUT  '&HLQ..&MLQ..LOADLIB(GVBJDLL)' -
        '/u/<your-user-id>/DllLib/GVBJDLL'
 //*
-//*******************************************************************
+//*********************************************************************
 //*
 //* Batch job to run the Java VM calling TSTUR70
 //*
@@ -99,7 +99,7 @@
 //* 5.) Modify the CLASSPATH as required to point to your Java code
 //* 6.) Modify JAVACLS and ARGS to launch desired Java class
 //*
-//*******************************************************************
+//*********************************************************************
 //TSTUR70 EXEC PROC=JVMPRC16,
 // JAVACLS='GvbJavaDaemon'
 //STDENV DD *
@@ -145,12 +145,19 @@ export IBM_JAVA_OPTIONS="$IJO "
 //STDOUT   DD SYSOUT=*
 //STDERR   DD SYSOUT=*
 //*
-//*******************************************************************
+//*********************************************************************
 //* EXEC CARD FOR TSTUR70 IVP PROGRAM MAKING CALLS TO JAVA
-//*******************************************************************
+//* 
+//* FLAG1: U => General API i.e. GVBUR70
+//* 
+//* FLAG2: 0 => Transport data as-is (byte[] hex array, no translation)
+//*        1 => Convert SEND buffer to ASCII string for Java method call
+//*             and convert its reply to EBCDIC for RECEIVE buffer
+//* 
+//*********************************************************************
 //*
 //DDEXEC   DD *
-PGM=TSTUR70,PARM='TASKS=20,NCALL=32767'
+PGM=TSTUR70,PARM='TASKS=20,NCALL=32767,FLAGS=U0'
 /*
 //*
 //SYSIN    DD DUMMY
