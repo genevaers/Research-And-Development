@@ -61,7 +61,7 @@ The file ../ASMcallingJAVA/SCRIPT/CPY2MVS contains your user id/home directory a
 
 ## Copy the GVBDEMOJ items needed on MVS
 
-The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX as defined in SYSTSIN. Either [s]ftp or copy/past this file to your MVS JCL "YOUR-USER-ID".GVBDEMOJ.JCL library and run the job on MVS.
+The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX as defined in SYSTSIN. Either [s]ftp or copy/paste this file to your MVS JCL "YOUR-USER-ID".GVBDEMOJ.JCL library and run the job on MVS.
 
 ## Build the GVBDEMOJ items needed on MVS
 
@@ -137,7 +137,7 @@ From MVS run the IVP program using JCL RUNUR70T to call Java, after tailoring th
 ```
 1: Your USER-ID as specified by &HLQ
 2: COPYDLL step DD SYSTSIN statement to contain USS "your-user-id".
-3: TSTUR70 step DD STDENV statement to contain USS "your-user-id" (ensure both occurrences for this DD statement are changed).
+3: TSTUR70 step DD STDENV statement to contain USS "your-user-id" (ensure both occurrences in DD statement are changed).
 4: TSTUR70 step DD DDEXEC statement to specify the number of threads and calls performed by each thread.
    PARM='TASKS=20,NCALL=32767 are the maximums for the IVP program.
 ```
