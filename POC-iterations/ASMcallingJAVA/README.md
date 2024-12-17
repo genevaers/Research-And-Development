@@ -80,7 +80,35 @@ Enter "make -f SCRIPT/makegvbdll"
 
 There is also version of the script for building a debug version which provides detailed diagnostics: SCRIPT/makegvbdlld.
 
-The GVBJDLL is available for download if you do not have the IBM C or compatible compiler.
+The GVBJDLL is available for download if you do not have the IBM C or compatible compiler. The download comprises the following XMIT files therefore avoiding having to build any of the MVS load modules or copy JCL, sources, etc.:
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.ASM
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.COBOL
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.COPY
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.EXP
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.JCL
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.MACLIB
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.SYSTSIN
+
+The XMIT files should be downloaded and copied as BINARY files before a TSO RECEIVE is issued, for example:
+
+```//RECVSTEP EXEC PGM=IKJEFT01
+//SYSPRINT DD  SYSOUT=*
+//FROMF1   DD  DISP=SHR,DSN="YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB.XMIT
+//SYSTSPRT DD  SYSOUT=*
+//SYSTSIN  DD  *
+ PROFILE NOPREFIX
+ RECEIVE INFILE(FROMF1)
+ DSNAME('"YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB')
+//*```
 
 ## Build GvbJavaDaemon
 
@@ -129,9 +157,25 @@ This repo is managed according to the policies listed in the [GenevaERS Communit
 
 Two verbs are currently supported by the GVBUR70 API:
 
-INIT: Requests the initialization of the GVBUR70 interface and specifies the number of concurrent Java threads to be provided.
+INIT: This function requests the initialization of the GVBUR70 interface and specifies the number of concurrent Java threads to be provided. The number of threads is provided as a half word binary integer (two bytes) and must be between 1 and 99.
 
-CALL: Requests the invocation of a specified Java class and method and supplies a SEND and RECEIVE buffer to communicate data with Java.
+CALL: This function requests the invocation of a specified Java class and method and supplies a SEND and RECEIVE buffer to communicate data with Java.
+
+```
+Flag1: character value 'U' must be specified to distinguish the caller from GVBMR95 Performance Engine
+Flag2: character value '0' means the payload data is transferred as-is without converting from EBCDIC to ASCII and back
+       character value '1' means the payload data is converted from EBCDIC to ASCII and back
+CLSS : specifies the Java class to be loaded
+METH : specifies the Java method to be executed
+LSED : indicates the length of the caller's send buffer in bytes
+LRCV : indicates the number of bytes available in the caller's receive buffer
+LRET : the return code from GVBUR70 (same as R15)
+ANCH : archor full word -- do not alter or reset this field
+JRET : return code from the Java method where available
+LREQ : if truncation of the received data occurs (LRET=4) this field indicates the receive buffer length required for get all the data
+```
+
+Return codes are documented in the source code of GVBUR70.
 
 Assembler program TSTUR70 and COBOL program TESTUR70 show examples of these calls and the API data areas.
 
