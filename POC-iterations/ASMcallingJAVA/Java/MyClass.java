@@ -36,9 +36,9 @@ public class MyClass {
             ret[i] = (byte) (ret[i] + 16);
         }
         return ret;
-     }
+    }
 
-     public ReturnData MethodY(byte[] b) {
+    public ReturnData MethodY(byte[] b) {
         System.out.println("MethodY executed from class MyClass with input:");
         System.out.println("Length: " + b.length);
         for (int i = 0; i < b.length; i++)
@@ -56,23 +56,65 @@ public class MyClass {
         int rc = 8;
         ReturnData  returnData = new ReturnData(rc, b);
         return returnData;
-     }
- 
-     public String MethodA(String input) {
-       String output = "MethodA: " + input;
-       System.out.println("MethodA executed from class MyClass with input:" + input);
-       return output;
     }
-
-    public String MethodB(String input) {
-        String output = "MethodB: " + input;
-        System.out.println("MethodB executed from class MyClass with input:" + input);
+ 
+    public String MthASC1(String input) {
+        System.out.println("MthASC1 executed from MyClass");
+        String output = "MthASC1: " + input;
         return output;
     }
 
-    public String MethodC(String input) {
-        String output = "MethodC: " + input;
-        System.out.println("MethodC executed from class MyClass with input:" + input);
+    public String MthASC2(String input) {
+        System.out.println("MthASC2 executed from MyClass");
+        String output = "MthASC2: " + input;
+        return output;
+    }
+
+    public String MthASC3(String input) {
+        System.out.println("MthASC3 executed from MyClass");
+        String output = "MthASC3: " + input;
+        return output;
+    }
+
+    public String MthASC4(String input) {
+        System.out.println("MthASC4 executed from MyClass");
+        String output = "MthASC4: " + input;
+        return output;
+    }
+
+    public String MthASC5(String input) {
+        System.out.println("MthASC5 executed from MyClass");
+        String output = "MthASC5: " + input;
+        return output;
+    }
+
+    public String MthASC6(String input) {
+        System.out.println("MthASC6 executed from MyClass");
+        String output = "MthASC6: " + input;
+        return output;
+    }
+
+    public String MthASC7(String input) {
+        System.out.println("MthASC7 executed from MyClass");
+        String output = "MthASC7: " + input;
+        return output;
+    }
+
+    public String MthASC8(String input) {
+        System.out.println("MthASC8 executed from MyClass");
+        String output = "MthASC8: " + input;
+        return output;
+    }
+
+    public String MthASC9(String input) {
+        System.out.println("MthASC9 executed from MyClass");
+        String output = "MthASC9: " + input;
+        return output;
+    }
+
+    public String MthASC0(String input) {
+        System.out.println("MthASC0 executed from MyClass");
+        String output = "MthASC0: " + input;
         return output;
     }
 

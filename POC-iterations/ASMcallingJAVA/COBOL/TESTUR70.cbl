@@ -66,7 +66,7 @@
           05  UR70-RETC                   PIC S9(9) USAGE IS BINARY.
           05  UR70-ANCHOR                 POINTER.
           05  UR70-JRETC                  PIC S9(9) USAGE IS BINARY.
-          05  UR70-SPARE                  PIC X(4).
+          05  UR70-LREQD                  PIC S9(9) USAGE IS BINARY. 
       *
        01 GVBUR70                         PIC X(8)  VALUE 'GVBUR70'.
       *
@@ -109,7 +109,7 @@
 
            SET  UR70-ANCHOR               TO NULL
            MOVE +1                        TO UR70-VERSION
-           MOVE ' '                       TO UR70-FLAG1
+           MOVE 'U'                       TO UR70-FLAG1
            MOVE '0'                       TO UR70-FLAG2
            MOVE 'INIT    '                TO UR70-FUNCTION
            MOVE +1                        TO UR70-OPTION1
@@ -137,7 +137,7 @@
            DISPLAY 'TESTUR70 CALLING CLASS|METHOD'
 
            MOVE +1                                 TO UR70-VERSION
-           MOVE ' '                                TO UR70-FLAG1
+           MOVE 'U'                                TO UR70-FLAG1
            MOVE '0'                                TO UR70-FLAG2
            MOVE 'CALL    '                         TO UR70-FUNCTION
            MOVE SPACES                             TO UR70-OPTION

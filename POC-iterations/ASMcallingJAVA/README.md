@@ -61,7 +61,7 @@ The file ../ASMcallingJAVA/SCRIPT/CPY2MVS contains your user id/home directory a
 
 ## Copy the GVBDEMOJ items needed on MVS
 
-The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX as defined in SYSTSIN. Either [s]ftp or copy/past this file to your MVS JCL "YOUR-USER-ID".GVBDEMOJ.JCL library and run the job on MVS.
+The file ../ASMcallingJAVA/JCL/CPUSSMVS.jcl contains the copy JCL which uses OGETX as defined in SYSTSIN. Either [s]ftp or copy/paste this file to your MVS JCL "YOUR-USER-ID".GVBDEMOJ.JCL library and run the job on MVS.
 
 ## Build the GVBDEMOJ items needed on MVS
 
@@ -80,11 +80,51 @@ Enter "make -f SCRIPT/makegvbdll"
 
 There is also version of the script for building a debug version which provides detailed diagnostics: SCRIPT/makegvbdlld.
 
-The GVBJDLL is available for download if you do not have the IBM C or compatible compiler.
+### Pre-built load modules and libraries
+
+The GVBJDLL is available for download if you do not have the IBM C or compatible compiler. The download comprises the following XMIT files therefore avoiding having to build any of the MVS load modules or copy JCL, sources, etc.:
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.ASM
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.COBOL
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.COPY
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.EXP
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.JCL
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.MACLIB
+
+"YOUR-TSO-PREFIX".GVBDEMOJ.SYSTSIN
+
+The XMIT files should be downloaded and copied as BINARY files before a TSO RECEIVE is issued, for example:
+
+```
+//RECVSTEP EXEC PGM=IKJEFT01
+//SYSPRINT DD  SYSOUT=*
+//FROMF1   DD  DISP=SHR,DSN="YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB.XMIT
+//SYSTSPRT DD  SYSOUT=*
+//SYSTSIN  DD  *
+ PROFILE NOPREFIX
+ RECEIVE INFILE(FROMF1)
+ DSNAME('"YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB')
+//*
+```
 
 ## Build GvbJavaDaemon
 
-Go to directory ../ASMcallingJAVA/Java/GvbJavaDaemon/Java and enter "javac GvbJavaDaemo.java" and similarly compile the examples Java programs MyClass.java and MyClassB.java.
+Go to directory ../ASMcallingJAVA/Java/GvbJavaDaemon/Java and enter:
+
+"javac GvbJavaDaemo.java"
+
+"javac GvbX95process.java"
+
+The latter requires JZOS to be present and is needed to run Performance Engine calling Java lookup exits.
+
+Similarly compile the examples Java programs MyClass.java and MyClassB.java.
 
 ## Copy profile script ASMcallingJAVAprofile
 
@@ -94,10 +134,13 @@ Copy profile script ../ASMcallingJAVA/SCRIPT/ASMcallingJAVAprofile to you home d
 
 From MVS run the IVP program using JCL RUNUR70T to call Java, after tailoring the following items:
 
-Your USER-ID as specified by &HLQ
-COPYDLL step DD SYSTSIN statement to contain USS "your-user-id".
-TSTUR70 step DD STDENV statement to contain USS "your-user-id" (ensure both occurrences for this DD statement are changed).
-TSTUR70 step DD DDEXEC statement to specify the number of threads and call performed by each thread. PARM='TASKS=20,NCALL=32767 is the maximum for the IVP program.
+```
+1: Your USER-ID as specified by &HLQ
+2: COPYDLL step DD SYSTSIN statement to contain USS "your-user-id".
+3: TSTUR70 step DD STDENV statement to contain USS "your-user-id" (ensure both occurrences in DD statement are changed).
+4: TSTUR70 step DD DDEXEC statement to specify the number of threads and calls performed by each thread.
+   PARM='TASKS=20,NCALL=32767 are the maximums for the IVP program.
+```
 
 ## Running your own program using the GVBUR70 API to call Java
 
@@ -121,9 +164,26 @@ This repo is managed according to the policies listed in the [GenevaERS Communit
 
 Two verbs are currently supported by the GVBUR70 API:
 
-INIT: Requests the initialization of the GVBUR70 interface and specifies the number of concurrent Java threads to be provided.
+INIT: This function requests the initialization of the GVBUR70 interface and specifies the number of concurrent Java threads to be provided. The number of threads is provided as a half word binary integer (two bytes) and must be between 1 and 99.
 
-CALL: Requests the invocation of a specified Java class and method and supplies a SEND and RECEIVE buffer to communicate data with Java.
+CALL: This function requests the invocation of a specified Java class and method and supplies a SEND and RECEIVE buffer to communicate data with Java.
+
+```
+UR70VERS: version of GVBUR70 half word of 1.
+UR70FLG1: character value 'U' must be specified to distinguish the caller from GVBMR95 Performance Engine
+UR70FLG2: character value '0' means the payload data is transferred as-is without converting from EBCDIC to ASCII and back
+          character value '1' means the payload data is converted from EBCDIC to ASCII and back
+UR70CLSS: specifies the Java class to be loaded (32 bytes)
+UR70METH: specifies the Java method to be executed (32 bytes)
+UR70LSND: full word indicates the length of the caller's send buffer in bytes
+UR70LRCV: full word indicates the number of bytes available in the caller's receive buffer
+UR70LRET: full word return code from GVBUR70 (same as R15)
+UR70ANCH: archor full word -- do not alter or reset this field
+UR70JRET: return code from the Java method, where available
+UR70LREQ: if truncation occurs (LRET=4) this field indicates the receive buffer length required to receive all the data
+```
+
+Return codes are documented in the source code of GVBUR70.
 
 Assembler program TSTUR70 and COBOL program TESTUR70 show examples of these calls and the API data areas.
 

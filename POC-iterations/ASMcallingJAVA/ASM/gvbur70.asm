@@ -27,13 +27,36 @@
 *      - THIS MODULE ALLOWS A SPECIFIED JAVA CLASS AND METHOD TO BE   *
 *        CALLED USING THE GVBUR70 INTERFACE.                          *
 *                                                                     *
-*        IT SUPPORTS: 1) INIT initialize and indicate the number of   *
+*        It supports the following functions:
+*                                                                     *
+*                     1) INIT initialize and indicate the number of   *
 *                        Java thread required by a multi-tasking      *
 *                        application. Should be called only once by   *
 *                        the application.                             *
 *                                                                     *
+*                        R15 == UR70RETC                              *
+*                               4: INIT issued more than once         *
+*                               8: UR70OPNT nbr threads < 1 or > 99   *
+*                              12:                                    *
+*                              16:                                    *
+*                              20: Communications CTT not located     *
+*                              24: Communications CTT invalid or      *
+*                                  there is a version error           *
+*                                                                     *
 *                     2) SEND invoke specified Java class and method  *
 *                        sending and receiving data from it.          *
+*                                                                     *
+*                        R15 == UR70RETC                              *
+*                               4: Received message truncated.        *
+*                                   (Length needed found in UR70LREQ) *
+*                               8: Java class and/or method not found *
+*                              12: Specified number threads exceeded  *
+*                              16:                                    *
+*                              20: Communications CTT not located     *
+*                              24: Communications CTT invalid or      *
+*                                  there is a version error           *
+*                                                                     *
+*        R15 == UR70RETC == 16: Invalid GVBUR70 function              *
 *                                                                     *
 ***********************************************************************
                         EJECT
@@ -247,7 +270,7 @@ A0100    EQU   *
          CLI   CTTACTIV,X'FF'
          JE    A0101
          WTO 'GVBUR70 : REQUEST TABLE NOT YET ACTIVE'
-         J     MAIN_220
+         J     MAIN_221          Could happen if INIT has completed yet    
 *
 A0101    EQU   *
          LLGT  R7,RECASND        LOAD  SEND BUFFER ADDRESS
@@ -308,10 +331,20 @@ A0106    EQU   *
          WAIT  1,ECB=CTRECB2     WAIT FOR RESPONSE TO HAPPEN
          XC    CTRECB2,CTRECB2
 *
-         LLGT  R0,CTRLENOUT      Amount of data actually returned
+         LT    R0,CTRLNREQ       Was it truncated ?
+         JZ    A0107             No, go
+         MVC   WKRETC,=F'4'      rc == 4 indicates truncation
+A0107    EQU   *                 save required receive buffer length
+         ST    R0,UR70LREQ         or reset to zero, if zero
+         LG    R0,CTRLENIN       Amount of data actually returned
          ST    R0,UR70LRET
-         LLGT  R0,CTRJRETC       "return code" from Java
+         LLGF  R0,CTRJRETC       "return code" from Java
          ST    R0,UR70JRET
+*
+         C     R0,=F'0'          Reserved range for daemon errors (-ve)
+         JNL   A0108
+         MVC   WKRETC,=F'8'      Java class method cannot be executed
+A0108    EQU   *
 *
 *        WTO 'GVBJPOST : RESPONSE RECEIVED TO REQUEST'
 *
@@ -368,6 +401,7 @@ MAIN_120 EQU   *
 *
 MAIN_220 EQU   *
          WTO 'GVBUR70 : INIT function attempted more than once'
+MAIN_221 EQU   *
          MVC   WKRETC,=F'4'
          J     DONE
 *

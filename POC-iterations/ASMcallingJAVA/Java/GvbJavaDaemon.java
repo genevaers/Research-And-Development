@@ -18,10 +18,8 @@
 // Java Daemon to service requests from ASM/3GL and dynamically load and execute user methods and classes
 //
 import java.nio.charset.StandardCharsets;
-import java.lang.reflect.Method;
+//import java.lang.reflect.Method;
 import java.util.Arrays;
-import com.ibm.jzos.fields.daa.BinaryUnsignedIntField;
-import com.ibm.jzos.fields.daa.BinaryUnsignedIntL2Field;
 
 // Backup statistics class
 class GvbRunInfo {
@@ -77,7 +75,7 @@ class RunMR95 implements Runnable {
       GVBA2I b = new GVBA2I();
 
       /* --- Invoke Start GVBMR95 ---------------------- */
-      byteB = a.showZos(RUNMR95, threadName, "OPTS", arrayIn, dummyRc);
+      byteB = a.showZos(RUNMR95, threadName, "OPTS    ", arrayIn, dummyRc);
       // only need first 16 (8 + 8) bytes
       retHeader = Arrays.copyOfRange(byteB, 0, 16);
       header = new String(retHeader, StandardCharsets.UTF_8);
@@ -110,7 +108,6 @@ class RunSupervisor implements Runnable {
     private String strin;
     private Integer lenout;
     private String strout;
-    private Integer threadnmbr;
     private Integer ntrace;
     private GvbRunInfo runinfo;
   
@@ -148,7 +145,7 @@ class RunSupervisor implements Runnable {
        try {
           /* --- Invoke MVS wait --------------------------- */
           do {
-            byteB = a.showZos(WAITMR95, threadName, "GO95", arrayIn, dummyRc);
+            byteB = a.showZos(WAITMR95, threadName, "GO95    ", arrayIn, dummyRc);
             // only need first 20 (8 + 8 + 4) bytes
             retHeader = Arrays.copyOfRange(byteB, 0, 20);
             header = new String(retHeader, StandardCharsets.UTF_8);
@@ -166,7 +163,7 @@ class RunSupervisor implements Runnable {
                 Thread.sleep(1000);
                 /* Give the worker threads a poke to finish */
                 System.out.println(threadName + ":Notify worker tasks to end");
-                byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+                byteB = a.showZos(POSTMR95, threadName, "WRKT    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -199,7 +196,7 @@ class RunSupervisor implements Runnable {
                 Thread.sleep(1000);
 
                 /* --- Post MR95 to continue */
-                byteB = a.showZos(POSTMR95, threadName, "ACKG", arrayIn, dummyRc);
+                byteB = a.showZos(POSTMR95, threadName, "ACKG    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -210,7 +207,7 @@ class RunSupervisor implements Runnable {
                 }
                 
                 /* --- Now wait for MR95 to end --- */
-                byteB = a.showZos(WAITMR95, threadName, "TERM", arrayIn, dummyRc);
+                byteB = a.showZos(WAITMR95, threadName, "TERM    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -222,7 +219,7 @@ class RunSupervisor implements Runnable {
                 
                 /* Give the worker threads a poke to finish */
                 System.out.println(threadName + ":Notify worker tasks to end as application has terminated");
-                byteB = a.showZos(POSTMR95, threadName, "WRKT", arrayIn, dummyRc);
+                byteB = a.showZos(POSTMR95, threadName, "WRKT    ", arrayIn, dummyRc);
                 // only need first 16 (8 + 8) bytes
                 retHeader = Arrays.copyOfRange(byteB, 0, 16);
                 header = new String(retHeader, StandardCharsets.UTF_8);
@@ -270,11 +267,9 @@ class RunSupervisor implements Runnable {
     private Thread t;
     private String threadName;
     private Integer thrdNbr;
-    private Integer threadNbr;
     private String strin;
     private Integer lenout;
     private String strout;
-    private Integer thrdnbr;
     private String threadIdentifier;
     private Integer ntrace;
     private GvbRunInfo runinfo;
@@ -295,10 +290,16 @@ class RunSupervisor implements Runnable {
  public void run() {
     int flag = 0;
     int numberCalls = 0;
-    int waitrc = 0;
+    int waitrc = 0;                        // RC from WAIT
+    int exitRc = 0;                        // RC from user written Java method
+    int postrc = 0;                        // RC from POST
+    int dummyRc = 0;                       // Dummy Rc, e.g. sent to POST
+    int caller_ID = 0;
+    char flag1;
+    char flag2;
+    byte[] dummyRetPayload = {0,0,0,0};
     String waitreason;
-    int postrc = 0;
-    int dummyRc = 0;
+    String options;
     String workName;
     String javaClass;
     String methodName;
@@ -307,21 +308,20 @@ class RunSupervisor implements Runnable {
     byte[] retHeader = null;
     String header = null;
     byte[] payload = null;
+    String payloadASC = null;
     byte[] returnPayload = null;
+    String returnPayloadASC = null;
     String strMR95 = "MR95";
     String strUR70 = "UR70";
-    byte[] arrayMR95 = strMR95.getBytes(); // major part of WAIT reason
-    byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason
+    byte[] arrayMR95 = strMR95.getBytes(); // major part of WAIT reason code is invoker (GVBMR95)
+    byte[] arrayUR70 = strUR70.getBytes(); // major part of WAIT reason code is invoker (GVBUR70 generalized API  )
     byte[] arrayReason = null;
 
+    GVBCLASSLOADER javaClassLoader = new GVBCLASSLOADER();
     zOSInfo a = new zOSInfo();
     GVBA2I b = new GVBA2I();
-    BinaryUnsignedIntField bui = new BinaryUnsignedIntField( 0 );
-    
-    GVBCLASSLOADER5 javaClassLoader5 = new GVBCLASSLOADER5();
-    GVBCLASSLOADER6 javaClassLoader6 = new GVBCLASSLOADER6();
 
-    GvbX95PJ  X95 = new GvbX95PJ(0, 0, null, 0, null, null); // for MR95 use
+    GvbX95PJ X95 = new GvbX95PJ(0, 0, null, 0, null, null); // for MR95 use
 
     threadIdentifier = String.format("%6s%04d", threadName, thrdNbr);
     System.out.println(threadIdentifier + ":Running");
@@ -329,36 +329,51 @@ class RunSupervisor implements Runnable {
     String thisThrd = String.format("%04d", thrdNbr);
  
     do {
-        int exitRc = 0;
+        exitRc = 0;   // Reset each time variables
+        flag1  = ' ';
+        flag2  = ' ';
+        
+        options  = String.format("%04d%c%c  ", thrdNbr, flag1, flag2); // made of thread number, i.e. "0001" and 4 bytes of flags
 
-        byteB = a.showZos(WAITMR95, threadIdentifier, thisThrd, arrayIn, dummyRc);
+        byteB = a.showZos(WAITMR95, threadIdentifier, options, arrayIn, dummyRc);
 
+        // In this situation we can do nothing other than terminate the daemon
         if (byteB.length < 136) {
-          System.out.println("byteB length insufficient when returning from WAIT: " + byteB.length + ". Worker thread completing");
-          returnPayload = null;
-          byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-          flag = 1;
-          break;
+          System.out.println(threadIdentifier + ":Request byteB length insufficient when returning from WAIT: " + byteB.length);
+          System.out.println(threadIdentifier + ":Cannot continue. Notify worker tasks to end");
+          byteB = a.showZos(POSTMR95, threadIdentifier, "WRKT    ", arrayIn, dummyRc);
+          // only need first 16 (8 + 8) bytes
+          retHeader = Arrays.copyOfRange(byteB, 0, 16);
+          header = new String(retHeader, StandardCharsets.UTF_8);
+          postrc = b.doAtoi(header, 0, 8);
+          if (ntrace > 1 ) {
+            System.out.println(threadIdentifier + ":POSTMR95 option WRKT returned with rc: " + postrc);
+          }
+          break; //exit the loop immediately
         }
 
-        retHeader = Arrays.copyOfRange(byteB, 0, 136); // Full length of Pass2Struct
+        retHeader = Arrays.copyOfRange(byteB, 0, 136);     // Full length of Pass2Struct
         header = new String(retHeader, StandardCharsets.UTF_8);
         waitrc = b.doAtoi(header, 0, 8);
-        waitreason = header.substring( 8, 16);
+        waitreason = header.substring( 8, 12); // major part of reason code: caller
+        flag1     = header.charAt(12);                       // Minor part of reason code: flags
+        flag2     = header.charAt(13);
+        options  = String.format("%04d%c%c  ", thrdNbr, flag1, flag2); // made of thread number and 4 bytes of flags
+
 
         if (ntrace > 1) {
-          System.out.println(threadIdentifier + ":WAIT returned with rc: " + waitrc + " reason: " + waitreason);
+          System.out.println(threadIdentifier + ":WAIT returned with rc: " + waitrc + " reason: " + waitreason + " flag1: " + flag1 + " flag2: " +flag2);
           System.out.println(threadIdentifier + ":Header: " + header.substring(0,80) + "(length: " + retHeader.length + ") bytes: " + byteB.length);
         }
 
         switch ( waitrc ) {
-          // GVBMR95 has completed
+          // ASM/3GL/etc application has completed
           case 2:
             System.out.println(threadIdentifier + ":Calling application has terminated. Worker thread completing");
             flag = 1;
             break;
 
-          // a request from GVBMR95
+          // Process request from ASM/3GL/etc application
           case 4:
             /* obtain class and method names */
             workName = header.substring(16, 48);
@@ -368,126 +383,193 @@ class RunSupervisor implements Runnable {
 
             /* Process the request */
             numberCalls = numberCalls + 1;
+            arrayReason = waitreason.getBytes(); // major part of WAIT reason
 
-            arrayReason = waitreason.getBytes(); // major+minor part of WAIT reason
-
-            // When request comes from GVBMR95 logic path
-            if ((Arrays.equals(arrayReason, 0, 4, arrayMR95, 0, 4)) && (byteB.length > 148)) {
-              int lrID = 0;
-              int thrdNo = 0;
-              int viewID = 0;
-              String phase = null;
-              String processDateTime = null;
-              String startupParms = null;
-              byte[] lr = null;
-              byte[] genparm_digits = null;
-      
-              lr = Arrays.copyOfRange(byteB, 144, 148);            // The LRID
-              genparm_digits = Arrays.copyOfRange(byteB, 136, 144);
-              payload = Arrays.copyOfRange(byteB, 148, byteB.length); // The value of the key as hex
-
-              if (ntrace > 1) {
-                System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
-                System.out.print(threadIdentifier + ":Request payload: ");
-                int maxI = Math.min(48,payload.length);
-                for (int i = 0; i < maxI; i++)
-                {
-                    System.out.print(String.format("%02X", payload[i]));
-                }
-                System.out.println();
-              }
-
-              lrID = bui.getInt(lr);                                       // Ths LRID as Java number
-              thrdNo = bui.getInt(genparm_digits);                         // The thread number as Java number
-              viewID = bui.getInt(genparm_digits, 4);                      // The view ID as Java number
-              phase = header.substring(80, 82);
-              processDateTime = header.substring(82, 96);
-              startupParms = header.substring(98, 136);
-
-              if (ntrace > 1) {
-                System.out.println(threadIdentifier +  ":lrID: " + lrID + " MR95thrd#: " + thrdNo + " View: " + viewID + " Phase: " + phase + " Proctime: " + processDateTime + " Startup: " + startupParms);
-              }
-
-              X95.setLrID(lrID);
-              X95.setThrdNo(thrdNo);
-              X95.setPhase(phase);
-              X95.setViewID(viewID);
-              X95.setProcessDateTime(processDateTime);
-              X95.setStartupParms(startupParms);
-
-              ReturnData returnData = javaClassLoader6.invokeClassMethod(javaClass, methodName, X95, payload);
-              returnPayload = returnData.getPayload();
-              exitRc = returnData.getRc();
-
-              if (ntrace > 1 ) {
-                System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
-                System.out.print(threadIdentifier + ":Return payload:  ");
-                for (int i = 0; i < returnPayload.length; i++)
-                {
-                    System.out.print(String.format("%02X", returnPayload[i]));
-                }
-                System.out.println();
-              }
-
-              byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-              retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
-              header = new String(retHeader, StandardCharsets.UTF_8);
-              postrc = b.doAtoi(header, 0, 8);
-              if (postrc != 0) {
-                System.out.println(threadIdentifier + ":POSTMR95 " + thisThrd + " returned with rc: " +  postrc);
-              }
-  
-            // When request comes from GVBUR70 logic path 
+            // Identity of caller... an add more caller_ID's
+            if (Arrays.equals(arrayReason, 0, 4, arrayMR95, 0, 4)) {
+              caller_ID = 1;
             } else {
-                if (Arrays.equals(arrayReason, 0, 4, arrayUR70, 0, 4)) {
-                  payload = Arrays.copyOfRange(byteB, 136, byteB.length);
-
-                  if (ntrace > 1) {
-                    System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
-                    System.out.print(threadIdentifier + ":Request payload: ");
-                    int maxI = Math.min(48,payload.length);
-                    for (int i = 0; i < maxI; i++)
-                    {
-                        System.out.print(String.format("%02X", payload[i]));
-                    }
-                    System.out.println();
-                  }
-
-                  returnPayload = javaClassLoader5.invokeClassMethod(javaClass, methodName, payload);
-
-                  if (ntrace > 1 ) {
-                    System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
-                    System.out.print(threadIdentifier + ":Return payload:  ");
-                    for (int i = 0; i < returnPayload.length; i++)
-                    {
-                        System.out.print(String.format("%02X", returnPayload[i]));
-                    }
-                    System.out.println();
-                  }
-
-                  byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-                  retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
-                  header = new String(retHeader, StandardCharsets.UTF_8);
-                  postrc = b.doAtoi(header, 0, 8);
-                  if (postrc != 0) {
-                    System.out.println(threadIdentifier + ":POSTUR70 " + thisThrd + " returned with rc: " +  postrc);
-                  }
-
-                } else { // this needs to involve a posted as well !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                  System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
-                  returnPayload = null;
-                  byteB = a.showZos(POSTMR95, threadIdentifier, thisThrd, returnPayload, exitRc);
-                  flag = 1;
-                }
+              if (Arrays.equals(arrayReason, 0, 4, arrayUR70, 0, 4)) {
+                caller_ID = 2;
+              } else {
+                caller_ID = 0; // unrecognized
+              }
             }
+
+            // Process request types
+            switch ( caller_ID ) {
+              // When request comes from GVBMR95 logic path
+              case 1:
+                if (byteB.length <= 148) {
+                  System.out.println(threadIdentifier + ":GVBMR95 request is too short to be valid, VIEW disabled");
+                  exitRc = 12;            // Too short to be valid request, disable view
+                  returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+
+                } else {                  // valid request length. Try to call GvbX95process method requiring JZOS
+
+                  X95 =javaClassLoader.invokeClassMethod("GvbX95process", "GvbX95prepare",
+                                                         X95, header, byteB, threadIdentifier, ntrace);
+                  if (X95 == null) {
+                    System.out.println(threadIdentifier + ":Class GvbX95process not found. Cannot process GVBMR95 request, VIEW disabled");
+                    exitRc = 12;          // Class GvbX95process not available, disable view: RC = 12
+                    returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+
+                  } else {                // Required class GvbX95process is available
+
+                    payload = Arrays.copyOfRange(byteB, 148, byteB.length);
+ 
+                    if (ntrace > 1) {
+                      System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
+                      System.out.print(threadIdentifier + ":Request payload: ");
+                      int maxI = Math.min(48,payload.length);
+                      for (int i = 0; i < maxI; i++)
+                      {
+                          System.out.print(String.format("%02X", payload[i]));
+                      }
+                      System.out.println();
+                    }
+
+                    // Try to call user specified classs and method
+                    ReturnData returnData = javaClassLoader.invokeClassMethod(javaClass, methodName, X95, payload);
+
+                    if (returnData == null) {
+                      System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, VIEW disabled");
+                      exitRc = 12;        // User's class method not available, disable view: RC = 12
+                      returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+
+                    } else {              // user's Java was invoked successfully}
+
+                      returnPayload = returnData.getPayload();
+                      exitRc = returnData.getRc();
+
+                      if (ntrace > 1 ) {
+                        System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                        System.out.print(threadIdentifier + ":Return payload:  ");
+                        for (int i = 0; i < returnPayload.length; i++)
+                        {
+                          System.out.print(String.format("%02X", returnPayload[i]));
+                        }
+                        System.out.println();
+                      }
+                    }
+                  }
+                }
+
+                byteB = a.showZos(POSTMR95, threadIdentifier, options, returnPayload, exitRc);
+                retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+                header = new String(retHeader, StandardCharsets.UTF_8);
+                postrc = b.doAtoi(header, 0, 8);
+                if (postrc != 0) {
+                  System.out.println(threadIdentifier + ":POSTMR95 " + thisThrd + " returned with rc: " +  postrc);
+                }
+                break;
+
+              // When request comes from GVBUR70 logic path 
+              case 2:
+                payload = Arrays.copyOfRange(byteB, 136, byteB.length);
+
+                if (ntrace > 1) {
+                  System.out.println(threadIdentifier + ":Class: " + javaClass + " Method: " + methodName + " Payload length: " + payload.length );
+                  System.out.print(threadIdentifier + ":Request payload: ");
+                  int maxI = Math.min(48,payload.length);
+                  for (int i = 0; i < maxI; i++)
+                  {
+                      System.out.print(String.format("%02X", payload[i]));
+                  }
+                  System.out.println();
+                }
+
+                // Try to call user specified classs and method (translation requested)
+                if ( flag2 == '1')
+                {
+                  payloadASC = new String(payload, StandardCharsets.UTF_8);
+                  returnPayloadASC = javaClassLoader.invokeClassMethod(javaClass, methodName, payloadASC);
+                  if (returnPayloadASC == null) {
+                    System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
+                    exitRc = -1;      // User's class method not available, ensure this is known
+                    returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+                  } else {            // User's Java was invoked successfully}
+                    exitRc = 0;       // The only Java Rc returned from methods for UR70 calls for now
+                    returnPayload = returnPayloadASC.getBytes(StandardCharsets.UTF_8);
+                    payloadASC = null;
+                    returnPayloadASC = null;
+                    if (ntrace > 1 ) {
+                      System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                      System.out.print(threadIdentifier + ":Return payload:  ");
+                      for (int i = 0; i < returnPayload.length; i++)
+                      {
+                        System.out.print(String.format("%02X", returnPayload[i]));
+                      }
+                      System.out.println();
+                    }
+                  }
+
+                // Try to call user specified classs and method (no translation to/from ASCII)
+                } else {
+
+                  returnPayload = javaClassLoader.invokeClassMethod(javaClass, methodName, payload);
+                  if (returnPayload == null) {
+                    System.out.println(threadIdentifier + ":Class " +  javaClass + " method " + methodName + " not found, cannot be executed");
+                    exitRc = -1;      // User's class method not available, ensure this is known
+                    returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+                  } else {            // User's Java was invoked successfully}
+                    exitRc = 0;       // The only Java Rc returned from methods for UR70 calls for now
+                    if (ntrace > 1 ) {
+                      System.out.println(threadIdentifier + ":Back from " + methodName + ": exitRc = " + exitRc + " Return payload length: " + returnPayload.length);
+                      System.out.print(threadIdentifier + ":Return payload:  ");
+                      for (int i = 0; i < returnPayload.length; i++)
+                      {
+                        System.out.print(String.format("%02X", returnPayload[i]));
+                      }
+                      System.out.println();
+                    }
+                  }
+                }
+                
+                byteB = a.showZos(POSTMR95, threadIdentifier, options, returnPayload, exitRc);
+                retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+                header = new String(retHeader, StandardCharsets.UTF_8);
+                postrc = b.doAtoi(header, 0, 8);
+                if (postrc != 0) {
+                  System.out.println(threadIdentifier + ":POSTUR70 " + thisThrd + " returned with rc: " +  postrc);
+                }
+                break;
+
+              default:
+                System.out.println(threadIdentifier + ":Unrecognized request -- WAIT reason: " + waitreason + ". Worker thread completing");
+                returnPayload = Arrays.copyOfRange(dummyRetPayload,0,dummyRetPayload.length);
+                exitRc = -2;
+
+                byteB = a.showZos(POSTMR95, threadIdentifier, options, returnPayload, exitRc);
+                retHeader = Arrays.copyOfRange(byteB, 0, 16); // only need first 16 bytes (Return + Reason code)
+                header = new String(retHeader, StandardCharsets.UTF_8);
+                postrc = b.doAtoi(header, 0, 8);
+                if (postrc != 0) {
+                  System.out.println(threadIdentifier + ":POSTXXXX " + thisThrd + " returned with rc: " +  postrc);
+                }
+                break;
+
+            }   // end switch ( caller_ID )
             break;
           
           default:
-            System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT" + waitrc + ". Worker thread completing");
+            System.out.println(threadIdentifier + ":Unrecognized return code when returning from WAIT: " + waitrc + ". Worker thread completing");
+            System.out.println(threadIdentifier + ":Cannot continue. Notify worker tasks to end");
+            byteB = a.showZos(POSTMR95, threadIdentifier, "WRKT    ", arrayIn, dummyRc);
+            // only need first 16 (8 + 8) bytes
+            retHeader = Arrays.copyOfRange(byteB, 0, 16);
+            header = new String(retHeader, StandardCharsets.UTF_8);
+            postrc = b.doAtoi(header, 0, 8);
+            if (ntrace > 1 ) {
+              System.out.println(threadIdentifier + ":POSTMR95 option WRKT returned with rc: " + postrc);
+            }
             flag = 1;
-            break;
-        }
+            break; //exit the loop immediately
+
+        }   // end switch( waitrc )
+
     } while (flag == 0);
+
     System.out.println(threadIdentifier + ":Notified to exit");
     
     try {
@@ -564,7 +646,7 @@ public class GvbJavaDaemon {
       System.out.println("GvbJavaDaemon trace level: " + trace);
 
       /* --- Call program to initialize communication memory --- */
-      byteB = a.showZos(RUNMAIN, ThreadName, "OPTS", arrayIn, dummyRc);
+      byteB = a.showZos(RUNMAIN, ThreadName, "OPTS    ", arrayIn, dummyRc);
       retHeader = Arrays.copyOfRange(byteB, 0, 16);
       header = new String(retHeader, StandardCharsets.UTF_8);
       rc = b.doAtoi(header, 0, 8);

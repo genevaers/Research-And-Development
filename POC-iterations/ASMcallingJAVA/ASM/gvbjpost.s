@@ -190,19 +190,36 @@ MAIN_116 EQU   *
          MH    R2,=Y(CTRLEN)     Offset required
          AR    R5,R2             Point to individual CTR
 *
-         LG    R14,CTRMEMIN
-         LG    R1,PAADDR1
-         CLC   PALEN1,CTRLENIN
-         JNL   A0026
-         LG    R15,PALEN1                LENGTH
+         LG    R14,CTRMEMIN      Target == caller's receive buffer
+         LG    R1,PAADDR1        Source == data returned by Java
+*
+         CLC   PALEN1,CTRLENIN   Will message be truncated ?
+         JH    A0026             Yes, go 
+         XC    CTRLNREQ,CTRLNREQ Message is not truncated: clear
+         LG    R15,PALEN1        LENGTH is actual length data from Java
          J     A0027
 A0026    EQU   *
-         LG    R15,CTRLENIN              LENGTH
+         LG    R0,PALEN1
+         ST    R0,CTRLNREQ       Actual required length to not truncate
+         LG    R15,CTRLENIN      LENGTH is max allowable length 
 A0027    EQU   *
-         LG    R0,PARETC
+         STG   R15,CTRLENIN      Indicate how much is actually returned
+         LTR   R15,R15           Does it amount to positive length ?
+         JNP   A0028             No, go
+*
+         LA    R15,255(,R15)     Copy 256 byte segments
+         SRLG  R0,R15,8          Plus remaining bytes less than 256
+         J     NEXTMVC1          If l'msg < 256 goes only to EXRL
+NEXTMVC0 EQU   *
+         MVC   0(256,R14),0(R1)  MOVE     256 BYTES
+         LA    R1,256(,R1)       ADVANCE  SOURCE
+         LA    R14,256(,R14)     ADVANCE  TARGET
+NEXTMVC1 BRCT  R0,NEXTMVC0
+         EXRL  R15,MVCR14R1       COPY  REMAINDER
+*
+A0028    EQU   *
+         LG    R0,PARETC         Give back return code from Java method
          ST    R0,CTRJRETC
-         AGHI  R15,-1
-         EXRL  R15,MVCR14R1
          POST  CTRECB2           POST reply ECB on which MR95 waits
          J     A0180
 *
@@ -269,23 +286,15 @@ DONEDONE EQU   *                         RETURN TO CALLER
 *
          DS    0D
 MVCR14R1 MVC   0(0,R14),0(R1)     * * * * E X E C U T E D * * * *
-         DS    0D
-CLCR1R14 CLC   0(0,R1),0(R14)     * * * * E X E C U T E D * * * *
 *
 *        CONSTANTS
 *
-H1       DC    H'1'
-H4       DC    H'4'
-H255     DC    H'255'
-F04      DC    F'04'
-F40      DC    F'40'
-F4096    DC    F'4096'
 CTTEYEB  DC    CL8'GVBCTTAB'
 TKNNAME  DC    CL8'GVBJMR95'
 GENEVA   DC    CL8'GENEVA'
 TOKNPERS DC    F'0'                    TOKEN PERSISTENCE
-TOKNLVL1 DC    A(1)                    NAME/TOKEN  AVAILABILITY  LEVEL
-TOKNLVL2 DC    A(2)                    NAME/TOKEN  AVAILABILITY  LEVEL
+TOKNLVL1 DC    A(1)                    NAME/TOKEN  AVAILABILITY  TCB
+TOKNLVL2 DC    A(2)                    NAME/TOKEN  AVAILABILITY  ASCB
 *
          DS   0D
 MODE31   EQU   X'8000'

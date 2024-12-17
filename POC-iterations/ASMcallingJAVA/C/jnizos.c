@@ -65,6 +65,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
     long         fid;
     char        *passarea;             /* ptr to parms    */
     char        *passarea2;            /* ptr to ret header*/
+    char        *payloadin;            /* for UTF-8 convert*/
     const char  *msg; 
     PassStruct  *pStruct;
     Pass2Struct *pStruct2;
@@ -80,7 +81,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
     memset(passarea, 0, sizeof(PassStruct)); /* Clear area  */
     pStruct = (PassStruct*)passarea;
 
-    memcpy(pStruct->anchor, TheAnchor, 8);   /* sorage anchor (static) */
+    memcpy(pStruct->anchor, TheAnchor, 8);   /* storage anchor (static)*/
     pStruct->retcd = methodRc;  /* if rc being sent back, i.e. on post */
 
     /* ----- Get character representation of function -----*/
@@ -90,19 +91,31 @@ Java_zOSInfo_showZos(JNIEnv   *env
     msg=(*env)->GetStringUTFChars(env,jParm,0); 
     __atoe((char*) msg);                     
     (*env)->ReleaseStringUTFChars(env, jParm, msg);
-    memcpy(pStruct->thread, msg, 10);        /* Put parm in     */
+    memcpy(pStruct->thread, msg, 10);        /* Put parm in*/
 
     /* --- Get the Jopt input, and convert to EBCDIC  ---- */
     msg=(*env)->GetStringUTFChars(env,jOpt,0); 
     __atoe((char*) msg);                     
     (*env)->ReleaseStringUTFChars(env, jOpt, msg);
     memcpy(pStruct->opt, msg, 8);     /* Put options in  */
+    pStruct->flag1   = pStruct->opt[4];
+    pStruct->flag2   = pStruct->opt[5];
 
     /* --- Get addressability to byte arrayin --- */
     bufferPtr = (*env)->GetByteArrayElements(env, arrayin, NULL);
     len1      = (*env)->GetArrayLength(env, arrayin);
     pStruct->length1 = len1;
     pStruct->addr1   = bufferPtr;
+
+    switch ( pStruct->flag2 ) {
+      /* these cases provide EBCDIC translation of information returned from Java */
+      case '1':
+        bufferPtr[len1-1] = 0;                 /* enforce end of string character */
+        __atoe(bufferPtr);
+        break;
+      default:
+        break;
+    }
 
     /* --- Get header portion of return data ---- */
     passarea2 = malloc(sizeof(Pass2Struct) + 1); /*leave a null at end*/
@@ -112,10 +125,11 @@ Java_zOSInfo_showZos(JNIEnv   *env
     pStruct2 = (Pass2Struct*)passarea2;
 
     #ifdef GVBDEBUG
-      printf("%0.10s:Fid %d(%0.8s-%0.4s) pStruct->length1 %d pStruct->length2 %d Common Anchor: %0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x\n",
+      printf("%0.10s:Fid %d(%0.8s-%0.4s) pStruct->length1 %d pStruct->length2 %d Common Anchor: %0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x Flag1: %c Flag2: %c\n",
               pStruct->thread, fid,pStruct->func, pStruct->opt, pStruct->length1, pStruct->length2,
               pStruct->anchor[0], pStruct->anchor[1], pStruct->anchor[2], pStruct->anchor[3], 
-              pStruct->anchor[4], pStruct->anchor[5], pStruct->anchor[6], pStruct->anchor[7]);
+              pStruct->anchor[4], pStruct->anchor[5], pStruct->anchor[6], pStruct->anchor[7],
+              pStruct->flag1, pStruct->flag2);
     #endif
 
     #ifdef _LP64                             
@@ -168,7 +182,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
 
           case 2:                             /*Waiting and got */
             memcpy(passarea2, "00000002", 8); /*termination post*/
-            memcpy(passarea2+8, "POSTEDT ", 8);
+            memcpy(passarea2+8, "PSTT    ", 8);
             #ifdef GVBDEBUG
               printf("%0.10s:Fid %d(%0.8s-%0.4s) POST for terminate received\n", pStruct->thread, fid, pStruct->func, pStruct->opt);
             #endif
@@ -178,7 +192,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
             memcpy(passarea2, "00000004", 8); /* work to do     */
 /*          memcpy(passarea2+8, "XXXXYYYY", 8); indicates nature*/
             #ifdef GVBDEBUG
-              printf("%0.10s:Fid %d(%0.8s-%0.4s) POST for work received from: %0.8s\n",
+              printf("%0.10s:Fid %d(%0.8s-%0.4s) POST for work received from: %0.4s\n",
                 pStruct->thread, fid, pStruct->func, pStruct->opt, pStruct2->reasonCD);
             #endif
             break;
@@ -192,7 +206,7 @@ Java_zOSInfo_showZos(JNIEnv   *env
               pStruct2->u.additions1);
             #endif
             memcpy(passarea2, "00000006", 8); /* GvbJavaDaemon posted to GO with 'n' threads */
-            memcpy(passarea2+8, "POSTEDG ", 8);
+            memcpy(passarea2+8, "PSTG    ", 8);  /* Application/GVBMR95: posted for GO       */
             printf("%0.10s:Fid %d(%0.8s-%0.4s) Posted for GO with %d Java thread(s) requested\n",
                     pStruct->thread, fid, pStruct->func, pStruct->opt, (long) pStruct2->u.additions1);
             sprintf(pStruct2->u.resultant,"%0.4d",pStruct2->u.additions1);
@@ -290,79 +304,108 @@ Java_zOSInfo_showZos(JNIEnv   *env
 
     (*env)->ReleaseByteArrayElements(env, arrayin, bufferPtr, JNI_ABORT);
 
-   /* ---- Deal with various WAIT outcomes and return byte array ----- */
-   /* --- pStruct->length2 now contains length of actual sent data --- */
-   /* --- pStruct->addr2 now contains address of actual sent data  --- */
-   if ( 2 == fid ) {                          /* --- wait function --- */
+    /* ---- Deal with various WAIT outcomes and return byte array ----- */
+    /* --- pStruct->length2 now contains length of actual sent data --- */
+    /* --- pStruct->addr2 now contains address of actual sent data  --- */
+    if ( 2 == fid )                            /* --- wait function --- */
+    {
+      switch ( pStruct->flag1 ) {
+        /* ------ GVBMR95 logic path to invoke Java method ------ */
+        case 'M':
+          #ifdef GVBDEBUG
+          printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d data length: %d l'passarea2: %d l'genparm_digits: %d reasonCD: %0.8s\n",
+          pStruct->thread,fid,pStruct->func,pStruct->opt,rc,pStruct->length2,sizeof(Pass2Struct),sizeof(genparm_digits),pStruct2->reasonCD);
+          #endif
 
-     /* ------ GVBMR95 logic path to invoke Java method ------ */
-     if (0 == strncmp(pStruct2->reasonCD, "MR95", 4)) {
-       #ifdef GVBDEBUG
-         printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d data length: %d l'passarea2: %d l'genparm_digits: %d caller: %0.8s\n",
-         pStruct->thread,fid,pStruct->func,pStruct->opt,rc,pStruct->length2,sizeof(Pass2Struct),sizeof(genparm_digits),pStruct2->reasonCD);
-       #endif
+          ret = (*env)->NewByteArray (env, sizeof(Pass2Struct) + sizeof(genparm_digits) + pStruct->length2);
 
-       ret = (*env)->NewByteArray (env, sizeof(Pass2Struct) + sizeof(genparm_digits) + pStruct->length2);
+          /* --- assign gp fields ---------------------------- */
+          pEnva = (Genenv*) pStruct->genparms.gpenva;
+          memcpy(pStruct2->gpphase, pEnva->phase, 2);
+          memset(pStruct2->gpdatetime, 64, 16);
+          memcpy(pStruct2->gpdatetime, pEnva->prdatetime, 14);
+          memcpy(pStruct2->gpstartupdata, pStruct->genparms.gpstarta, 32);
 
-       /* --- assign gp fields ---------------------------- */
-       pEnva = (Genenv*) pStruct->genparms.gpenva;
-       memcpy(pStruct2->gpphase, pEnva->phase, 2);
-       memset(pStruct2->gpdatetime, 64, 16);
-       memcpy(pStruct2->gpdatetime, pEnva->prdatetime, 14);
-       memcpy(pStruct2->gpstartupdata, pStruct->genparms.gpstarta, 32);
+          __etoa((char*) passarea2);
 
-       __etoa((char*) passarea2);
+          memcpy(&genparm_digits[2], pEnva->thrdno, 2);
+          memcpy(&genparm_digits[4], pEnva->view, 4);
 
-       memcpy(&genparm_digits[2], pEnva->thrdno, 2);
-       memcpy(&genparm_digits[4], pEnva->view, 4);
+          /* This is a request from MR95 to invoke a user exit -- so is there any actual data ? */
+          if ( pStruct->length2 > 0 ) {
+            (*env)->SetByteArrayRegion (env, ret, 0                                           , sizeof(Pass2Struct), (void *)passarea2);
+            (*env)->SetByteArrayRegion (env, ret, sizeof(Pass2Struct)                         , sizeof(genparm_digits), (void *)genparm_digits);
+            (*env)->SetByteArrayRegion (env, ret, sizeof(Pass2Struct) + sizeof(genparm_digits), pStruct->length2, (void *)pStruct->genparms.gpkeya);
+          }
+          else {
+            (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2); 
+          }
+          break;
 
-       /* This is a request from MR95 to invoke a user exit */
-       if ( pStruct->length2 > 0 ) {
-         (*env)->SetByteArrayRegion (env, ret, 0                                           , sizeof(Pass2Struct), (void *)passarea2);
-         (*env)->SetByteArrayRegion (env, ret, sizeof(Pass2Struct)                         , sizeof(genparm_digits), (void *)genparm_digits);
-         (*env)->SetByteArrayRegion (env, ret, sizeof(Pass2Struct) + sizeof(genparm_digits), pStruct->length2, (void *)pStruct->genparms.gpkeya);
-       }
-       else {
-         (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2); 
-       }
-     }
+        /* ------ GVBUR70 logic path to invoke Java method ------ */
+        case 'U':
+          #ifdef GVBDEBUG 
+            printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d, data length: %d, l'passarea2: %d, reasonCD: %0.8s\n",
+                    pStruct->thread, fid, pStruct->func, pStruct->opt, rc, pStruct->length2, sizeof(Pass2Struct), pStruct2->reasonCD);
+          #endif
 
-     /* ------ GVBUR70 logic path to invoke Java method ------ */
-     else {
-       if (0 == strncmp(pStruct2->reasonCD, "UR70", 4)) {
-         #ifdef GVBDEBUG 
-           printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d, data length: %d, l'passarea2: %d, caller: %0.8s\n",
-                   pStruct->thread, fid, pStruct->func, pStruct->opt, rc, pStruct->length2, sizeof(Pass2Struct), pStruct2->reasonCD);
-         #endif
+          __etoa((char*) passarea2); /* reply header is always translated to UTF-8 for Java     */
 
-         ret = (*env)->NewByteArray (env, sizeof(Pass2Struct) + pStruct->length2);
-         __etoa((char*) passarea2);
+          /* This is a request from UR70 to invoke a user exit -- so is there any actual data ? */
+          if ( pStruct->length2 > 0 )
+          {
+            switch ( pStruct->flag2 )
+            {
+              /* these cases provide UTF-8 translation of information passed to Java     */
+              case '1':
+                payloadin = malloc(pStruct->length2 + 1);      /* for string ending byte */
+                memcpy(payloadin, (void *)pStruct->addr2, pStruct->length2);
+                payloadin[pStruct->length2] = 0;               /*'X\00'                  */
+                __etoa((char*) payloadin);
+                ret = (*env)->NewByteArray (env, sizeof(Pass2Struct) + pStruct->length2 + 1); 
+                (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
+                (*env)->SetByteArrayRegion (env, ret, sizeof(Pass2Struct), pStruct->length2 + 1, (void *)payloadin);
+                free(payloadin);
+                break;
 
-         if ( pStruct->length2 > 0 ) {
-           (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
-           (*env)->SetByteArrayRegion (env, ret, sizeof(Pass2Struct), pStruct->length2, (void *)pStruct->addr2);
-         }
-         else {
-           (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
-         }
-       }
-       /* ------ All other waits, for example thread termination or posted to GO indicating 'n' threads ------ */
-       else {
-         ret = (*env)->NewByteArray (env, sizeof(Pass2Struct) + pStruct->length2);
-         __etoa((char*) passarea2);
-         (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
-       }
-     }
-   }
+              /* no conversion of information passed to Java */    
+              default:
+                ret = (*env)->NewByteArray (env, sizeof(Pass2Struct) + pStruct->length2);
+                (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
+                (*env)->SetByteArrayRegion (env, ret, sizeof(Pass2Struct), pStruct->length2, (void *)pStruct->addr2);
+                break;
+            }
+          } else {
+            ret = (*env)->NewByteArray (env, sizeof(Pass2Struct));
+            (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
+          }
+          break;
 
-   /* ------------- Deal with all functions other than wait -------------- */
-   /* --- pStruct->length2 still contains length of Pass2Struct header --- */
-   /* --- pStruct->addr2 still contains address of Pass2Struct header  --- */
-   else {
-     ret = (*env)->NewByteArray (env, sizeof(Pass2Struct));
-     __etoa((char*) passarea2);
-     (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
-   }
+        /* ------ All other waits, for example terminate threads, or posted to GO indicating 'n' threads ------ */
+        default:
+          #ifdef GVBDEBUG 
+            printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d, data length: %d, l'passarea2: %d, reasonCD: %0.8s\n",
+                    pStruct->thread, fid, pStruct->func, pStruct->opt, rc, pStruct->length2, sizeof(Pass2Struct), pStruct2->reasonCD);
+          #endif
+
+          __etoa((char*) passarea2);
+          ret = (*env)->NewByteArray (env, sizeof(Pass2Struct) + pStruct->length2);
+          (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
+      }
+
+    /* ------------- Deal with all functions other than wait -------------- */
+    /* --- pStruct->length2 still contains length of Pass2Struct header --- */
+    /* --- pStruct->addr2 still contains address of Pass2Struct header  --- */
+    } else {
+      #ifdef GVBDEBUG 
+        printf("%0.10s:Fid %d(%0.8s-%0.4s) WAIT returns rc: %d, data length: %d, l'passarea2: %d, reasonCD: %0.8s\n",
+                pStruct->thread, fid, pStruct->func, pStruct->opt, rc, pStruct->length2, sizeof(Pass2Struct), pStruct2->reasonCD);
+      #endif
+
+      __etoa((char*) passarea2);
+      ret = (*env)->NewByteArray (env, sizeof(Pass2Struct));
+      (*env)->SetByteArrayRegion (env, ret, 0, sizeof(Pass2Struct), (void *)passarea2);
+    }
 
     free(passarea2);
     free(passarea);

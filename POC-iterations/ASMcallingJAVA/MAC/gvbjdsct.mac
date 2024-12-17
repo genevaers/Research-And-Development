@@ -59,24 +59,24 @@ CTRFLG1  DS    X               Flag 1 from GVBUR70 API
 CTRFLG2  DS    X               Flag 2 from GVBUR70 API
 CTRUR70W DS    XL4             Pointer to GVBUR70 workarea
 CTRJRETC DS    F               Provides exit return code to GVBMR95
-         DS    XL4                                        
+CTRLNREQ DS    XL4             Needed UR70LRCV if reply truncated(RC=4)
 CTRLEN   EQU   *-CTRAREA
 *
 *
-PARMSTR  DSECT                         Call control block
-PAFUN    DS    CL8                     Function code
-PAOPT    DS    CL8                     Option(s)
-PATHREAD DS    CL10                    Name of Java thread
+PARMSTR  DSECT               ==Call control block used by JNIZOS
+PAFUN    DS    CL8             Function code
+PAOPT    DS    CL8             Option(s)
+PATHREAD DS    CL10            Name of Java thread
 PAFLAG1  DS    X
 PAFLAG2  DS    X
 PASPARE  DS    XL52
-PALEN1   DS    D                       Length of data sent from ASM
-PALEN2   DS    D                       Length of data received by ASM
-PAADDR1  DS    D                       Address of data sent
-PAADDR2  DS    D                       Address of data received
-PARETC   DS    D                       Return code
-PAANCHR  DS    D                       Communications Tensor Table addr
-PAATMEM  DS    D                       Thread local 31 bit storage
-PAGENPA  DS    10D                     Genparm if called by GVBMR95
+PALEN1   DS    D               Length of data sent from ASM
+PALEN2   DS    D               Length of data received by ASM
+PAADDR1  DS    D               Address of data sent
+PAADDR2  DS    D               Address of data received
+PARETC   DS    D               Return code
+PAANCHR  DS    D               Communications Tensor Table addr
+PAATMEM  DS    D               Thread local 31 bit storage
+PAGENPA  DS    10D             Genparm if called by GVBMR95
 PARMLEN  EQU   *-PARMSTR
 *
