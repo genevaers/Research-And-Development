@@ -80,6 +80,8 @@ Enter "make -f SCRIPT/makegvbdll"
 
 There is also version of the script for building a debug version which provides detailed diagnostics: SCRIPT/makegvbdlld.
 
+### Pre-built load modules and libraries
+
 The GVBJDLL is available for download if you do not have the IBM C or compatible compiler. The download comprises the following XMIT files therefore avoiding having to build any of the MVS load modules or copy JCL, sources, etc.:
 
 "YOUR-TSO-PREFIX".GVBDEMOJ.ASM
@@ -174,7 +176,7 @@ LRCV : indicates the number of bytes available in the caller's receive buffer
 LRET : the return code from GVBUR70 (same as R15)
 ANCH : archor full word -- do not alter or reset this field
 JRET : return code from the Java method where available
-LREQ : if truncation of the received data occurs (LRET=4) this field indicates the receive buffer length required for get all the data
+LREQ : if truncation occurs (LRET=4) this field indicates the receive buffer length required for receive all the data
 ```
 
 Return codes are documented in the source code of GVBUR70.
