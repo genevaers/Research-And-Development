@@ -177,7 +177,7 @@ UR70LRCV: full word indicates the number of bytes available in the caller's rece
 UR70LRET: full word return code from GVBUR70 (same as R15)
 UR70ANCH: archor full word -- do not alter or reset this field
 UR70JRET: return code from the Java method, where available
-UR70LREQ: if truncation occurs (LRET=4) this field indicates the receive buffer length required for receive all the data
+UR70LREQ: if truncation occurs (LRET=4) this field indicates the receive buffer length required to receive all the data
 ```
 
 Return codes are documented in the source code of GVBUR70.
