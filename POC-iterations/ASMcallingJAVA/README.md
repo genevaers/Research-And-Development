@@ -100,7 +100,8 @@ The GVBJDLL is available for download if you do not have the IBM C or compatible
 
 The XMIT files should be downloaded and copied as BINARY files before a TSO RECEIVE is issued, for example:
 
-```//RECVSTEP EXEC PGM=IKJEFT01
+```
+//RECVSTEP EXEC PGM=IKJEFT01
 //SYSPRINT DD  SYSOUT=*
 //FROMF1   DD  DISP=SHR,DSN="YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB.XMIT
 //SYSTSPRT DD  SYSOUT=*
@@ -108,7 +109,8 @@ The XMIT files should be downloaded and copied as BINARY files before a TSO RECE
  PROFILE NOPREFIX
  RECEIVE INFILE(FROMF1)
  DSNAME('"YOUR-TSO-PREFIX".GVBDEMOJ.LOADLIB')
-//*```
+//*
+```
 
 ## Build GvbJavaDaemon
 
