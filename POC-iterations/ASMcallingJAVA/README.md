@@ -166,17 +166,18 @@ INIT: This function requests the initialization of the GVBUR70 interface and spe
 CALL: This function requests the invocation of a specified Java class and method and supplies a SEND and RECEIVE buffer to communicate data with Java.
 
 ```
-Flag1: character value 'U' must be specified to distinguish the caller from GVBMR95 Performance Engine
-Flag2: character value '0' means the payload data is transferred as-is without converting from EBCDIC to ASCII and back
-       character value '1' means the payload data is converted from EBCDIC to ASCII and back
-CLSS : specifies the Java class to be loaded
-METH : specifies the Java method to be executed
-LSED : indicates the length of the caller's send buffer in bytes
-LRCV : indicates the number of bytes available in the caller's receive buffer
-LRET : the return code from GVBUR70 (same as R15)
-ANCH : archor full word -- do not alter or reset this field
-JRET : return code from the Java method where available
-LREQ : if truncation occurs (LRET=4) this field indicates the receive buffer length required for receive all the data
+UR70VERS: version of GVBUR70 half word of 1.
+UR70FLG1: character value 'U' must be specified to distinguish the caller from GVBMR95 Performance Engine
+UR70FLG2: character value '0' means the payload data is transferred as-is without converting from EBCDIC to ASCII and back
+          character value '1' means the payload data is converted from EBCDIC to ASCII and back
+UR70CLSS: specifies the Java class to be loaded (32 bytes)
+UR70METH: specifies the Java method to be executed (32 bytes)
+UR70LSND: full word indicates the length of the caller's send buffer in bytes
+UR70LRCV: full word indicates the number of bytes available in the caller's receive buffer
+UR70LRET: full word return code from GVBUR70 (same as R15)
+UR70ANCH: archor full word -- do not alter or reset this field
+UR70JRET: return code from the Java method, where available
+UR70LREQ: if truncation occurs (LRET=4) this field indicates the receive buffer length required for receive all the data
 ```
 
 Return codes are documented in the source code of GVBUR70.
