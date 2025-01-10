@@ -108,7 +108,7 @@
 # Variables must be exported to be seen by the launcher.
 
 . /etc/profile
-. /u/<user-id>/ASMcallingJAVAprofile
+. /u/<your-user-id>/ASMcallingJAVAprofile
 
 LIBPATH=/lib:/usr/lib:"${JAVA_HOME}"/bin
 LIBPATH="$LIBPATH":"${JAVA_HOME}"/lib
