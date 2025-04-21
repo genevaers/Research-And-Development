@@ -1,0 +1,77 @@
+DEFINE DATA LOCAL                 
+1 #UR70-PARAMETER-AREA      (B112)
+1 REDEFINE #UR70-PARAMETER-AREA   
+2  #UR70-VERSION              (I2)
+2  #UR70-FLAG1                (B1)
+2  #UR70-FLAG2                (B1)
+2  #UR70-FUNCTION             (A8)
+2  #UR70-OPTIONS              (A8)
+2  REDEFINE #UR70-OPTIONS         
+3    #UR70-OPTION1            (I2)
+3    #UR70-SPARE              (B6)
+2  #UR70-CLASS               (A32)
+2  #UR70-METHOD              (A32)
+2  #UR70-LEN-SEND             (I4)
+2  #UR70-LEN-RECV             (I4)
+2  #UR70-LEN-RETN             (I4)
+2  #UR70-RETC                 (I4)
+2  #UR70-ANCHOR               (B4)
+2  #UR70-JRETC                (I4)
+2  #UR70-LREQD                (I4)
+1 #UR70-A10-SEND-AREA        (A20)
+1 #UR70-A22-RECV-AREA        (A22)
+1 #UR70-MSGTXT               (A80)                                               
+1 #UR70-VALUE-SUCCESSFUL     (I4) INIT <0>                                       
+END-DEFINE                                                                       
+*                                                                                
+WRITE 'HELLO'                                                                    
+*                                                                                
+WRITE 'TESTUR70 SETTING SUBTASK(S)'                                              
+*                                                                                
+MOVE +0                        TO #UR70-ANCHOR                                   
+MOVE +1                        TO #UR70-VERSION                                  
+MOVE 'U'                       TO #UR70-FLAG1                                    
+MOVE '0'                       TO #UR70-FLAG2                                    
+MOVE 'INIT    '                TO #UR70-FUNCTION                                 
+MOVE +1                        TO #UR70-OPTION1                                  
+MOVE +0                        TO #UR70-RETC                                     
+*                                                                                
+CALL 'GVBUR70'          #UR70-PARAMETER-AREA                                     
+                        #UR70-A10-SEND-AREA                                      
+                        #UR70-A22-RECV-AREA                                      
+                        #UR70-MSGTXT                                             
+*                                                                                
+IF #UR70-RETC NOT = #UR70-VALUE-SUCCESSFUL                                       
+  WRITE 'SET SUBTASKS FAILED, RET CD = ' #UR70-RETC ' FUNCTION = ' #UR70-FUNCTION
+END-IF                                                                           
+*                                                                                
+WRITE 'TESTUR70 CALLING CLASS|METHOD'                                                 
+*                                                                                     
+MOVE +1                                 TO #UR70-VERSION                              
+MOVE 'U'                                TO #UR70-FLAG1                                
+MOVE '0'                                TO #UR70-FLAG2                                
+MOVE 'CALL    '                         TO #UR70-FUNCTION                             
+MOVE '        '                         TO #UR70-OPTIONS                              
+MOVE 'MyClass                         ' TO #UR70-CLASS                                
+MOVE 'Method1                         ' TO #UR70-METHOD                               
+MOVE +20                                TO #UR70-LEN-SEND                             
+MOVE +22                                TO #UR70-LEN-RECV                             
+MOVE +0                                 TO #UR70-RETC                                 
+*                                                                                     
+MOVE '0123456789'       TO #UR70-A10-SEND-AREA                                        
+* MOVE '0123456789'       TO #UR70-A80-SEND-AREA                                      
+*                                                                                     
+CALL 'GVBUR70'          #UR70-PARAMETER-AREA                                          
+                        #UR70-A10-SEND-AREA                                           
+                        #UR70-A22-RECV-AREA                                           
+                        #UR70-MSGTXT                                                  
+*                                                                                     
+IF #UR70-RETC NOT = #UR70-VALUE-SUCCESSFUL                                            
+  WRITE 'CALL CLASS METHOD FAILED, RET CD = ' #UR70-RETC ' FUNCTION = ' #UR70-FUNCTION
+ELSE                                                                                  
+  WRITE 'RECV:' #UR70-A22-RECV-AREA                                                   
+    WRITE 'UR70-JRETC = ' #UR70-JRETC
+  WRITE 'UR70-LREQD = ' #UR70-LREQD
+END-IF                             
+WRITE 'DONE!!'                     
+.                                  
