@@ -265,7 +265,8 @@ G0010    EQU   *
 MAIN_115 EQU   *
          LAY   R1,WKDDPRML
          ST    R1,WKEPARMA
-         LAY   R1,WKEPARMA
+         OI    WKEPARMA,X'80'       Indicate end of parm list otherwise
+         LAY   R1,WKEPARMA          Natural will complain.
          L     R15,GVBMR95E         This may not store 64 bit registers
          BASR  R14,R15                                 only 31 bit !!!!
          ST    R15,WKEXECRC
