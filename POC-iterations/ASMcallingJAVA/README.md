@@ -2,7 +2,7 @@
 
 The motivation for this POC iteration is to enable GenevaERS views (i.e. program) to call Java written "lookup" exits efficiently from the GenevaERS Performance Engine. For example, being able to write GenevaERS exits in Java rather than just assembler or 3GL increases its access to programmers. The Java "lookup" exit is a method or collection of methods in a Java class, and it is loaded dynamically. The JVM is started only once regardless of how many times Java is called.
 
-However, after being successful at achieving this goal, the solution was generalized to allow any single or multi-threaded program written in assembler, 3GL or 4GL to call Java. This is exposed by the GVBUR70 interface (API) provided here. Two installation verification programs (IVP) are included, one written in assembler and another COBOL (see Generalized Interface to Java - below). This facility is independent of installing GenevaERS Performance Engine.
+However, after being successful at achieving this goal, the solution was generalized to allow any single or multi-threaded program written in assembler, 3GL or 4GL to call Java. This is exposed by the GVBUR70 interface (API) provided here. Three different installation verification programs (IVP) are included in assembler, NATURAL and COBOL (see Generalized Interface to Java - below). This facility is independent of installing GenevaERS Performance Engine.
 
 ## Example GenevaERS Java lookup exit (Java class and methods)
 
@@ -12,7 +12,7 @@ The class and method names are specified in a small assembler stub exit (GVBJLEN
 
 ## Generalized Interface to Java (GVBUR70)
 
-The sample assembler, NATURAL and COBOL programs TSTUR70.asm TSTUR70.natural and TESTUR70.cbl provide examples of how to call Java from assembler/3GL/4GL using the GVBUR70 API. The programs serve as an IVP and are also useful for stress testing.
+The sample assembler, NATURAL and COBOL programs TSTUR70.asm, TSTUR70.natural and TESTUR70.cbl provide examples of how to call Java from assembler/3GL/4GL using the GVBUR70 API. The programs serve as an IVP and are also useful for stress testing.
 
 For example, TSTUR70.asm allows up to 20 MVS subtasks each to make tens of thousands of Java method calls, utilizing a pool of Java threads to service these calls simultaneously supported by the GvbJavaDaemon included. The calling assembler/3GL/4GL application makes an initialization (INIT) call via the GVBUR70 API to request the GvbJaveDaemon to start the specified number of threads. Subsequently, it makes CALL requests to invoke Java classes and methods.
 
@@ -185,7 +185,7 @@ UR70LREQ: if truncation occurs (LRET=4) this field indicates the receive buffer 
 
 Return codes are documented in the source code of GVBUR70.
 
-Assembler program TSTUR70 and COBOL program TESTUR70 show examples of these calls and the API data areas. The NATURAL program TSTUR70.natural shows a typical Local Data Area that defines the same API data area.
+Assembler program TSTUR70.asm, NATURAL program TSTUR70.natural and COBOL program TESTUR70.cbl show examples of these calls and the API data areas. The NATURAL program TSTUR70.natural used a Local Data Area to define the data areas used to call the GVBUR70 interface.
 
 # Contributing
 Anyone can contribute to the GenevaERS project - learn more at [CONTRIBUTING.md](https://github.com/genevaers/community/blob/master/CONTRIBUTING.md)
