@@ -12,7 +12,7 @@ The class and method names are specified in a small assembler stub exit (GVBJLEN
 
 ## Generalized Interface to Java (GVBUR70)
 
-The sample assembler and COBOL programs TSTUR70.asm and TESTUR70.cbl provide examples of how to call Java from assembler/3GL/4GL using the GVBUR70 API. The programs serve as an IVP and are also useful for stress testing.
+The sample assembler, NATURAL and COBOL programs TSTUR70.asm TSTUR70.natural and TESTUR70.cbl provide examples of how to call Java from assembler/3GL/4GL using the GVBUR70 API. The programs serve as an IVP and are also useful for stress testing.
 
 For example, TSTUR70.asm allows up to 20 MVS subtasks each to make tens of thousands of Java method calls, utilizing a pool of Java threads to service these calls simultaneously supported by the GvbJavaDaemon included. The calling assembler/3GL/4GL application makes an initialization (INIT) call via the GVBUR70 API to request the GvbJaveDaemon to start the specified number of threads. Subsequently, it makes CALL requests to invoke Java classes and methods.
 
@@ -169,7 +169,7 @@ INIT: This function requests the initialization of the GVBUR70 interface and spe
 CALL: This function requests the invocation of a specified Java class and method and supplies a SEND and RECEIVE buffer to communicate data with Java.
 
 ```
-UR70VERS: version of GVBUR70 half word of 1.
+UR70VERS: version of GVBUR70 half word of binary 1.
 UR70FLG1: character value 'U' must be specified to distinguish the caller from GVBMR95 Performance Engine
 UR70FLG2: character value '0' means the payload data is transferred as-is without converting from EBCDIC to ASCII and back
           character value '1' means the payload data is converted from EBCDIC to ASCII and back
@@ -185,7 +185,7 @@ UR70LREQ: if truncation occurs (LRET=4) this field indicates the receive buffer 
 
 Return codes are documented in the source code of GVBUR70.
 
-Assembler program TSTUR70 and COBOL program TESTUR70 show examples of these calls and the API data areas.
+Assembler program TSTUR70 and COBOL program TESTUR70 show examples of these calls and the API data areas. The NATURAL program TSTUR70.natural shows a typical Local Data Area that defines the same API data area.
 
 # Contributing
 Anyone can contribute to the GenevaERS project - learn more at [CONTRIBUTING.md](https://github.com/genevaers/community/blob/master/CONTRIBUTING.md)
