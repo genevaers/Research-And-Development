@@ -279,6 +279,9 @@ class GvbBackup {
       
         System.out.println("TargetZ path: " + targetZ);
         File targetZFile = new File(targetZ);
+        if (!targetZFile.getCanonicalPath().startsWith(target)) {
+          throw new SecurityException("Path traversal attempt detected: " + targetZFile.getCanonicalPath());
+        }
         if (targetZFile.mkdirs()) {
             // display that the directory is created
             // as the function returned true
@@ -292,6 +295,9 @@ class GvbBackup {
 
         System.out.println("Backup path: " + target);
         File targetFile = new File(target);
+        if (!targetFile.getCanonicalPath().startsWith(target)) {
+          throw new SecurityException("Path traversal attempt detected: " + targetFile.getCanonicalPath());
+        }
         if (targetFile.mkdirs()) {
             // display that the directory is created
             // as the function returned true
